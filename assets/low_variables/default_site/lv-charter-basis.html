@@ -1,0 +1,73 @@
+<div id="{url_title}_scope">
+<h2>Scope</h2>
+{cf-wgcharter-w-scope}
+</div>
+
+<div id="{url_title}_deliverables">
+<h2>Deliverables</h2>
+{cf-wgcharter-w-deliverables}
+</div>
+
+{if cf-wgcharter-w-capabilities}
+<div id="{url_title}_capabilities">
+<h2>Capabilities</h2>
+{cf-wgcharter-w-capabilities}
+</div>
+{/if}
+
+{if cf-wgcharter-w-motivation}
+<div id="{url_title}_motivation">
+<h2>Motivation</h2>
+{cf-wgcharter-w-motivation}
+</div>
+{/if}
+
+{if cf-wgcharter-w-compatibility}
+<div id="{url_title}_compatibility">
+<h2>Compatibility</h2>
+{cf-wgcharter-w-compatibility}
+</div>
+{/if}
+
+<div id="{url_title}_wg_relationships">
+<h2>Relationship to other activities and workgroups</h2>
+{cf-wgcharter-w-relationships}
+<p>For more information, see the <a href="/participate/workgroup-best-practices/">Workgroup Best Practices</a>.</p>
+</div>
+
+<div id="{url_title}_target_sdos">
+<h2>Target Specification Development Organizations (SDOs)</h2>
+{cf-wgcharter-r-sdos}
+
+	{if count == 1}
+	<p>Specifications developed by this WG may be contributed to these SDOs:</p>
+	<ul>
+	{/if}
+		<li><a href="{cf-sdo-t-url}">{title}</a> (<a href="{cf-sdo-t-ipurl}">IP Policy</a>)</li>
+	{if count == total_results}
+	</ul>
+	
+	<p>This contribution to these SDOs is dependent on maturing the specifications within this WG and gaining consensus on the contribution. At that point, the WG would make a proposal to the OSLC Steering Committee for such a move. For more information, see the <a href="/participate/workgroup-best-practices/">Workgroup Best Practices</a>.</p>
+	{/if}
+{/cf-wgcharter-r-sdos}
+</div>
+
+<div id="{url_title}_participation">
+<h2>Participation</h2>
+{cf-wgcharter-w-participation}
+</div>
+
+<div id="{url_title}_meetings">
+<h2>Meetings Frequency and Communications</h2>
+{cf-wgcharter-w-meetings}
+</div>
+
+<div id="{url_title}_decisions">
+<h2>Decision Policy</h2>
+{cf-wgcharter-w-decisions}
+</div>
+
+<div id="{url_title}_ip">
+<h2>Intellectual property</h2>
+Members of this Workgroup agree to this Workgroup Participation Agreement.
+</div>

@@ -1,0 +1,103 @@
+{embed="_embeds/_body"
+	pagetype="workgroups_all"
+	js_body_class="js_popovers"
+}
+
+{exp:stash:parse}
+  {exp:channel:entries 
+    dynamic="off" 
+    fixed_order="{lv:workgroup_order}"
+    {global:disable_default}
+  }
+
+    {!-- Cache WG info and tags --}
+    {exp:stash:append_list name="workgroups" parse_tags="yes" parse_vars="yes" parse_depth="2"}
+      {stash:title}{title}{/stash:title}
+      {stash:page_url}{page_url}{/stash:page_url}
+      {stash:entry_id}{entry_id}{/stash:entry_id}
+      {stash:micro-description}{workgroup_micro-description}{/stash:micro-description}
+    
+      {exp:tag:tags entry_id='{entry_id}' websafe_separator='-'}
+        {!-- Add each tag to a nested list, context of entry_id --}
+        {exp:stash:append_list:nested name="tags" context="{entry_id}_{websafe_tag}"}
+          {stash:websafe_tag}{websafe_tag}{/stash:websafe_tag}
+          {stash:tag}{tag}{/stash:tag}
+        {/exp:stash:append_list:nested}
+        
+        {!-- Add to a list of "all" tags --}
+        {exp:stash:append_list:nested name="all_tags" parse_tags="yes" parse_vars="yes"}
+          {stash:websafe_tag}{websafe_tag}{/stash:websafe_tag}
+          {stash:tag}{tag}{/stash:tag}
+          
+          {exp:low_variables:parse var="lv:tag_description" limit="1" search:name="{websafe_tag}"}
+            {stash:description}{description}{/stash:description}
+          {/exp:low_variables:parse}
+
+        {/exp:stash:append_list:nested}
+              
+      {/exp:tag:tags}
+    
+    {/exp:stash:append_list}
+
+  {/exp:channel:entries}	
+{/exp:stash:parse}
+
+{exp:stash:set name="main_content"}
+
+  {exp:channel:entries entry_id="{structure:page:entry_id}" {global:disable_default}}
+		{cf-sp-w-body-en}
+	
+	  <p>We have a variety of Workgroups with different and sometimes overlapping interests, roles, and responsibilities.</p>
+	{/exp:channel:entries}
+  
+  <table class="table-basic">
+    <caption class="hidden">All OSLC Workgroups</caption>
+    <thead>
+      <tr>
+        <th scope="column"><span class="hidden">Name</span>
+        </th>
+        {exp:stash:get_list name="all_tags" unique="yes"}
+          <th style="text-align:center;" scope="column">
+            <span {if description}data-popover title="{description}"{/if} class="wg-tag wg-tag-{websafe_tag}" data-tagname="{websafe_tag}">{tag}</span>
+          </th>
+        {/exp:stash:get_list}
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <th scope="column"><span class="hidden">Name</span></th>
+        {exp:stash:get_list name="all_tags" unique="yes"}
+          <th style="text-align:center;" scope="column">
+            <span {if description}data-popover title="{description}"{/if} class="wg-tag wg-tag-{websafe_tag}" data-tagname="{websafe_tag}">{tag}</span>
+          </th>
+        {/exp:stash:get_list}
+      </tr>
+    </tfoot>
+    <tbody>
+      {exp:stash:get_list name="workgroups"}
+        <tr>
+          <th scope="row">
+            <a href="{page_url}">{title}</a>
+            {if micro-description}
+            <br/>
+            <span class="deemph fwn">{micro-description}</span>
+            {/if}
+          
+          </th>
+        
+          {exp:stash:get_list:nested name="all_tags" unique="yes" prefix="all_tags"}
+        
+          <td style="text-align:center;">
+            {if 0 != {exp:stash:list_count name="tags" context="{entry_id}_{all_tags:websafe_tag}"} }
+            &check;
+            {/if} 
+          </td>
+        
+          {/exp:stash:get_list:nested}
+        </tr>
+      {/exp:stash:get_list}
+      </tr>
+    </tbody>
+  </table>
+  
+{/exp:stash:set}

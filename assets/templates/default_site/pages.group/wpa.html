@@ -1,0 +1,426 @@
+{embed="_embeds/_body"
+	{if structure:page:entry_id != lv-current-wpa}pagetype="basic_legal_agreement"{/if}
+	
+	{if freebie_last != "success" && oslc:user:is_member && oslc:user:is_not_workgroup_member && oslc:user:has_not_submitted_wpa }
+		show_form="y"
+	{/if}
+	
+	freeform_form_name='{oslc:workgroup:url_title}-wpa'
+	freeform_required='name|email|job_title|phone1|member_address|confirm_status|member_id|agreement_category|signature'
+	freeform_template='wpa_template'
+
+	{!-- Only load scripts if you have to --}
+	{if oslc:user:is_member}
+		js_body_class="forms_typeahead forms_validate"
+	{/if}
+	
+	{!-- Fill in some other data --}
+	is_for_wpa="y"
+	agreement_name="{structure:page:title} and Intellectual Property Policy"
+		
+}
+
+{!-- Early parsing: get the additional workgroup IDs --}
+{exp:stash:parse}
+	{exp:channel:entries entry_id="{structure:page:entry_id}" {global:disable_default}}
+
+		{!-- Additional workgroups entry ID --}
+		{exp:stash:set name="additional_wg_entry_ids" match="#[^0]#" against="cf-charter-r-addl-workgroups:total_children" }{cf-charter-r-addl-workgroups:child_ids}{/exp:stash:set}
+		
+	{/exp:channel:entries}
+{/exp:stash:parse}
+
+{!-- Jump link and messages --}
+{exp:stash:set name="stash-simple-body" type="variable"}
+
+	{if structure:page:entry_id == lv-current-wpa}
+		<div class="callout-box callout-warning">
+			This is the basic wording for a Workgroup Participation Agreement. When you join a workgroup, you will see the charter for the workgroup and a form to sign electronically.
+		</div>
+		
+	{/if}
+	
+	{!-- Error if they're not an OSLC Member --}
+	{if oslc:user:is_not_member}
+		{if "{structure:page:entry_id}" != "{lv-current-wpa}"}
+		<div class="callout-box callout-warning body-text">
+			<p><strong>Whoa!</strong> You&rsquo;re not yet an OSLC Member!
+				{exp:channel:entries entry_id="{lv-current-ma}" {global:disable_all} }
+				<a class="button" href="{page_url}">Review and complete the {title}</a>
+				{/exp:channel:entries}
+			</p> 
+		</div>	
+		{/if}
+	{/if}
+
+	
+	{!-- Note if they've already submitted this but they're not a member --}
+	{if oslc:user:has_submitted_wpa && oslc:user:is_not_workgroup_member && freebie_last != "success"}
+		<div class="callout-box body-text">
+			<p><strong>Hello again!</strong> 
+				You have already submitted this Workgroup Participation Agreement.
+			</p> 
+			<p>We&rsquo;re reviewing the information that you gave us and we'll get back to you soon!</p>
+		</div>	
+	{/if}
+
+	{!-- Success messages (or, if not total success, at least they submitted the form) --}
+	{if "{freebie_last}" == "success"}
+		<div class="callout-box success">
+			<p><strong>Thanks!</strong> 
+			
+				{!-- Check if there's a completed WPA form for them. --}
+				{if oslc:user:has_submitted_wpa}
+					{!-- If everything went through OK and they're now a member for this workgroup, show them this message --}
+					{if oslc:user:is_workgroup_member}
+						Now check out the <a href="{path='wiki'}">wikis</a>. You can edit the following wikis now:
+					{if:else}
+						After we verify your Corporate Authorization form, we will grant you access to the wiki for the workgroup. You can currently edit the following wikis:
+					{/if}
+				{if:else} {!-- No one should really see this, but it doesn't hurt to have a message --}
+					Err, actually I don't have a saved record. Maybe something went wrong? In the meantime, you can edit the following wikis:
+				{/if}
+			
+			</p>
+
+			{exp:member_categories:categories errors="off" category_group="1|4"}
+				{if '{count}' == 1}<ul>{/if}
+				<li><a href="{path='wiki/{category_url_title}'}">{category_name}</a></li>
+				{if '{count}' == '{total_results}'}</ul>{/if}
+				
+			{/exp:member_categories:categories}
+
+		</div>
+	{/if}
+		
+{/exp:stash:set}
+
+{!-- Get the Target Workgroup charter --}
+{exp:playa:parents parse="inward" channel="charters" field="cf-wgcharter-r-workgroup" status="open" entry_id="{oslc:workgroup:entry_id}"}
+	{!-- Need the entry ID for the form --}
+	{exp:stash:set name="charter_entry_id"}{entry_id}{/exp:stash:set}
+
+	{exp:stash:set name="charter_contents"}
+		{if oslc:workgroup:entry_id}
+		<ul class="nospacing nobullets">
+			{if cf-wgcharter-w-scope}<li><a href="#{url_title}_scope">Scope</a></li>{/if}
+			{if cf-wgcharter-w-deliverables}<li><a href="#{url_title}_deliverables">Deliverables</a></li>{/if}
+			{if cf-wgcharter-w-capabilities}<li><a href="#{url_title}_capabilities">Capabilities</a></li>{/if}
+			{if cf-wgcharter-w-motivation}<li><a href="#{url_title}_motivation">Motivation</a></li>{/if}
+			{if cf-wgcharter-w-compatibility}<li><a href="#{url_title}_compatibility">Compatibility</a></li>{/if}
+			{if cf-wgcharter-w-relationships}<li><a href="#{url_title}_wg_relationships">Relationship to other activities and workgroups</a></li>{/if}
+			{if cf-wgcharter-r-sdos}<li><a href="#{url_title}_target_sdos">Target Specification Development Organizations (SDOs)</a></li>{/if}
+			{if cf-wgcharter-w-participation}<li><a href="#{url_title}_participation">Participation</a></li>{/if}
+			{if cf-wgcharter-w-meetings}<li><a href="#{url_title}_meetings">Meetings Frequency and Communications</a></li>{/if}
+			{if cf-wgcharter-w-decisions}<li><a href="#{url_title}_decisions">Decision Policy</a></li>{/if}
+			<li><a href="#{url_title}_ip">Intellectual property</a></li>
+		</ul>
+		{/if}
+	{/exp:stash:set}
+
+	{exp:stash:set name="charter_text"}	
+		{if oslc:workgroup:entry_id}
+			{!-- This LV snippet has all the basic strings and variables for a charter --}
+			{lv-charter-basis}
+		{/if}
+	{/exp:stash:set}
+	
+{/exp:playa:parents}
+
+{!-- Build the IP policy, WPA --}
+{!-- Channel:entries combined and using stash to improve performance --}
+{exp:channel:entries parse="inward" fixed_order="{lv-current-ipr}|{lv-current-wpa}" dynamic="off" {if global:env != "production"}status="open|closed"{/if} {global:disable_default}}
+
+	{!-- The IPR TOC and body --}
+	{cf-fp-m-subsections-en}
+		{exp:stash:append name="ipr_contents" match="#{lv-current-ipr}#" against="{entry_id}"}
+			{if row_count == 1}<ul class="nospacing nobullets">{/if}
+			<li><a href="#ipr-{subid}">{subtitle}</a></li>
+			{if row_count == total_rows}</ul>{/if}
+		{/exp:stash:append}
+		
+		{exp:stash:append name="ipr_text" match="#{lv-current-ipr}#" against="{entry_id}"}
+			<div id="ipr-{subid}">
+				{subbody}
+			</div>
+		{/exp:stash:append}
+	{/cf-fp-m-subsections-en}
+	
+	{!-- WPA body text --}
+	{exp:stash:set name="wpa_text" match="#{lv-current-wpa}#" against="{entry_id}"}{cf-sp-w-body-en}{/exp:stash:set}
+		
+{/exp:channel:entries}
+
+{!-- Build a list of additional workgroups --}
+{exp:stash:set_list name='additional_workgroups' parse_tags="yes" parse_depth="2"}
+
+  {exp:channel:entries parse="inward" fixed_order="{exp:stash:get name='additional_wg_entry_ids' default='0'}" dynamic="off" {if global:env != "production"}status="open|closed"{/if} {global:disable_default}}
+	
+	{stash:wg_title}{title}{/stash:wg_title}
+	{stash:wg_url_title}{url_title}{/stash:wg_url_title}
+	
+	{stash:wg_charter_toc}
+		{exp:playa:parents channel="charters" field="cf-wgcharter-r-workgroup" status="open" limit="1"}	
+			
+			<ul class="nospacing nobullets">
+				{if cf-wgcharter-w-scope}<li><a href="#{url_title}_scope">Scope</a></li>{/if}
+				{if cf-wgcharter-w-deliverables}<li><a href="#{url_title}_deliverables">Deliverables</a></li>{/if}
+				{if cf-wgcharter-w-capabilities}<li><a href="#{url_title}_capabilities">Capabilities</a></li>{/if}
+				{if cf-wgcharter-w-motivation}<li><a href="#{url_title}_motivation">Motivation</a></li>{/if}
+				{if cf-wgcharter-w-compatibility}<li><a href="#{url_title}_compatibility">Compatibility</a></li>{/if}
+				{if cf-wgcharter-w-relationships}<li><a href="#{url_title}_wg_relationships">Relationship to other activities and workgroups</a></li>{/if}
+				{if cf-wgcharter-r-sdos}<li><a href="#{url_title}_target_sdos">Target Specification Development Organizations (SDOs)</a></li>{/if}
+				{if cf-wgcharter-w-participation}<li><a href="#{url_title}_participation">Participation</a></li>{/if}
+				{if cf-wgcharter-w-meetings}<li><a href="#{url_title}_meetings">Meetings Frequency and Communications</a></li>{/if}
+				{if cf-wgcharter-w-decisions}<li><a href="#{url_title}_decisions">Decision Policy</a></li>{/if}
+				<li><a href="#{url_title}_ip">Intellectual property</a></li>
+			</ul>
+		{/exp:playa:parents}
+	{/stash:wg_charter_toc}
+	
+	{stash:wg_charter_body}
+		{exp:playa:parents channel="charters" field="cf-wgcharter-r-workgroup" status="open" limit="1"}	
+			{lv-charter-basis}
+		{/exp:playa:parents}
+	{/stash:wg_charter_body}
+	
+	{!-- Charter entry ID --}
+	{stash:wg_charter_entry_id}{exp:playa:parents channel="charters" field="cf-wgcharter-r-workgroup" status="open" limit="1"}{entry_id}{/exp:playa:parents}{/stash:wg_charter_entry_id}
+
+  {/exp:channel:entries}
+	
+{/exp:stash:set_list}
+
+
+
+
+{!-- Build bulk of the content (the form is currently in _embeds/_body) --}
+{exp:stash:set name="main_content" type="variable"}
+
+	{!-- Corporate Auth for EU Companies; only under very limited circumstances --}
+	{if structure:page:entry_id != lv-current-wpa && oslc:member:is_representative && freebie_last != "success" && oslc:user:is_not_workgroup_member && oslc:user:has_not_submitted_wpa}
+		
+		<div id="eu-auth-1" class="do-not-print">
+			<p>Is the Entity that you are representing (&ldquo;{oslc:member:organization}&rdquo;) <strong>incorporated <em>and headquartered</em> (at the highest level)</strong> in a country in the European Union?</p>
+			<p class="deemph"><strong>Example:</strong> <a href="http://en.wikipedia.org/wiki/Boeing">Boeing</a> is a multinational company with subsidiaries in many counties; however, Boeing is headquartered at the highest level in the United States.</p>
+			<p>
+			 <a class="button" href="#" data-toggle="reveal" data-show-selector="#wpa-full-content, #sign_agreement_form, #wpa_scroll_down" data-hide-selector="#eu-auth-1" data-check-selector="#no_entity_is_eu" data-prevent-default="y">{oslc:member:organization} is incorporated and headquartered outside of the European Union</a> 
+			</p>
+			<p>
+			 <a data-toggle="reveal" data-hide-on-init="#wpa-full-content, #sign_agreement_form, #eu-auth-2, #wpa-corp-auth, #wpa_scroll_down" data-show-selector="#eu-auth-2" data-hide-selector="#eu-auth-1" class="button" data-prevent-default="y" href="#">{oslc:member:organization} is incorporated and headquartered in the European Union</a>
+			</p>
+		</div>
+		
+		<div id="eu-auth-2" class="do-not-print">
+			<p>Has that Entity completed a <strong>Corporate Authorization form</strong>, authorizing you to electronically sign a WPA on behalf of the Entity for this Workgroup?</p>
+			
+			<div class="line">
+				<div class="unit">
+					<div class="gutter">
+						<p>
+						  <a href="#" data-toggle="reveal" data-show-selector="#wpa-full-content, #wpa-corp-auth" data-hide-selector="#eu-auth-2" class="button" data-prevent-default="y">No: show me the Corporate Authorization Form</a>
+						</p>
+					</div>
+				</div>
+				<div class="unit lastUnit">
+				  <p>
+				  <a href="#" class="button" data-toggle="reveal" data-show-selector="#wpa-full-content, #sign_agreement_form, #wpa_scroll_down, #wpa_attach_cfa_section" data-hide-selector="#eu-auth-2" data-check-selector="#yes_entity_is_eu" data-prevent-default="y">Yes: I have a completed Corporate Authorization form</a> <span class="mls">(Or you sent it to us already)</span>
+				  </p>
+				  <p class="deemph"><strong> A note on this:</strong> the Corporate Authorization form is something that you would have printed, had your manager complete, scanned, and sent to us. Trust me, you would know if you&rsquo;d gone through that.
+				  </p>
+
+				</div>
+				<p>
+				  <a href="#" data-toggle="reveal" data-hide-selector="#eu-auth-2" data-show-selector="#eu-auth-1" data-prevent-default="y">Oops! Send me back, please.</a>
+				</p>
+			</div>
+			
+			<div class="size3of5 callout-box">
+				<p><strong>What's going on here?</strong> To complete the Workgroup Participation Agreement you must provide an electronic signature, which some countries in the European Union do not accept as a valid signature.</p>
+				<p>If you are representing an entity that is headquartered in the European Union, you must print, complete, and send us a Corporate Authorization form that states that you are authorized to complete this Workgroup Participation Agreement.</p>
+				<p>If you are representing an entity that is not headquartered in the EU, <a href="#" data-toggle="reveal" data-hide-selector="#eu-auth-2" data-show-selector="#eu-auth-1" data-prevent-default="y">Go back and click <b>{exp:stash:get name='oslc_org'} is incorporated and headquartered outside of the European Union</b></a> </p>
+			</div>
+
+			
+		</div>
+		
+		<div id="wpa-corp-auth" class="body-text">
+		
+			<div class="callout-box callout-warning">
+				<p><strong>Because of laws in the European Union restricting the use of Electronic Signatures, you have some <em>physical</em> paperwork to complete</strong></p>
+				<p> <a href="#" onclick="window.print();">Print out this page</a> and have your manager fill it out.</a></p>
+				<p>Scan the completed form and email it to <a href="mailto:webmaster@open-services.net">the site administrator</a> with the subject "Signed Corporate Authorization form".</p>
+				<p>You can also <a href="/{freebie_original_uri}">refresh this page</a> and attach the scanned form.</p>
+				<p><a class="button" href="#" onclick="window.print()">Print this page</a></p>
+			</div>
+		
+			<div class="page-break">
+			{exp:smartdown}
+## Corporate Authorization to Execute Workgroup Participation Agreement
+
+
+`_______________________________________` ("Entity"), on behalf of itself and its Affiliates (collectively "Bound Entities"), effective as of the date of signature below (the "Effective Date"), hereby authorizes `_____________________________` (open-services.net site username: {logged_in_username} [ID: {logged_in_member_id}]), an employee of Entity ("Employee"), to electronically sign the Workgroup Participation Agreement ("WPA") in Appendix A on behalf of Bound Entities, and thereby bind Bound Entities to the terms and conditions of the WPA with respect to the Contributions and Other Submissions made by Employee during the term of Employee's employment with Entity.  For the avoidance of doubt, such authorization does not extend to Contributions or Other Submissions made by Employee to other Workgroups or made by Employee while not employed by Entity.
+
+Entity agrees that Bound Entities shall be bound to the terms and conditions of the electronically signed WPA as if the Employee had signed the WPA on paper, subject to the laws of the State of New York, USA, without reference to conflict-of-laws principles.
+
+Capitalized terms have the meanings set forth in Appendix A, unless defined by use of parentheses and quotations above.
+
+  
+  
+Entity:  `_______________________________________`
+
+
+Authorized Signature:  `__________________________________________`	     Date: `______________`  
+
+Name:	 `____________________________`  
+
+Title:	 `____________________________`  
+
+
+_(if Entity requires dual signatures):_
+
+Authorized Signature:  `__________________________________________`	     Date:  `______________`  
+
+Name:	 `____________________________`  
+
+Title:	 `____________________________`  
+
+<div class="page-break"></div>
+
+## Appendix A: {oslc:workgroup:title} Workgroup Participation Agreement 
+
+			{/exp:smartdown}
+			</div>
+		
+		</div>
+			
+	{/if}
+	
+	<div id="wpa-full-content">
+		
+		{if "{freebie_last}" != "success" && structure:page:entry_id != lv-current-wpa && oslc:user:is_member && oslc:user:is_not_workgroup_member && logged_in && oslc:user:has_not_submitted_wpa}
+		<p id="wpa_scroll_down"><a href="#sign_agreement_form">Scroll down to sign this form &darr;</a></p>
+		{/if}
+		
+		<div class="line">
+			<div class="unit size1of3">
+				&nbsp;
+			</div>
+			<div class="unit lastUnit">
+				<div class="gutter">
+					<div class="body-text">
+						{exp:stash:get name="wpa_text"}
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="line mvl">
+			<div class="unit size1of3">
+				<div class="gutter">
+					<h3 class="h3 mtn">Workgroup{exp:stash:get_list name="additional_workgroups" limit="1"}s{/exp:stash:get_list}</h3>
+				</div>
+			</div>
+			<div class="unit lastUnit">
+				<div class="gutter">
+					<div class="body-text">
+						{if oslc:workgroup:title}
+							<ul class="mtn pln nobullets ">
+								<li>{oslc:workgroup:title}</li>
+								{exp:stash:get_list name="additional_workgroups"}
+									<li>{wg_title}</li>
+								{/exp:stash:get_list}
+							</ul>
+						{if:else}
+							<p><i>[Name of Workgroup will appear here]</i></p>
+						{/if}
+					</div>
+				</div>
+			</div>
+		</div>
+	
+		<hr class="shadow-divider" />
+		
+		<div class="line mvl">
+			<h2 class="h2 mbm">IP Policy</h2>
+			<div class="unit size1of3">
+				<div class="gutter mtl">
+					{exp:stash:get name="ipr_contents"}
+				</div>
+			</div>
+			<div class="unit lastUnit">
+				<div class="gutter">
+					<div class="body-text">
+						{exp:stash:get name="ipr_text"}
+					</div>
+				</div>
+			</div>
+		</div>
+	
+		
+		<hr class="shadow-divider" />
+		
+		<div class="line mvl">
+		
+			
+			<h2 class="h2 mbm">{if oslc:workgroup:title}{oslc:workgroup:title} {/if}Charter</h2>
+			<div class="unit size1of3">
+				<div class="gutter mtl">
+					{exp:stash:get name="charter_contents"}
+				</div>
+				
+			</div>
+			<div class="unit lastUnit">
+				<div class="gutter">
+					<div class="body-text">
+						{if oslc:workgroup:entry_id}
+							{exp:stash:get name='charter_text'}
+						{if:else}
+							<p class="mtm"><i>[Workgroup Charter will appear here]</i></p>
+						{/if}
+					</div>
+				</div>
+			</div>
+		</div>
+		
+{exp:stash:get_list name='additional_workgroups'}
+
+	{if count == 1}
+		<hr class="shadow-divider" />
+		
+		<h2 class="h2">Additional Workgroup Charters</h2>
+	{/if}
+
+	<div class="line mvl">
+		<h2 class="mbs">{wg_title} Charter</h2>
+		
+		<div class="unit size1of3">
+			<div class="gutter mtl">
+				{wg_charter_toc}
+			</div>
+			
+		</div>
+		<div class="unit lastUnit">
+			<div class="gutter">
+				<div class="body-text mbl">
+					{wg_charter_body}	
+				</div>
+			</div>
+		</div>
+		
+	</div>
+{/exp:stash:get_list}
+	
+	</div>	
+{/exp:stash:set}
+
+
+{if logged_in && logged_in_group_id == "1"}
+<h1>Global variables</h1>
+<?php $EE = get_instance(); print('<pre><code>'.print_r($EE->config->_global_vars, TRUE) . '</code></pre>');  ?>
+
+<h1>Configuration variables</h1>
+<?php
+	print('<pre><code>'. print_r($this->EE->config->config, TRUE) . '</code></pre>');
+?> 
+{/if}

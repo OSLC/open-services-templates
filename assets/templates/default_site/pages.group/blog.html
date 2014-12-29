@@ -1,0 +1,264 @@
+{!-- 404 handling --}
+{if segment_3 != ''}
+	{exp:http_header status='301' location="/{segment_1}/{segment_2}/"}
+{/if}
+
+{exp:channel:entries
+	require_entry="yes"
+	status="open|closed"
+	{global:disable_default}
+}
+	{!-- If Structure/Channel modules can't find an entry, 404 it --}
+	{if no_results}{redirect="404"}{/if}
+	
+	{exp:stash:set name="blog_main_column"}
+		<p class="mtn mbm deemph">Posted on <strong><time property="dc:date" pubdate datetime="{entry_date format="{DATE_W3C}"}">{entry_date format="{lv-blogdateformat}"}</time></strong> by <span property="creator">{encode="{email}" title="{author}"}</span></p>
+		
+		<div class="body-text blogbody ptm" property="dc:description">
+			{cf-blog-w-body}
+		</div>
+		
+		<div class="blogcomments mvl body-text">
+			
+		</div>
+
+	{/exp:stash:set}
+	
+	{exp:stash:set name="blog_aside_comments"}
+		<h3 class="mbn">{lv-commenting-heading-en}</h3>
+		
+		{if forum_topic}
+			<p class="mts">{lv-comment-discusslinkintro-en} <a href="{path='forums/viewthread'}/{forum_topic_id}/">{lv-comment-discusslinktext-en}</a>.</p>
+		{/if}
+		
+		{if not_forum_topic}
+			<p class="mts">{lv-comment-noforumthread-en}</p>
+			
+			{if logged_in}
+				<p>
+					<a class="button" href="/forums/newtopic/18/">{lv-comment-startnewthreadaction-en}</a> <br />
+					<em class="deemph">{lv-comment-authorcanassociatelater-en}</em>
+				</p>
+			{/if}
+			
+		{/if}
+		
+		{if logged_out}
+			<p>{lv-comment-loginregister-en}</p>
+		{/if}
+	{/exp:stash:set}
+	
+	{exp:stash:prepend name="blog_aside_taxonomy"}
+		{cf-blog-r-specs}
+			{if count == 1}
+				<h3 class="mbn">Workgroups</h3>
+				<ul class="nospacing nobullets">
+			{/if}
+			<li class="mts"><a rel="category" href="{structure:top:url}workgroup/{url_title}/" title="{lv-seepostsabout-en} {title} Workgroup">{title}</a></li>
+			{if count == total_results}
+				</ul>
+			{/if}
+		{/cf-blog-r-specs}
+	{/exp:stash:prepend}
+		
+{/exp:channel:entries}
+
+{exp:stash:append name="blog_aside_taxonomy"}
+	{exp:tag:tags 
+		entry_id="{structure:page:entry_id}"
+		websafe_separator="-"
+		}
+		
+		{if count=="1"}
+			<h3 class="mbn">{lv-tagged-en}</h3>
+			<ul class="inline-list nospacing">										
+		{/if}
+			
+			<li class="{if count==1}mts{/if}"><a rel="tag" href="/blog/tag/{websafe_tag}">{tag}</a>{if count != total_results && total_results > 1},{/if}</li>
+
+		{if count==total_results}
+			</ul>
+		{/if}
+	
+	{/exp:tag:tags}
+{/exp:stash:append}
+
+{exp:channel:next_entry channel="{structure:child_listing:short_name}"}
+	{exp:stash:set name="newer_entry"}
+	<i class="icon-font icon-font-tinted" data-icon="&#xe08a;"></i>
+	<strong>{lv-newerpost-en}</strong>: 
+	<a rel="next" href="{exp:low_variables:single var="lv-structure-page-url" preparse:entry_id='{entry_id}'}">{title}</a>
+	{/exp:stash:set}
+{/exp:channel:next_entry}
+
+{exp:channel:prev_entry channel="{structure:child_listing:short_name}"}
+	{exp:stash:set name="older_entry"}
+	<i class="icon-font icon-font-tinted" data-icon="&#xe090;"></i>
+	<strong>{lv-olderpost-en}</strong>: 
+	<a rel="prev" href="{exp:low_variables:single var="lv-structure-page-url" preparse:entry_id='{entry_id}'}">{title}</a>
+	{/exp:stash:set}
+{/exp:channel:prev_entry}
+
+
+{exp:stash:set name="blog_aside_relationships"}
+			
+	{exp:low_variables:single var="lv-relationship-list" 
+		preparse:direction="children"
+		preparse:related_channel="products"
+		preparse:related_to_entry_id="{structure:page:entry_id}"
+		preparse:heading_level="h3"
+		preparse:heading_class="mbs"
+		preparse:size="1of1"
+		preparse:heading_text="Software"
+		preparse:orderby="title" 
+		preparse:sort="asc"
+		preparse:collapse_limit="4"
+		preparse:expand_text="See all software"
+	}
+	
+	{exp:low_variables:single var="lv-relationship-list" 
+		preparse:direction="children"
+		preparse:related_channel="company"
+		preparse:related_to_entry_id="{structure:page:entry_id}"
+		preparse:heading_level="h3"
+		preparse:heading_class="mbs"
+		preparse:size="1of1"
+		preparse:heading_text="Organizations"
+		preparse:orderby="title" 
+		preparse:sort="asc"
+		preparse:collapse_limit="4"
+		preparse:expand_text="See all organizations"
+	}
+	
+	{!-- Resource relationships --}
+		{exp:low_variables:single 
+			var='lv-relationship-list'
+			preparse:direction='children'
+			preparse:related_channel='tutorial'
+			preparse:related_to_entry_id="{structure:page:entry_id}"
+			preparse:size="1of1"
+			preparse:heading_text="Tutorials"
+			preparse:heading_level="h3"
+			preparse:heading_class="mbs"
+			preparse:orderby="title"
+			preparse:sort="asc"
+			preparse:collapse_limit="4"
+			preparse:expand_text="See all tutorials"
+		}
+		
+		{exp:low_variables:single 
+			var='lv-relationship-list'
+			preparse:direction='children'
+			preparse:related_channel='resource_presentations|resource_videos'
+			preparse:related_to_entry_id="{structure:page:entry_id}"
+			preparse:size="1of1"
+			preparse:heading_text="Videos and presentations"
+			preparse:heading_level="h3"
+			preparse:heading_class="mbs"
+			preparse:orderby="title"
+			preparse:sort="asc"
+			preparse:collapse_limit="4"
+			preparse:expand_text="See all videos and presentations"
+		}
+		
+		{exp:low_variables:single 
+			var='lv-relationship-list'
+			preparse:direction='children'
+			preparse:related_channel='resource_articles|resource_whitepapers'
+			preparse:related_to_entry_id="{structure:page:entry_id}"
+			preparse:size="1of1"
+			preparse:heading_text="Articles and whitepapers"
+			preparse:heading_level="h3"
+			preparse:heading_class="mbs"
+			preparse:orderby="title"
+			preparse:sort="asc"
+			preparse:collapse_limit="4"
+			preparse:expand_text="See all articles and whitepapers"
+		}
+		
+		{exp:low_variables:single 
+			var='lv-relationship-list'
+			preparse:direction='children'
+			preparse:related_channel='resource_podcasts'
+			preparse:related_to_entry_id="{structure:page:entry_id}"
+			preparse:size="1of1"
+			preparse:heading_text="Podcasts"
+			preparse:heading_level="h3"
+			preparse:orderby="title"
+			preparse:sort="asc"
+			preparse:collapse_limit="4"
+			preparse:expand_text="See all podcasts"
+		}
+
+{/exp:stash:set}
+
+{exp:stash:set name="main_content"}
+
+<div class="line">
+		
+	<div class="unit size1of6">
+		&nbsp;
+	</div>
+	
+	<div class="unit size2of3">
+		<div class="gutter">
+			{exp:stash:get name="blog_main_column"}
+		</div>
+		
+	</div>
+							
+</div>
+
+<hr class="shadow-divider" />
+
+{if {exp:stash:not_empty name='newer_entry'}}
+	<div class="box-inset pvm mvm centered size3of5">
+		<p class="tac mvn pvn">
+		{exp:stash:get name="newer_entry"}
+		</p>
+	</div>
+{/if}
+
+
+	<div class="callout-box" role="contentinfo">
+		<h2 class="tac ttu">About this post</h2>
+		<div class="line">
+			
+			<div class="unit size1of3">
+			<div class="gutter">
+			{exp:stash:get name="blog_aside_comments"}
+			</div>
+			</div>
+			
+			<div class="unit size1of3">
+			<div class="gutter">
+			{exp:stash:get name="blog_aside_taxonomy"}
+			</div>
+			</div>
+			
+			<div class="unit lastUnit">
+			<div class="gutter">
+			{exp:stash:get name="blog_aside_relationships"}
+			</div>
+			</div>
+			
+		</div>
+		
+	</div>
+
+{if {exp:stash:not_empty name="older_entry"}}
+<div class="box-inset pvm mvm centered size3of5">
+	<p class="tac mvn pvn">
+	{exp:stash:get name="older_entry"}
+	</p>
+</div>
+{/if}
+
+
+{/exp:stash:set}
+
+{embed="_embeds/_body"
+	js_body_class="js_details_polyfill"
+	pagetype="blog_single"
+	headtitle="{structure:page:title}"
+}

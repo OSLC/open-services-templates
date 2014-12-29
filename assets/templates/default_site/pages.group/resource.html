@@ -1,0 +1,220 @@
+{!-- Single resource page --}
+{embed="_embeds/_body"
+	pagetype="resource_single"
+	js_body_class="js_details_polyfill resources"
+}
+
+{exp:stash:set name='presentation_notify_callout' match="#resource_presentations#" against="{structure:page:channel_short_name}"}
+<div class="callout-box mtm">
+	Want to receive an email when we announce more presentations? <br />
+	{exp:channel:entries
+		limit="1"
+		dynamic="no"
+		entry_id="146" {!-- Not ideal --}
+	}
+	<a class="button tiny-button mts" href="{page_url}">Sign up here</a>
+	
+{/exp:channel:entries}
+</div>
+{/exp:stash:set}
+
+
+{exp:stash:set name="main_content"}
+	{exp:channel:entries
+		entry_id="{structure:page:entry_id}"
+		show_future_entries="yes"
+		show_expired="yes"
+		disable="categories|pagination"
+	}			
+		{!-- Description --}		
+		<div class="line">
+				
+			<div class="unit size2of3 mvm">
+			
+			{!-- Watch in future --}
+			{if entry_date > current_time}
+				<div class="gutter">
+				<div class="body-text box-inset">
+					<h3 class="mvs">{if entry_date > current_time}<span class="label notice">Upcoming</span>{/if} Watch it live</h3>
+					
+					<p>
+						<span class="deemph">
+						{entry_date format="%Y %F %j @ %g:%i %A"} 
+						{!-- {if author_id != 1}/ <b>Presenter:</b> {author}{/if} {!-- Only if not the admin --}
+						</span> 
+							{if cf-resource-ta-location}
+								<a rel="external" href="{cf-resource-ta-location}" class="button tiny-button trackDownload">Register</a>
+							{/if}
+					</p>
+					
+					{if cf-resource-md-instructions}
+						<div class="deemph">{exp:smartdown}{cf-resource-md-instructions}{/exp:smartdown}</div>
+					{/if}
+					
+				</div> 
+				</div>
+			{/if}
+			
+			{!-- Exit links --}
+			{if expiration_date != "0" && expiration_date < current_time}
+				<p><span class="label success">Video coming soon</span></p>
+			{/if}
+
+
+				
+				{!-- Embed --}
+				<div class="gutter">
+				{if cf-resource-cv-videos}
+					{exp:channel_videos:videos entry_id="{entry_id}" limit="1"}
+						{if video:service == "youtube"}
+							{video:embed_code_hd}
+						{if:else}
+							{video:embed_code}
+						{/if}										
+					{/exp:channel_videos:videos}
+				{if:elseif cf-resource-t-embed}
+					{cf-resource-t-embed}
+				{/if}
+				</div>
+				
+				<div class="body-text mtm gutter">
+					{if cf-resource-w-desc == "" && cf-resource-cv-videos != ""}
+						{exp:channel_videos:videos entry_id="{entry_id}" limit="1"}
+							<p class="mvn"><span class="deemph">Description from {video:service}:</span> {video:description}</p>											
+						{/exp:channel_videos:videos}
+					{if:else}
+						{cf-resource-w-desc}
+					{/if}
+														
+				</div>
+				
+				{if entry_date < current_time && (cf-resource-t-url != "" || cf-resource-cv-videos != "" || cf-resource-m-downloads != "")}
+				<p>
+				<a {if cf-resource-m-downloads ==""}rel="external"{/if} class="button hero trackDownload" href="{if cf-resource-cv-videos}{exp:channel_videos:videos entry_id="{entry_id}" limit="1"}{video:web_url}{/exp:channel_videos:videos}{if:elseif (channel_short_name == "resource_presentations" || channel_short_name == "resource_videos") && cf-resource-t-url}{cf-resource-t-url}{if:elseif cf-resource-m-downloads}{cf-resource-m-downloads limit="1"}{upload_file}{/cf-resource-m-downloads}{if:else}{cf-resource-t-url}{/if}">
+				
+					{!-- For situations where you don't have an external URL but you've uploaded a file --}
+					{if cf-resource-t-url == "" && cf-resource-cv-videos == "" && cf-resource-m-downloads != ""}
+						Download
+					{if:elseif channel_short_name == "resource_videos" || channel_short_name == "resource_presentations" }
+						Watch now
+					{if:elseif channel_short_name == "resource_podcasts"}
+						Listen now										
+					{if:else}
+						Go
+					{/if}
+					&rarr;
+				</a>
+				</p>
+			{/if}
+
+				
+			</div>
+			
+			<div class="unit lastUnit">
+			
+				{!-- Stashed presentation callout. Should be only on presentation pages --}
+				{if {exp:stash:not_empty name='presentation_notify_callout'}}
+					{exp:stash:get name='presentation_notify_callout'}
+				{/if}
+				
+				{!-- Presenter if multiple --}
+				{if cf-resource-presenters}
+				{cf-resource-presenters orderby="screen_name"}
+					{if count == 1}
+					<h3 class="h3 mts">Presenter{if total_results > 1}s{/if}</h3>
+					<ul class="nospacing nobullets">
+					{/if}
+						<li>{screen_name}</li>
+					{if count == total_results}
+					</ul>
+					{/if}
+				{/cf-resource-presenters}
+				{if:elseif author_id != 1 && channel_short_name == "resource_presentations"}
+					<h3 class="h3 mts">Presenter</h3>
+					<ul class="nospacing nobullets">
+						<li>{author}</li>
+					</ul>
+			
+				{/if}
+				
+				{!-- Downloadables --}
+				{cf-resource-m-downloads}					
+					{if row_count == 1}
+					<h3 class="h3 mts">Downloads</h3>								
+					<ul class="nospacing nobullets">
+					{/if}
+					
+						<li><a href="{upload_file}">{if upload_description}{upload_description}{if:else}Supporting document{/if}</a></li>
+					
+					{if row_count == total_rows}
+					</ul>
+					{/if}
+				{/cf-resource-m-downloads}
+				
+				{!-- Relationships --}
+				{exp:low_variables:single 
+					var='lv-relationship-list'
+					preparse:direction='children'
+					preparse:related_channel='workgroups'
+					preparse:related_to_entry_id="{structure:page:entry_id}"
+					preparse:size="1of1"
+					preparse:heading_text="Workgroups"
+					preparse:heading_level="h3"
+					preparse:orderby="title"
+					preparse:sort="asc"
+					preparse:collapse_limit="2"
+					preparse:expand_text="See all workgroups"
+				}
+				
+				{exp:low_variables:single 
+					var='lv-relationship-list'
+					preparse:direction='children'
+					preparse:related_channel='products'
+					preparse:related_to_entry_id="{structure:page:entry_id}"
+					preparse:size="1of1"
+					preparse:heading_text="Software"
+					preparse:heading_level="h3"
+					preparse:orderby="title"
+					preparse:sort="asc"
+					preparse:collapse_limit="2"
+					preparse:expand_text="See all software"
+				}
+				
+				{exp:low_variables:single 
+					var='lv-relationship-list'
+					preparse:direction='children'
+					preparse:related_channel='company'
+					preparse:related_to_entry_id="{structure:page:entry_id}"
+					preparse:size="1of1"
+					preparse:heading_text="Organizations"
+					preparse:heading_level="h3"
+					preparse:orderby="title"
+					preparse:sort="asc"
+					preparse:collapse_limit="2"
+					preparse:expand_text="See all organizations"
+				}
+				
+				{exp:low_variables:single 
+					var='lv-relationship-list'
+					preparse:direction='parents'
+					preparse:related_channel='blog'
+					preparse:related_to_entry_id="{structure:page:entry_id}"
+					preparse:size="1of1"
+					preparse:heading_text="Blog posts"
+					preparse:heading_level="h3"
+					preparse:orderby="date"
+					preparse:sort="desc"
+					preparse:collapse_limit="2"
+					preparse:expand_text="See all blog posts"
+				}
+				
+							
+			</div>
+			
+			
+		</div> {!-- /.line --}
+		
+	
+	{/exp:channel:entries}
+	
+{/exp:stash:set}

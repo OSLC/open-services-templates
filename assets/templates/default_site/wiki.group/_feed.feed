@@ -1,0 +1,57 @@
+{exp:http_header content_type="text/xml; charset=UTF-8"}
+{exp:rss:feed channel="blog" debug="yes"}
+<rss version="2.0"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:atom="http://www.w3.org/2005/Atom">
+
+    <channel>
+
+	    <title>{exp:stash:get name="wiki_workgroup_title"} wiki</title>
+	    <link>{path='{segment_1}/{segment_2}'}</link>
+	    <description>Latest changes for the OSLC {exp:stash:get name="wiki_workgroup_title"} wiki</description>
+	    <dc:language>{lang}</dc:language>
+	    <dc:creator>{webmaster_email}</dc:creator>
+	    <webMaster>{webmaster_email} (Lee Reamsnyder)</webMaster>
+	    <dc:rights>Copyright {current_time format="%Y"}</dc:rights>
+	    <pubDate>{current_time format="%D, %d %M %Y %H:%i:%s %T"}</pubDate>
+	    <atom:link href="{path='{segment_1}/{segment_2}/rss'}/" rel="self" type="application/rss+xml" />
+    
+	{!-- Sometimes exp:query is the best you can do
+		This returns a bare minimum of content. Add more to the SELECT clause if you need more data.
+		
+		10 Aug 2012: added a join that eliminates secret/private pages from the feed
+		The LEFT OUTER JOIN tries to match entries with the private_pages table. No match means private_pages.page_id = NULL
+		So the 'exp_wiki_oslc_private_pages.page_id IS null' clause removes private pages from the results.
+		See http://www.codinghorror.com/blog/2007/10/a-visual-explanation-of-sql-joins.html
+	--}
+    {exp:query sql="SELECT 
+			exp_wiki_revisions.page_content,
+			exp_wiki_revisions.revision_date,
+			exp_members.screen_name as change_author,
+			exp_wiki_page.page_name,
+			exp_wiki_page.page_namespace
+			FROM exp_wiki_revisions
+			INNER JOIN exp_wiki_page ON exp_wiki_revisions.page_id = exp_wiki_page.page_id
+			INNER JOIN exp_wikis ON exp_wiki_revisions.wiki_id = exp_wikis.wiki_id
+			INNER JOIN exp_members ON exp_wiki_revisions.revision_author = exp_members.member_id
+			LEFT OUTER JOIN exp_wiki_oslc_private_pages ON exp_wiki_revisions.page_id = exp_wiki_oslc_private_pages.page_id
+		 	WHERE exp_wikis.wiki_short_name = '{segment_2}'
+		 	AND exp_wiki_oslc_private_pages.page_id IS null
+		 	AND exp_wiki_revisions.revision_status = 'open'
+		   	ORDER BY exp_wiki_revisions.revision_date DESC
+		   	LIMIT 20"
+	}
+	    <item>
+	      <title><![CDATA[{if page_namespace}{page_namespace}:{/if}{exp:low_replace find='-|(|)' replace='SPACE||' multiple='yes'}{page_name}{/exp:low_replace}]]></title>
+	      <dc:creator>{change_author}</dc:creator>
+	      <link>{path='{segment_1}/{segment_2}'}/{if page_namespace}{page_namespace}:{/if}{if page_name == 'index'}{if:else}{page_name}/{/if}</link>
+	      <guid isPermaLink="false">{path='{segment_1}/{segment_2}'}/{if page_namespace}{page_namespace}:{/if}{if page_name == 'index'}{if:else}{page_name}/{/if}#When:{revision_date}</guid>
+	      <description><![CDATA[{exp:smartdown}{page_content}{/exp:smartdown}]]></description>
+	      <dc:subject><![CDATA[{if page_namespace}{page_namespace}:{/if}{exp:low_replace find='-|(|)' replace='SPACE||' multiple='yes'}{page_name}{/exp:low_replace}]]></dc:subject>
+	      <pubDate>{revision_date format="%D, %d %M %Y %H:%i %T"}</pubDate>{!-- Unbelievably, this works as-is! --}
+	    </item>
+    {/exp:query}
+    
+    </channel>
+</rss>
+{/exp:rss:feed}

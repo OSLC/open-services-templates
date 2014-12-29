@@ -1,0 +1,106 @@
+{!-- Resource page --}
+
+{embed="_embeds/_body"
+	{if structure:child_listing:short_name}
+		pagetype="resource_listing"
+	{if:elseif structure:page:entry_id == "63"}
+		{!-- Tutorials require a simple listing --}
+		pagetype="simple_child_listing"
+	{if:else}
+		pagetype="resource_all"
+	{/if}
+		
+	js_body_class="resources"
+
+	{exp:channel:entries {global:disable_default}}
+		headtitle="{if cf-sp-t-metatitle-en}{cf-sp-t-metatitle-en}{if:else}{title}{/if}"
+	{/exp:channel:entries}
+
+}
+
+
+{exp:stash:set name="main_content"}
+	
+	<div class="line">
+		<div class="unit size3of4">
+			<div class="gutter">
+				<div class="body-text">
+				
+					{exp:channel:entries
+						{if structure:page:entry_id != "63"}channel="{structure:child_listing:short_name}"{/if}
+						{if structure:page:entry_id == "63"}entry_id="{structure:child_ids}"{/if}
+						dynamic="no"
+						show_future_entries="yes"
+						show_expired="yes"
+						{global:disable_default}
+					}
+						{if count==1}
+							<ul class="nospacing nobullets">
+						{/if}
+							<li class="mbl">
+								<a name="{channel_short_name}_{url_title}"></a>
+								{if channel_short_name == "resource_presentations"}
+								<span class="deemph">{entry_date format="%d %M %Y"}</span> <br />
+								{/if}
+								<h3 class="{if count == 1}mtn{if:elseif channel_short_name == "resource_presentations"}mbl mtn{if:else}mtl{/if}">
+								<a title="See more details about &ldquo;{title}&rdquo;" href="{page_url}">{title}</a>
+								{if entry_date > current_time}
+									<span class="label notice">Upcoming</span> 
+								{/if}
+								</h3>
+
+								{if channel_short_name != "resource_presentations"}								
+								
+									<div class="plm">
+									{!-- Descriptions --}
+									{if cf-resource-w-desc == "" && cf-resource-cv-videos != ""}
+										{exp:channel_videos:videos entry_id="{entry_id}" limit="1"}
+											<p class="mvn"><span class="deemph">Description from {video:service}:</span> {video:description}</p>											
+										{/exp:channel_videos:videos}
+									{if:elseif cf-tut-w-description}
+										{cf-tut-w-description}
+									{if:elseif cf-resource-w-desc}
+										{cf-resource-w-desc}
+									{/if}
+									</div>
+								
+								{/if}
+							</li>
+						{if count == total_results}
+							</ul>
+						{/if}
+					
+					{/exp:channel:entries}
+					
+				</div>{!-- /.body-text --}
+				
+			</div>{!-- /.gutter --}
+		</div>
+		
+		<div class="unit size1of4 lastUnit">
+			
+			<div class="body-text">
+			
+				{!-- For the Presentations sign-up --}
+				{if structure:child_ids == "146"}
+					<div class="callout-box">
+					Want to receive an email when we announce more presentations? <br />
+					{exp:channel:entries
+						limit="1"
+						dynamic="no"
+						entry_id="{structure:child_ids}"
+					}
+					<a class="button tiny-button mts" href="{page_url}">Sign up here</a>
+					
+					{/exp:channel:entries}
+					</div>
+				{/if}
+				
+			
+			</div>
+			
+		</div>{!-- /.lastUnit --}
+	</div>
+
+
+{/exp:stash:set}

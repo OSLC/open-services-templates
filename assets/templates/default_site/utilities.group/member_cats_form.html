@@ -1,0 +1,20 @@
+{!-- 
+	This only exists so you can access the Member Categories form via script
+	Because you don't want to expose it easily in the HTML of any page.
+	
+	An unfortunately reality is that you must retrieve and submit all categories or else people can get removed from groups
+	
+	This requires you to be logged in AND request it over AJAX	
+	It's hardly bulletproof, but it'll stop most folks.
+	
+	(this also makes sure those PHP errors don't get exposed)
+--}
+{if logged_in_member_id > 0 && ajax}
+<div id="results">
+	{exp:member_categories:form}
+		{categories}
+	{/exp:member_categories:form}
+</div>
+{if:else}
+	Not authorized
+{/if}

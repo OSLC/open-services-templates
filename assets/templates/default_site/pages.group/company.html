@@ -1,0 +1,101 @@
+{!-- Single company/member page --}
+{embed="_embeds/_body"
+	pagetype="member_single"
+	
+	{!-- Needed for letters of support and lengthy lists of resources or blog posts --}
+	js_body_class="js_details_polyfill"
+}
+
+{exp:stash:set name="main_content"}
+
+{exp:channel:entries
+	entry_id="{structure:page:entry_id}"
+	{global:disable_default}
+}
+	{if cf-co-t-url}
+		<p><a class="button" rel="external" href="{cf-co-t-url}">Go to {title}&rsquo;s site</a></p>
+	{/if}
+	
+	
+	{!-- Letter of support --}
+	{if cf-co-t-letterurl}
+		<p><a class="button alt" href="{cf-co-t-letterurl}">Read their letter of support</a></p>
+	{/if}
+	
+	{if cf-co-w-letter}
+		
+		<div class="box-inset size2of3 mvl">
+			<div class="body-text">
+				<details>
+					<summary class="mvs">Read {title}&rsquo;s letter of support</summary>
+					{cf-co-w-letter}
+				</details>
+				
+			</div>
+		</div>
+	{/if}
+	
+{/exp:channel:entries}
+
+{!-- Various relationships --}	
+	
+	<div class="line body-text">
+		{exp:low_variables:single var="lv-relationship-list" 
+			preparse:direction="parents"
+			preparse:related_channel="workgroups"
+			preparse:related_to_entry_id="{structure:page:entry_id}"
+			preparse:heading_level="h3"
+			preparse:size="1of2"
+			preparse:heading_text="Workgroups"
+			preparse:orderby="title" 
+			preparse:sort="asc"
+		}	
+		
+		{exp:low_variables:single var="lv-relationship-list" 
+			preparse:direction="parents"
+			preparse:related_channel="products"
+			preparse:related_to_entry_id="{structure:page:entry_id}"
+			preparse:heading_level="h3"
+			preparse:size="1of2"
+			preparse:lastUnit="y"
+			preparse:lastUnit_check_channel="workgroups"
+			preparse:heading_text="Software"
+			preparse:orderby="title" 
+			preparse:sort="asc"
+		}	
+	</div>
+	
+	<div class="line mtl">
+		{!-- Had some issues with this locally with IBM. Limit to 20. --}
+		{exp:low_variables:single var="lv-relationship-list" 
+			preparse:direction="parents"
+			preparse:related_channel="blog"
+			preparse:related_to_entry_id="{structure:page:entry_id}"
+			preparse:heading_level="h3"
+			preparse:size="1of2"
+			preparse:heading_text="Latest blog posts"
+			preparse:orderby="date" 
+			preparse:sort="desc"
+			preparse:limit="20"
+			preparse:collapse_limit="7"
+			preparse:expand_text="See all recent blog posts"
+		}	
+		
+		{exp:low_variables:single var="lv-relationship-list" 
+			preparse:direction="parents"
+			preparse:related_channel="{lv-all-resource-channels}"
+			preparse:related_to_entry_id="{structure:page:entry_id}"
+			preparse:heading_level="h3"
+			preparse:size="1of2"
+			preparse:heading_text="Resources"
+			preparse:orderby="title" 
+			preparse:sort="asc"
+			preparse:append_channel_name="y"
+			preparse:collapse_limit="7"
+			preparse:expand_text="See all resources"
+			preparse:lastUnit="y"
+			preparse:lastUnit_check_channel=""
+		}	
+
+	</div>		
+{/exp:stash:set}				

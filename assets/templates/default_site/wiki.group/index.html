@@ -1,0 +1,246 @@
+{!-- Note to self: set up redirects // if no_results processing --}
+
+{!-- Complex conditional here b/c both {embeds} use the {exp:stash} things that I set below --}
+{if last_segment == "rss"}
+	{embed="wiki/_feed"}
+{if:else}
+	{embed="_embeds/_body"
+		js_body_class="forms_typeahead js_details_polyfill js_dropdowns js_shrink_wiki_tables js_wiki"
+		pagetype="wiki"}
+{/if}
+
+{exp:channel:entries
+	url_title="{segment_2}"
+	dynamic="no"
+	{global:disable_default}
+}
+
+	{!-- VERY important: If no matching Workgroup (segment_2), 404 it --}
+	{if no_results}{redirect="404"}{/if}
+		
+	{exp:stash:set name="wiki_workgroup_title"}{title}{/exp:stash:set}	
+	{exp:stash:set name="workgroup_entry_id"}{entry_id}{/exp:stash:set}
+	{exp:stash:set name="workgroup_mailinglist"}{cf-wg-t-mailinglist}{/exp:stash:set}
+	{cf-wg-m-leads}
+		{exp:stash:append_list name="workgroup_leads"}	
+			{stash:lead}{lead:names}{/stash:lead}
+			{stash:lead_url}{path="forums/member/{lead}"}{/stash:lead_url}
+		{/exp:stash:append_list}
+	{/cf-wg-m-leads}
+	
+  {exp:stash:set name="workgroup_is_deprecated"}
+
+    {exp:playa:parents field="workgroup_rel_replaces" var_prefix="new_hotness" limit="1"}
+      <div class="box-inset">
+        <div class="flag">
+          <div class="flag-image prm">
+            <i class="icon-font icon-font-strip-module-img" data-icon="&#xe061;"></i>
+          </div>
+          <div class="flag-body">
+            <strong>Sort of a ghost town here</strong> <br />
+            Active specification development is now at 
+            <a href="{new_hotness:page_url}">{new_hotness:title}</a>
+  
+          </div>
+        </div>
+      </div>
+
+    {/exp:playa:parents}
+
+  {/exp:stash:set}
+
+
+{/exp:channel:entries}
+
+{!-- Create a conditional snippet for use in the wiki theme --}
+{exp:stash:set name="is_oslc_user_group" parse_tags="yes" parse_conditionals="yes" parse_vars="yes" type="snippet"}
+{if segment_2_category_group_id == "4"}1{if:else}0{/if}{/exp:stash:set}
+
+{!-- And another one for other workgroups --}
+{exp:stash:set name="is_not_oslc_user_group" parse_tags="yes" parse_conditionals="yes" parse_vars="yes" type="snippet"}
+{if segment_2_category_group_id != "4"}1{if:else}0{/if}{/exp:stash:set}
+
+{!-- URL to WPA	 --}
+	{exp:stash:set name="wiki_wpa_url"}{exp:playa:parents parse='inward' entry_id="{exp:stash:get name='workgroup_entry_id'}" field_id="69" channel='legal_agreements' limit='1'}{page_url}{/exp:playa:parents}{/exp:stash:set}
+
+	{!-- For User Groups, Just go to the WG page --}
+	{exp:stash:set name="wiki_wpa_url" match="#^4$#" against="{segment_2_category_group_id}"}/workgroups/{segment_2}/{/exp:stash:set}
+	
+	{!-- For Steering Committee, there's no WPA to sign, so make this empty --}
+	{exp:stash:set name="wiki_wpa_url" match="#steering-committee#" against="{segment_2}"}{/exp:stash:set}
+
+{!-- All wikis for top navigation --}
+{!--
+{exp:query sql='SELECT wiki_short_name, wiki_label_name FROM exp_wikis ORDER BY wiki_short_name ASC'}
+{/exp:query}
+--}
+	
+	{!-- Gather and cache WG groups, related workgroups, and wiki URLs --}
+	{exp:channel:entries fixed_order="{lv-wg-grouping-order}" dynamic="no"}
+
+		{exp:stash:append_list name="wg_groupings"}
+			{stash:title}{title}{/stash:title}
+			{stash:id}{entry_id}{/stash:id}
+		{/exp:stash:append_list}
+		
+		{cf-sg-r-specs var_prefix="workgroup"}
+			{exp:stash:append_list name="group_{entry_id}_all_wikis"}
+				{stash:wg_title}{workgroup:title}{/stash:wg_title}
+				{stash:wiki_url}{if "{workgroup:cf-wg-new-wiki}" == "y"}{workgroup:url_title_path='{segment_1}'}{if:else}{workgroup:cf-wg-t-wghome}{/if}{/stash:wiki_url}
+				{stash:tags}
+				{exp:tag:tags entry_id="{workgroup:entry_id}"}
+				  {if tag == "@oasis" || tag == "deprecated"}<span style="vertical-align: middle;" data-tagname="{websafe_tag}" class="wg-tag wg-tag-{websafe_tag}">{tag}</span>{/if}
+				{/exp:tag:tags}
+				{/stash:tags}
+			{/exp:stash:append_list}
+		
+			{!-- Cache a list of new wikis --}
+			{exp:stash:append_list name="group_{entry_id}_new_wikis" match="#y#" against="{cf-wg-new-wiki}"}
+				{stash:wg_title}{workgroup:title}{/stash:wg_title}
+				{stash:wiki_url}{workgroup:url_title_path='{segment_1}'}{/stash:wiki_url}
+			{/exp:stash:append_list}
+			
+			{!-- And old --}
+			{exp:stash:append_list name="group_{entry_id}_old_wikis" match="#^$#" against="{cf-wg-new-wiki}"}
+				{stash:wg_title}{title}{/stash:wg_title}
+				{stash:wiki_url}{cf-wg-t-wghome}{/stash:wiki_url}
+			{/exp:stash:append_list}
+			
+		{/cf-sg-r-specs}	
+			
+	{/exp:channel:entries}
+	
+	{!-- Assemble home page main content --}
+	{exp:stash:set name="main_content" match="#^$#" against="{segment_2}"}
+	
+		<div class="line">
+		
+			<div class="unit size3of4">
+			<div class="gutter">
+			{exp:stash:get_list name="wg_groupings"}
+				{if count == 1}
+					<table class="table-basic">
+					<thead>
+					<tr>
+						<th>Scenario</th>
+						<th>Workgroups</th>
+					</thead>
+					<tbody>
+				{/if}
+				
+				{!-- Check that there are related wikis --}
+				{if {exp:stash:not_empty name='group_{id}_all_wikis'}}
+				<tr>
+					<td>{title}
+					</td>
+					<td>
+				
+					{exp:low_variables:single var="lv-scenarios-workgroups"
+						preparse:id="{id}"
+						preparse:type="all"
+						preparse:wrap_tag="p"
+					}
+				</tr>
+				{/if}
+				
+				{if count == total_results}
+						</tbody>
+					</table>
+				{/if}
+			
+			{/exp:stash:get_list}
+			</div> {!-- /.gutter --}
+			</div> {!-- /.unit --}
+			
+			<div class="unit lastUnit">			
+				<div class="callout-box">
+					<p>This wiki is where we collaborate to create and evolve specifications for lifecycle resources and services.</p>	
+					<p>Every workgroup has a section on this wiki and an associated mailing list.</p>
+					<p>To get involved, <a href="/participate/faq/">learn more about becoming an OSLC Member and joining a workgroup</a>.</p>
+				</div>
+				
+				<a class="mlm" href="/bin/view/Main/WebHome">(Legacy wiki)</a>
+			</div> {!-- /.lastUnit --}
+		
+		</div>
+	{/exp:stash:set}
+	
+	{!-- Breadcrumbs for the home page. Will be overriden on an actual wiki page --}
+	{exp:stash:set name="breadcrumbs"}
+		<a href="{path='/'}">Home</a>
+	{/exp:stash:set}
+	
+	{!-- Retrieving all wiki links for the navigation dropdown --}
+	{exp:stash:set name="nav_links_all_wikis"}
+	
+		{exp:stash:get_list name="wg_groupings"}
+			
+			{if count == 1}
+			<ul id="all_wikis_dropdown" class="dropdown-menu">
+			<li><a href="{path='{segment_1}'}">All wikis</a></li>
+			<li class="nav-divider"></li>
+			{/if}
+			
+				<li class="dropdown-header">{title}</li>
+				
+				{exp:low_variables:single var="lv-scenarios-workgroups"
+					preparse:id="{id}"
+					preparse:type="all"
+					preparse:wrap_tag="li"
+				}
+				
+			{if count < total_results}
+				<li class="nav-divider"></li>
+			{/if}
+			
+			{if count == total_results}
+			</ul>
+			{/if}
+		
+		{/exp:stash:get_list}
+	
+	{/exp:stash:set}
+	
+	
+	{if segment_2 == ""}
+		{exp:stash:set}
+			{stash:headtitle}Workgroup wikis{/stash:headtitle}
+			{stash:pagetitle}Workgroup wikis{/stash:pagetitle}
+		{/exp:stash:set}
+	{/if}
+	
+	{!-- Create {stash_is_workgroup_member} and {stash_is_not_workgroup_member} variable for use in conditionals --}
+	{!-- I add {is_workgroup_member} via wiki_start hook, but that SUPER ANNOYINGLY doesn't work everywhere! --}
+	{!-- This should be bulletproof if you wrap it in if logged_in conditionals --}
+	{exp:stash:set parse_vars="yes" parse_tags="yes" type="snippet"}
+		{exp:member_categories:check category_url_title="{segment_2}" errors="off"}
+			{stash:stash_is_workgroup_member}1{/stash:stash_is_workgroup_member}
+			{stash:stash_is_not_workgroup_member}0{/stash:stash_is_not_workgroup_member}
+			{if no_results}{/if} {!-- Sigh. No_results bug again --}
+			{if no_results}
+				{stash:stash_is_workgroup_member}0{/stash:stash_is_workgroup_member}
+				{stash:stash_is_not_workgroup_member}1{/stash:stash_is_not_workgroup_member}
+			{/if}
+		{/exp:member_categories:check}
+		
+		{exp:member_categories:check category_url_title="is-a-member" errors="off"}
+			{stash:stash_is_oslc_member}1{/stash:stash_is_oslc_member}
+			{stash:stash_is_not_oslc_member}0{/stash:stash_is_not_oslc_member}
+			{if no_results}{/if} {!-- Sigh. No_results bug again --}
+			{if no_results}
+				{stash:stash_is_oslc_member}0{/stash:stash_is_oslc_member}
+				{stash:stash_is_not_oslc_member}1{/stash:stash_is_not_oslc_member}
+			{/if}
+		{/exp:member_categories:check}
+	{/exp:stash:set}
+	
+
+	{!-- Aaaand the wiki tag. exp:stash galore in there --}
+	{if segment_2}
+	{exp:wiki 
+		base_path="{segment_1}/{segment_2}" 
+		wiki="{segment_2}"
+		profile_path="forums"
+		theme="oslc"
+		}
+	{/if}

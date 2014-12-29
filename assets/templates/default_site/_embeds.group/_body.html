@@ -1,0 +1,806 @@
+{if embed:pagetype == "404"} {exp:http_header status="404"} {/if}
+
+<!DOCTYPE html>
+{!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ --}
+<!--[if lt IE 7 ]> <html lang="en" class="no-js ie6 ltie8"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="no-js ie7 ltie8"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html xlmns:dc="http://purl.org/dc/elements/1.1/" lang="en" class="no-js"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	
+	<title property="dc:title">
+		{if embed:headtitle}{embed:headtitle}
+		{if:elseif {exp:stash:not_empty name="headtitle"} }{exp:stash:get name="headtitle"}
+		{if:elseif segment_1 != ""}{structure:page:title}
+		{/if}
+		{if segment_1 != ""} - {/if}
+		{site_label}
+	</title>
+	
+	{!-- We're bigger than the standard 980px for Mobile Safari. Set it larger here. --}
+	<meta name="viewport" content="width=1200">
+	
+	{!-- Modernizr --}
+	<script src="{exp:cache_buster file='/js/modernizer.js'}"></script>
+	
+	<link rel="stylesheet" media="screen,projection" href="{exp:cache_buster file='/css/oslc.css'}">
+	<link rel="stylesheet" media="print" href="{exp:cache_buster file='/css/print.css'}">
+	
+	{!-- jQuery on Google CDN --}
+	{!-- Useful to load this first, particularly for Safecracker. Other scripts are at the end of <body> --}
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	
+	{!-- RSS --}
+	{exp:stash:get name="rss_feed"}
+	<link rel="alternate" title="News feed for {site_label}" type="application/rss+xml" href="{path='rss'}/">
+	
+</head>
+<body 
+	id="{if embed:js_body_id}{embed:js_body_id}{if:elseif {exp:stash:not_empty name='js_body_id'}}{exp:stash:get name='js_body_id'}{/if}" 
+	class="{if embed:js_body_class}{embed:js_body_class}{if:elseif {exp:stash:not_empty name='js_body_class'}}{exp:stash:get name='js_body_class'}{/if}" 
+	{if embed:pagetype == "basic_legal_agreement"}onunload=""{/if} {!-- This forces a page refresh even on back button --}
+	>
+
+	<div id="accessibilityNav">
+		<a class="totallyinvisible focusable" href="#main">{lv-accessibility-maincontent-en}</a>
+		{if embed:pagetype == "tutorial"}
+			<a class="totallyinvisible focusable" href="#tutorial-nav">{lv-accessibility-tutnav-en}</a>
+			<a class="totallyinvisible focusable" href="#tutorial-body">{lv-accessibility-tutbody-en}</a>
+		{/if}
+	</div>
+	
+	{if logged_out}
+	<div id="top_login" class="slide">
+		<div class="container clearfix">
+			{exp:member:login_form 
+				return="{global:base_url}/{freebie_original_uri}"
+				form_class="form form-inline form-hide-labels fr pvs"
+				form_name="top_login_form"
+				form_id="top_login_form"
+				}
+			    	<label for="top_login_username">Username or email</label>
+			    	<input type="text" class="input-small required" required name="username" id="top_login_username" value="" maxlength="32" placeholder="Email or username">
+			    	<label for="top_login_password">Password</label>
+			    	<input type="password" class="input-xsmall required" required name="password" id="top_login_password" value="" maxlength="32" placeholder="Password">
+			    	<button type="submit" class="button button-tiny">Log in</button>
+			    	<a class="fs-smaller" href="{path='forums/member/forgot_password'}">Forgot your password?</a>
+			    								        
+			{/exp:member:login_form}
+		</div>
+	</div>
+	{/if}
+	
+	<div id="header" role="banner">
+		
+		<div id="meta">
+			<div class="container clearfix posr">
+				<div id="sitelogo" class="fl" >
+					<a id="logolink" href="{site_url}" title="{lv-logotitle-en}">
+						
+						<div id="logo" class="posa">
+							<div id="logoinner">
+								<div id="logofront" class="posa">
+									<img src="{site_url}css/images/logo-forflip.png" alt="OSLC Logo" />
+								</div>
+								{!-- These handy tags block the Google index from adding this blurb --}
+								<!--googleoff: index-->
+								<div id="logoback" class="posa">
+									<span class="gohome posa dispb">({lv-gohome-en})</span>
+								</div>
+								<!--googleon: index-->
+							</div>
+							
+						</div>
+						
+						<span class="sitetitle-text dispib">
+							<span class="sitetitle-top dispb">{lv-sitelabel-en}</span>
+							<span class="sitetitle-bottom dispb posr">{lv-tagline-en}</span>
+						</span>
+					</a>
+				</div>{!-- /#sitelogo --}
+				
+				<ul id="metanav" class="nav pan mhn mtm mbs fr" role="navigation">
+					{exp:channel:entries 
+						channel="oslc_web_applications" 
+						dynamic="off" 
+						{global:disable_default}
+					}
+						<li><a href="{cf-app-t-url}">{title}</a></li>
+					{/exp:channel:entries}
+					
+					{if logged_out}
+						<li class="mll"><a data-toggle="reveal" data-show-selector="#top_login" data-toggle-class="in" data-prevent-default="y" href="{path='forums/member/login'}">Log in</a></li>
+						<li><a class="mlm" href="{path='forums/member/register'}">Sign up</a></li>
+					{if:else}
+						<li class="mll"><a href="{path='forums/member/profile'}">{screen_name}</a></li>
+						<li><a style="font-size: 80%;line-height: 1.5;" href="{path='logout'}">(Log out)</a></li>
+					{/if}
+				</ul>					
+				
+				
+			</div>
+		</div>{!-- /#meta --}
+		
+		<div id="nav" class="nav">
+			<div class="container clearfix">
+				<div id="mainnav" class="fl" role="navigation">
+					{if {exp:stash:not_empty name="nav_links"} }
+					{exp:stash:get name="nav_links"}
+					{if:else}
+					{exp:structure:nav max_depth="1" css_class="clearfix" current_class="current" exclude="52|{lv-notinmainnav}"}
+					{/if}
+					
+				</div>
+				
+				{!-- Not ready for prime time --}
+				{if global:env != "production"}
+				
+					<div class="fr mts">
+						{exp:search:simple_form 
+							search_in="entries"
+							where="any"
+							result_page="search/index"
+							no_result_page="search/noresults"
+							channel="{lv-searchable-channels}"
+						}
+							<label for="keywords" class="totallyinvisible">{lv-search-en}</label> 
+							<input class="input text" type="search" placeholder="Search&hellip;" name="keywords" id="keywords" value="" />
+							<button class="button nw tiny-button mrn" type="submit">{lv-searchaction-en}</button>
+						{/exp:search:simple_form}					
+					</div>
+				
+				{/if}
+				
+			</div>
+		</div>
+		
+	</div>{!-- /#header --}
+	
+	<div id="main">
+		<div id="main-inner">
+			
+			{!-- Breadcrumbs + big title on every page but home page --}
+			{if segment_1 != ""}
+			
+				{!-- Breadcrumbs 
+					If there's no Structure entry_id (like on some 404s) the breadcrumbs will be wonky, so hide them.
+				--}
+				{if structure:page:entry_id != '' || {exp:stash:not_empty name='breadcrumbs'} == '1'} {!-- stash:not_empty returns "0" or "1" --}
+					<div role="navigation">
+						{if {exp:stash:not_empty name='breadcrumbs'} }
+							{exp:stash:get name="breadcrumbs"}
+						{if:else}
+							{exp:structure:breadcrumb inc_here="no" separator="/" }
+						{/if}
+						 /
+					 </div>
+				{/if}
+								
+				{!-- Removing this while I have the survey ribbon March 2012 
+				{if embed:pagetype == "blog_listing"}
+					<a class="button rss-feed fr" href="{path='rss'}">{lv-rsslabel-en}</a>
+				{/if}
+				 --}
+				
+				<h1 class="pagetitle mtn ptn">
+					{if {exp:stash:not_empty name="pagetitle"} }
+						{exp:stash:get name="pagetitle"}
+					{if:elseif embed:pagetitle}
+						{embed:pagetitle}				
+					{if:else}
+						{structure:page:title}
+					{/if}
+					
+					{if embed:pagetype == "blog_listing"}
+						<small style="font-size: 14px;"><a href="{path='rss'}">({lv-rsslabel-en})</a></small>
+					{/if}
+				</h1>
+
+			{/if}
+												
+			<div id="main_content" class="ptm pbl" {if embed:pagetype != "tutorial"}role="main"{/if}>
+							
+				{!-- Simple body, if stashed --}
+				<div class="body-text">
+					{exp:stash:get name="stash-simple-body"}
+				</div>
+				
+				{!-- Main_content stash. For more complex pages. --}
+				{exp:stash:get name="main_content"}
+				
+				{if structure:page:entry_id == lv-webcast-notify-form}
+				
+					{!-- Form to sign people up for the mailing list to be notified of webcasts --}
+					{exp:freeform:form
+						form_name="webcast-mailing-list"
+						required="email"
+						admin_notify="leereamsnyder@us.ibm.com"
+						prevent_duplicate_on="email"
+						return="{structure:page:uri}success/"
+						mailinglist="webcast-notify"
+						mailinglist_opt_in="no"
+						form:id="webcast_notify"
+						form:class="form form-horizontal form-validate size4of5"
+					}
+					
+						{if freeform:duplicate}
+							{!-- Don't show this message on a successful submission --}
+							{if freebie_last != "success"}
+								<div class="callout-box body-text">
+									<p>{lv-mailinglist-alreadysubmitted}</p>
+								</div>
+							{/if}
+						{/if}
+						
+						{if freebie_last == "success"}
+							<div class="callout-box body-text success">
+								<p>{lv-mailinglist-success-en}</p>
+							</div>
+						{/if}
+						
+						{!-- Only show the form if they haven't successfully submitted anything --}
+						{if freebie_last != "success"}
+						
+							<fieldset>
+							
+								<legend>Provide your email address</legend>
+							
+								<div class="control-group">
+									<label for="webcast_notify_email">{lv-emaillabel-en}</label>
+									
+									<div class="controls">
+										{!-- .required needed here b/c old IE and really old FF don't recognize the "required" attribute. The JS validation will catch it here --}
+										<div class="input-wrap">
+											<input class="required" placeholder="you@example.com" required type="email" name="email" id="webcast_notify_email" {if logged_in}value="{logged_in_email}"{/if} />
+										</div>
+										
+									</div>
+									
+								</div>
+								
+								<div class="hide">
+								{!-- Outputs form to sign up for the appropriate mailing list --}
+								{freeform:field:mailing_list}
+								</div>
+							
+							</fieldset>
+							
+							
+							<div class="form-actions"><button type="submit" class="button">Sign up</button></div>
+							
+
+						{/if}						
+					
+					{/exp:freeform:form}
+				
+				{/if}{!-- End Webcast Notify page --}
+				
+				{exp:switchee variable="{embed:pagetype}" parse="inward"}
+				
+					{!-- Blog listings --}
+					{case value="blog_listing"}
+						
+						<div class="line">
+						
+							<div class="unit size2of3">
+							<div class="gutter">
+							{exp:channel:entries
+								channel="{structure:child_listing:short_name}"
+								dynamic="off"
+								paginate="bottom"
+								limit="{embed:listings_limit}"
+								disable="categories|member_data"
+								{if embed:listings_search}{embed:listings_search}{/if}
+								{if embed:listings_entries}entry_id="{embed:listings_entries}"{/if}
+							}
+							
+						
+								<div class="pbm section-row" about="{page_uri}">
+									<p class="deemph mbn {if count > 1}mtm{if:else}mtn{/if} pvn"><time class="fsti" pubdate datetime="{entry_date format="{DATE_W3C}"}">{entry_date format="{lv-blogdateformat}"}</time></p>
+									<h2 class="h2 mtn mbn"><a property="dc:title" rel="bookmark" href="{page_url}">{title}</a></h2>
+									<div class="body-text mts">
+										{cf-blog-w-summary}
+									</div>
+									
+									<p><a rel="bookmark" href="{page_url}">{lv-readmore-en} &rarr;</a></p>
+								</div>
+								
+								
+								{paginate}
+									
+									<div class="section-divider">
+																	
+									{pagination_links}
+									
+								        <ul class="button-group mtm">
+							                {first_page}
+							                        <li><a href="{pagination_url}" class="button alt page-first">{lv-pagination-first-en}</a></li>
+							                {/first_page}
+							
+							                {previous_page}
+							                        <li><a href="{pagination_url}" class="button alt page-previous">{lv-pagination-prev-en}</a></li>
+							                {/previous_page}
+							
+							                {page}
+							                        {!-- No link for the current page --}
+							                        <li><a href="{pagination_url}" class="button alt {if current_page}button-group-active{/if} page-{pagination_page_number}">{pagination_page_number}</a></li>
+							                {/page}
+							
+							                {next_page}
+							                        <li><a href="{pagination_url}" class="button alt page-next">{lv-pagination-next-en}</a></li>
+							                {/next_page}
+							
+							                {last_page}
+							                        <li><a href="{pagination_url}" class="button alt page-last">{lv-pagination-last-en}</a></li>
+							                {/last_page}
+								        </ul>
+									{/pagination_links}
+									
+									</div>
+								
+								{/paginate}
+								
+							
+							{/exp:channel:entries}
+							</div> {!-- /.gutter --}
+							</div> {!-- /.unit .size4of5 --}
+							
+							<div class="unit lastUnit">							
+								
+								{!-- Twitter Timeline --}
+								<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/oslcNews" data-widget-id="395299601386729472">Tweets by @oslcNews</a>
+								<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+							</div> {!-- /.lastUnit --}
+							
+						</div>{!-- /.line --}
+							
+					{/case}{!-- / Blog listing --}
+						
+					{!-- Single blog entries --}
+					{case value="blog_single"}
+					
+
+						
+					
+					{/case}					
+										
+					{case value="member_single"}
+
+					{/case}{!-- /member_single --}
+										
+					{case value="resource_listing"}
+						
+																	
+						
+					{/case}{!-- /resource_listing --}
+					
+					{case value="simple_child_listing"}
+										
+					{/case}
+										
+					{case value="basic_legal_agreement"}
+						
+						{if logged_in}
+							
+							{!-- Sneakiest thing I've ever seen: stick an invisible iFrame on the page and Safari will NEVER cache the page --}
+								{!-- http://web.archive.org/web/20070612072521/http://developer.apple.com/internet/safari/faq.html#anchor5 --}
+								<iframe style="height:0px;width:0px;visibility:hidden;" src="/offline.html">This prevents back/forward cache</iframe>
+						
+							{!-- Show the form under very limited circumstances 
+								1. Not just a "success" submission
+								2. Members Agreement and not already submitted to be a member
+								3. WPA && OSLC member && not Workgroup member && hasn't already submitted this form
+							--}
+							{if embed:show_form}
+							
+								{exp:freeform:form
+									form_name="{embed:freeform_form_name}"
+									required="{embed:freeform_required}"
+									admin_notify="leereamsnyder@us.ibm.com"
+									return="{structure:page:uri}success/"
+									admin_notification_template="{embed:freeform_template}" 
+									form:id="sign_agreement_form"
+									form:class="form form-horizontal form-validate size4of5"
+								}
+									
+									{if freeform:no_results && logged_in_group_id == "1"}
+										<p>
+											Specified form was not found. Please make sure you have
+											specified the correct short name of the form in the
+											<b>form_name</b> parameter.
+										</p>
+									{/if}
+									
+									{!-- Required for processing my custom extension: member ID and the category we want to add them to --}
+									<input type="hidden" name="member_id" value="{logged_in_member_id}" />
+
+									<input type="hidden" name="agreement_entry_id" value="{structure:page:entry_id}" />
+
+									{if structure:page:entry_id == lv-current-ma}{!-- For general membership --}
+									<input type="hidden" name="agreement_category" value="is-a-member" />
+									<input type="hidden" name="bylaws_entry_id_at_signing" value="{lv-current-bylaws}" />
+									{/if}
+									{if embed:is_for_wpa != "" && oslc:workgroup:url_title} {!-- For WPA --}
+									<input type="hidden" name="ipr_entry_id_at_signing" value="{lv-current-ipr}" />
+									<input type="hidden" name="wpa_entry_id_at_signing" value="{lv-current-wpa}" />
+										{if {exp:stash:not_empty name="charter_entry_id"}}
+										<input type="hidden" name="charter_entry_id_at_signing" value="{exp:stash:get name='charter_entry_id'}{exp:stash:get_list name='additional_workgroups'}|{wg_charter_entry_id}{/exp:stash:get_list}" />
+										{/if}
+									<input type="hidden" name="agreement_category" value="{oslc:workgroup:url_title}" />
+									
+									{!-- Use absolute_count/results to avoid conflict with freeform:count --}
+									{exp:stash:get_list name='additional_workgroups'}{if absolute_count == 1}<input type="hidden" name="extra_workgroups" value="{/if}{wg_url_title}{if absolute_count < absolute_results}|{/if}{if absolute_count == absolute_results}" />{/if}{/exp:stash:get_list}
+									{/if}
+																		
+									<fieldset>									
+										<legend>
+											{if structure:page:entry_id == lv-current-ma}
+											Tell us who you are
+											{if:else}
+											Your information
+											{/if}
+										</legend>
+										
+										<div class="control-group">
+											<label for="agree_to_charter_name">Your name</label>
+											
+											<div class="controls">
+												<div class="input-wrap">
+													<input class="required" required type="text" name="name" id="agree_to_charter_name" {if oslc:member:name}readonly{/if} value="{oslc:member:name}" />
+												</div>												
+											</div>
+										</div>
+										
+										<div class="control-group">
+											<label for="agree_to_charter_email">Email</label>
+											<div class="controls">
+												<div class="input-wrap">
+													<input class="required email" required type="email" name="email" id="agree_to_charter_email" {if oslc:member:email}readonly value="{oslc:member:email}"{if:else}value='{logged_in_email}'{/if} />
+												</div>
+											</div>
+										</div>
+										
+										<div class="control-group">
+											<label for="agree_to_charter_job_title">Job title</label>
+											
+											<div class="controls">
+												<div class="input-wrap">
+													<input class="required" placeholder="e.g. software developer" required type="text" name="job_title" id="agree_to_charter_job_title" {if oslc:member:job_title}readonly{/if} value="{oslc:member:job_title}" />
+												</div>												
+											</div>
+											
+										</div>
+										
+										<div class="control-group">
+											<label for="agree_to_charter_tel">Telephone number</label>
+											<div class="controls">
+												<div class="input-wrap">
+													<input class="required" placeholder="e.g. +15555555555" required type="tel" name="phone1" id="agree_to_charter_tel" {if oslc:member:phone}readonly{/if} value="{oslc:member:phone}" />
+												</div>
+											</div>
+										</div>
+										
+										<div class="control-group">
+											<label for="agree_to_charter_address">Address</label>
+											<div class="controls">
+												<div class="input-wrap">
+													<textarea class="required" rows="4" placeholder="e.g. 123 Fake Street, Springfield, USA 97477" required name="member_address" id="agree_to_charter_address" {if oslc:member:address}readonly{/if}>{oslc:member:address}</textarea>
+												</div>
+											</div>
+										</div>
+
+									</fieldset>
+																		
+									{if structure:page:entry_id == lv-current-ma}
+										<fieldset>
+											<legend>Are you representing anyone?</legend>
+											
+											<div class="control-group">
+												<label for="agreement_representing">Select one</label>
+												
+												<div class="controls">
+													<label for="agreement_representing" class="radio">
+														<input id="agreement_representing" type="radio" name="representing_or_independent" value="Representing someone" data-toggle="reveal" data-hide-on-init="#for_independent" data-show-selector="#for_representing" data-hide-selector="#for_independent" />I am serving in a representative capacity for the Entity named below, and I represent and warrant that I have the authority to enter into this Agreement on behalf of the Entity.
+													</label>
+													<label for="agreement_independent" class="radio">
+														<input id="agreement_independent" type="radio" name="representing_or_independent" value="Independent" data-toggle="reveal" data-show-selector="#for_independent" data-hide-selector="#for_representing" />I am joining OSLC as an Independent OSLC Member as described in the <a href="/bylaws/#independent-oslc-members">Bylaws section "Independent OSLC Members"</a>
+													</label>
+												</div>
+											</div>
+										</fieldset>
+										
+										<fieldset id="for_representing">
+											<legend>Tell us about the organization that you are representing</legend>
+											
+											<div class="control-group">
+												<label for="agree_to_charter_org">Organization name</label>
+												<div class="controls">
+													<div class="input-wrap">
+														<input placeholder="e.g. ACME Widgets Inc." type="text" name="oslc_org" id="agree_to_charter_org" list="agree_to_charter_members" />
+													</div>
+													<datalist id="agree_to_charter_members">
+														{exp:channel:entries
+															channel="company"
+															dynamic="no"
+															orderby="title"
+															sort="asc"
+															{global:disable_all}
+														}
+															<option value="{title}">{title}</option>
+														{/exp:channel:entries}
+													</datalist>
+												</div>
+											</div>
+											<div class="control-group">
+												<label for="agreement_entity_url">Organization URL</label>
+												<div class="controls">
+													<div class="input-wrap">
+														<div class="input-prepend">
+														<span class="add-on">http://</span>
+														<input placeholder="e.g. acme.com" type="text" id="agreement_entity_url" name="representing_org_url" />
+														</div>
+														
+													</div>
+												</div>
+											</div>
+											<div class="control-group">
+												<label for="agreement_representing_entity_is_employer">The above &hellip;</label>
+												<div class="controls">
+													<p></p>
+													<label for="agreement_representing_entity_is_employer" class="radio">
+														<input checked="checked" id="agreement_representing_entity_is_employer" type="radio" name="employer_or_sponsor" value="Employer" />is my employer 
+													</label>
+													<label for="agreement_representing_entity_is_sponsor" class="radio">
+														<input id="agreement_representing_entity_is_sponsor" type="radio" name="employer_or_sponsor" value="Sponsor" />is <strong>not</strong> my employer but sponsors or finances my participation in OSLC
+													</label>
+												</div>
+											</div>
+											<div class="control-group">
+												<div class="controls">
+													<label for="agreement_representing_primary_contact" class="checkbox"><input id="agreement_representing_primary_contact" type="checkbox" name="is_principle_contact" value="y" />I will be the primary contact for this organization</label>
+													<label for="agreement_representing_primary_contact" class="help-block">Check this box if we should direct any communications between OSLC and your organization to you</label>
+												</div>
+											</div>
+	
+										</fieldset>
+										
+										<fieldset id="for_independent">
+											<p class="help-block ptm">Only fill this out if you selected <strong>I am joining as an independent member</strong> above</p>
+											
+											<legend>Tell us about your current employment</legend>
+											<div class="control-group">
+												<label for="agreement_independent_solo">Status</label>
+												<div class="controls">
+												<label for="agreement_independent_solo" class="radio"><input checked="checked" id="agreement_independent_solo" type="radio" name="solo_or_employed" value="Unemployed or self-employed" data-toggle="reveal" data-hide-selector=".for_indy_employed" />I am unemployed or self-employed</label>
+												<label for="agreement_independent_employed" class="radio"><input id="agreement_independent_employed" type="radio" name="solo_or_employed" value="Employed" data-toggle="reveal" data-show-selector=".for_indy_employed" />I am an employee</label>
+												</div>
+											</div>
+											<div class="control-group for_indy_employed">
+												<label for="agreement_independent_employer">Employer name</label>
+												<div class="controls">
+													<div class="input-wrap">
+														<input type="text" id="agreement_independent_employer" name="independent_employer" placeholder="e.g. ACME Widgets Inc." />
+													</div>
+												</div>
+											</div>
+											<div class="control-group for_indy_employed">
+												<label for="agreement_independent_url">Employer URL</label>
+												<div class="controls">
+													<div class="input-wrap">
+														<div class="input-prepend">
+														<span class="add-on">http://</span>
+														<input placeholder="e.g. acme.com" type="text" id="agreement_independent_url" name="independent_employer_url" />
+														</div>
+													</div>
+												</div>
+											</div>
+										</fieldset>
+									{if:else}
+																		
+										<fieldset>
+											<legend>Confirm your status</legend>
+											
+											<div class="control-group">
+												<div class="controls">
+													<label class="radio" for="wpa_status_confirm">
+														<input type="radio" required name="confirm_status" id="wpa_status_confirm" value="Unchanged">
+														{if oslc:member:is_representative}
+														<strong>I am still a representative for the Entity &ldquo;{oslc:member:organization}&rdquo;</strong>; I have the authority to enter into this agreement on behalf of {oslc:member:organization}.
+														<input type="hidden" name="oslc_org" value="{oslc:member:organization}" />
+														{if:else}
+														<strong>I am still eligible to be an Independent OSLC Member</strong> as described in the <a href="/bylaws/#independent-oslc-members">Bylaws section "Independent OSLC Members"</a>
+														{/if}
+														I agree to notify a Member of the Steering Committee if this status changes.
+													</label>
+													
+													<label class="radio" for="wpa_status_changed">
+														<input type="radio" name="confirm_status" id="wpa_status_changed" value="Changed">
+														<strong>My status has changed</strong>;
+														{if oslc:member:is_representative}
+															I am no longer a representative for {oslc:member:organization} 
+														{if:else}
+															I am no longer eligible to be an Independent OSLC Member 
+														{/if}
+														
+													</label>
+												</div>
+											</div>
+										</fieldset>
+										
+										{!-- EU Entity extra questions (will be selected via the filtering questions but it doesn't hurt) --}
+										{if oslc:member:is_representative}
+											{!-- ONLY show this without JS. This set of questions is a massive usability problem. --}
+											<fieldset class="onlynojs">
+												<legend>Confirm information about the entity that you represent</legend>
+												<div class="control-group">
+													<div class="controls">
+														<label for="no_entity_is_eu" class="radio">
+															<input type="radio" name="entity_is_in_eu" id="no_entity_is_eu" value="n"  />
+															{oslc:member:organization} <strong><em>is not</em> incorporated and headquartered (at the highest level)</strong> in a country that is a member of the European Union.
+														</label>
+														<label for="yes_entity_is_eu" class="radio">
+															<input type="radio" name="entity_is_in_eu" id="yes_entity_is_eu" value="y" />
+															{oslc:member:organization} <strong><em>is</em> incorporated and headquartered (at the highest level)</strong> in a country that is a member of the European Union <strong>and {oslc:member:organization} has completed a Corporate Authorization form on my behalf</strong></input>.
+														</label>
+														<p class="help-block">The Corporate Authorization form is something that you would have printed, had your manager complete, scanned, and sent to us. Trust me, you would know if you&rsquo;d gone through that.</p>
+														<p class="help-block">If neither of these statements are correct, <a href="mailto:webmaster@open-services.net">contact the site administrator.</a></p>
+													</div>
+												</div>
+											</fieldset>
+											
+											<fieldset class="onlynojs" id="wpa_attach_cfa_section">
+												<legend>Attach the Corporate Authorization form</legend>
+												
+												<div class="control-group">
+													<div class="controls">
+														{freeform:field:corporate-authorization-forms}
+														
+														<label for="freeform_corporate-authorization-forms0" class="help-block mts">[Optional] If you have a scanned copy of the completed Corporate Authorization Form, attach it here.</label>
+														<p class="help-block">If you need a Corporate Authorization Form, <a href="#" data-toggle="reveal" data-show-selector="#wpa-full-content, #wpa-corp-auth" data-hide-selector="#eu-auth-2, #sign_agreement_form, #wpa_attach_cfa_section">click here</a> and then print this page.</p>
+													</div>
+												</div>
+											</fieldset>
+										{/if}
+
+									
+									{/if}
+									
+									<fieldset>
+										<legend>Agree to the {embed:agreement_name}</legend>
+										
+										{if structure:page:entry_id != lv-current-ma} {!-- The Electronic Signature is only for WPAs --}
+										<div class="control-group">
+											<div class="controls"><label for="agreement_electronic_signature">Type a "/", then your name <em>exactly as it appears in the <b>Your name</b> field</em>, and then another "/"</label></div>
+										</div>
+									
+										<div class="control-group">
+											<label for="agreement_electronic_signature">Electronic signature</label>
+											<div class="controls">
+												<div class="input-wrap">
+													{!-- pattern="^/[áéíóúäëïöüâêîôûåñàèìòùa-zA-Z0-9-,\. ]+/$" seems like a bad idea --}
+													<input class="required signature" required type="text" id="agreement_electronic_signature" name="signature" placeholder="eg /John Smith/" pattern="^/.+/$" title="&ldquo;/&rdquo;, your name, and then another &ldquo;/&rdquo;" />
+												</div>
+											</div>
+										</div>
+										{/if}
+										
+										{if structure:page:entry_id == lv-current-ma}
+										<div class="control-group">
+											<div class="controls">
+												<p>By clicking <strong>I Agree</strong> below, you agree to the terms in the {embed:agreement_name}.</p>
+											</div>
+										</div>
+										{/if}
+										<div class="form-actions">
+											<button type="submit" class="button">I Agree</button>
+										</div>
+									</fieldset>
+									
+								{/exp:freeform:form}
+							
+							{/if} {!-- /freebie_last != "success" and other checks on OSLC or Group membership --}					
+								
+						{if:else} {!-- Logged out --}
+							<p>Log in to sign the {structure:page:title}. <a href="{path='/forums/member/register/'}">Register here</a>.</p>
+							
+							{exp:member:login_form 
+								return="{structure:page:url}"
+								form_class="form form-inline box-inset size3of5"
+								form_id="agreement_login_form"
+								form_name="agreement_login_form"
+								}
+				                	<label for="agreement_login_username">Email or username</label>
+				                	<input form="agreement_login_form" type="text" class="input-small required" required name="username" id="agreement_login_username" value="" maxlength="32" placeholder="Email or username">
+				                	<label for="agreement_login_password">Password</label>
+				                	<input form="agreement_login_form" type="password" class="input-small required" required name="password" id="agreement_login_password" value="" maxlength="32" placeholder="Password">
+				                	<button form="agreement_login_form" type="submit" name="submit" value="submit" class="button">Log in</button>
+				                	<a href="{path='forums/member/forgot_password'}">Forgot your password?</a>
+				                								        
+							{/exp:member:login_form}
+						{/if}
+						
+					
+					{/case} {!-- / Basic legal agreement --}
+				
+				{/exp:switchee}				
+				
+				<hr class="shadow-divider" />
+			
+			</div>{!-- /#main-content --}
+		</div>{!-- /#main-inner --}
+	</div>{!-- /#main --}
+	
+	<div id="footer">
+	    <div id="footer_inner" class="container">
+	    
+	    <div class="clearfix">
+	    	
+	    	<div id="footer_soc_media" class="nav">
+				<ul class="clearfix">
+				
+				{exp:channel:entries
+					fixed_order="{lv-footersociallinks}"
+					{global:disable_default}
+					dynamic="no"
+				}
+					<li>
+						<a href="{cf-social-t-url}" title="{title}">
+							<img src="{exp:ed_imageresizer image="{cf-social-file-footer}" maxWidth="32" href_only="yes"}" alt="{title}">
+						</a>
+					</li>
+						
+				{/exp:channel:entries}
+				
+				</ul>
+			</div>
+	    	
+	    	<div id="footer_links" class="nav">
+				<ul class="clearfix">
+					{exp:channel:entries
+							fixed_order="{lv-notinmainnav}"
+							{global:disable_default}
+							dynamic="no"
+						}
+						<li><a href="{page_url}">{title}</a></li>
+						
+					{/exp:channel:entries}
+					<li><a href="{path='rss'}/">RSS</a></li>
+					<li>{encode="{webmaster_email}" title="{lv-feedback-en}"}</li>
+				</ul>
+			</div>{!-- /#footer_links --}
+	    	
+	    </div>{!-- /.clearfix --}
+	    
+	    <div id="copyright" class="clear mtm small">
+			
+			{exp:smartdown}{lv-copyright-en}{/exp:smartdown}
+			
+		</div>{!-- /#copyright --}
+	    
+	    </div>{!-- /#footer_inner --}
+	</div>{!-- /#footer --}
+
+		
+	{!-- My Javascript --}
+	<script src="{exp:cache_buster file='/js/oslc.js'}"></script>
+	
+	{!-- Dean Edwards IE8 compatibility script for IE7 or lower --}
+	<!--[if lte IE 7]>
+	<script src="http://ie7-js.googlecode.com/svn/version/2.1%28beta4%29/IE8.js"></script>
+	<![endif]-->
+	
+	{!-- Analytics --}
+	{if global:google_analytics_key != ''}
+	<script>
+		var _gaq=[['_setAccount','UA-24416914-1'],['_setDomainName', '.open-services.net'],['_trackPageview']];
+		(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
+		g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+		s.parentNode.insertBefore(g,s)}(document,'script'));
+	</script>
+	{/if}
+		
+</body>
+</html>

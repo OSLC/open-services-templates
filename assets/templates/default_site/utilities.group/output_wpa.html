@@ -1,0 +1,200 @@
+{if segment_3 == ''}
+	{exp:http_header status='404' location="/404/"}
+{/if}
+
+{if segment_4 == ''}
+	{exp:http_header status='404' location="/404/"}
+{/if}
+
+{if segment_5}
+	{exp:http_header status='301' location="/{freebie_1}/{freebie_2}/{freebie_3}/{freebie_4}/"}
+{/if}
+
+{embed="_embeds/_body"
+	pagetype="wpa_output"
+	js_body_class="js_details_polyfill"
+	}
+		
+{exp:freeform:entries entry_id="{segment_4}" form_name="{segment_3}" }
+	{if freeform:no_results}
+		{redirect='404'}
+	{/if}
+	
+	{exp:stash:set}
+	
+		{stash:headtitle}{freeform:form_label} for {freeform:field:name}{/stash:headtitle}
+		{stash:pagetitle}{freeform:form_label} for {freeform:field:name}{/stash:pagetitle}
+		{stash:agreement_date}{freeform:entry_date format="%F %j, %Y @ %g:%i %a"}{/stash:agreement_date}
+		{stash:agreement_text_entry_id}{freeform:field:agreement_entry_id}{/stash:agreement_text_entry_id}		
+		{stash:wpa_entry_id}{freeform:field:wpa_entry_id_at_signing}{/stash:wpa_entry_id}
+		{stash:ipr_entry_id}{freeform:field:ipr_entry_id_at_signing}{/stash:ipr_entry_id}
+		{stash:charter_entry_id}{freeform:field:charter_entry_id_at_signing}{/stash:charter_entry_id}
+		{stash:personal_info}
+			<p><strong>Name</strong>: {freeform:field:name}</p>
+			<p><strong>Email</strong>: {freeform:field:email}</p>
+			<p><strong>Job title</strong>: {freeform:field:job_title}</p>
+			<p><strong>Phone</strong>: {freeform:field:phone1}</p>
+			<p><strong>Address</strong>: {freeform:field:member_address}</p>
+			{if freeform:field:signature}<p><strong>Signature</strong>: {freeform:field:signature}</p>{/if}
+		{/stash:personal_info}
+		
+		{stash:representative_info}
+			<h3 class="mts">Workgroup</h3>
+			<div class="box-inset">
+				<p>
+					{exp:channel:entries dynamic="off" url_title="{freeform:field:agreement_category}" limit='1' {global:disable_all}}
+					Workgroup name: <strong>{title}</strong>
+					{/exp:channel:entries}
+				</p>
+				<p> Currently a member:
+					
+					{exp:member_categories:check category_url_title='{freeform:field:agreement_category}' member_id='{freeform:field:member_id}' errors="off"}
+					<strong>Yep</strong>
+					
+					{if no_results}<strong>Nope</strong>{/if}
+					{/exp:member_categories:check}
+				</p>
+			</div>
+			
+			{!-- Well, it has to be "Unchanged" but whatever --}
+			{if freeform:field:confirm_status == "Unchanged"}
+				<h3>Representative status</h3>
+				<div class="box-inset">
+					<p><input type="radio" checked="checked" readonly disabled /> 
+					{if freeform:field:oslc_org}
+						<strong>I am still a representative for {freeform:field:oslc_org}</strong>; I have the authority to enter into this agreement on behalf of {freeform:field:oslc_org}
+					{if:else}
+						<strong>I am still eligible to be an Independent OSLC Member</strong> as described in the <a href="/bylaws/#independent-oslc-members">Bylaws section "Independent OSLC Members"</a>
+					{/if}
+					</p>
+				</div>
+			{/if}
+		{/stash:representative_info}
+		
+	{/exp:stash:set}
+{/exp:freeform:entries}
+
+{exp:stash:set name="main_content"}
+
+	{!-- Admins only! --}
+	{if logged_in_group_id == 1}
+	
+		<div class="line">
+		
+			<h1>Information provided to us</h1>
+			
+			<p><strong>Submitted</strong>: {exp:stash:get name="agreement_date" type="variable"}</p>
+			
+			<div class="unit size1of2">
+				<div class="gutter body-text">
+	
+				<h3 class="mts">Personal information</h3>
+				<div class="box-inset">
+				
+					{exp:stash:get name="personal_info"}
+				
+				</div>
+				</div>
+			</div>
+			<div class="unit lastUnit">
+				<div class="gutter body-text">
+					
+					{exp:stash:get name="representative_info"}
+				
+				</div>
+			
+			</div>
+		
+		
+		</div>
+	
+		{!-- Fixed order here is WPA, then IP Policy, then charter --}
+		{exp:channel:entries 
+			dynamic="off" 
+			status="open|closed"
+			parse="inward"
+			fixed_order="{exp:stash:get name='wpa_entry_id'}|{exp:stash:get name='ipr_entry_id'}|{exp:stash:get name='charter_entry_id'}"}
+		
+			<h1>{if channel_short_name == "charters"}Charter: {/if}{title} <small class="deemph">(as of {exp:stash:get name="agreement_date"})</small></h1>
+			
+			<details>
+				<summary>View the whole text</summary>
+				
+				<div class="body-text">
+				{if cf-sp-w-body-en}
+					{cf-sp-w-body-en}
+				{/if}
+				
+				{!-- Feature Page fields => IP Policy --}
+				{if cf-fp-m-subsections-en}
+					{cf-fp-m-subsections-en}
+						{if row_count == 1}
+						<div class="toc">
+						<ul>
+						{/if}
+						
+						<li><a href="#{url_title}_{subid}">{subtitle}</a></li>
+						
+						{if row_count == total_rows}
+						</ul>
+						</div>
+						{/if}
+					{/cf-fp-m-subsections-en}
+					
+					{cf-fp-m-subsections-en}
+					
+						<div id="{url_title}_{subid}">
+							{subbody}
+						</div>
+					
+					{/cf-fp-m-subsections-en}
+				{/if}
+				
+				{!-- Legal agreement text --}
+				{if cf-charter-m-text}
+				
+					{cf-charter-m-text}
+						{if row_count == 1}
+						<div class="toc">
+						<ul>
+						{/if}
+						
+						<li><a href="#{url_title}_{section_id}">{section_title}</a></li>
+						
+						{if row_count == total_rows}
+						</ul>
+						</div>
+						{/if}
+					{/cf-charter-m-text}
+					
+					{cf-charter-m-text}
+						<div id="{url_title}_{section_id}">
+							{section_text}
+						</div>			
+					{/cf-charter-m-text}
+				
+				{/if}
+				
+				{!-- This would be the Charter --}
+				{if cf-wgcharter-w-scope}
+					{lv-charter-basis}
+				{/if}
+				</div>
+				
+				
+			</details>
+				
+			
+			
+			{if count != total_results}
+			<hr class="shadow-divider" />
+			{/if}
+			
+		
+		{/exp:channel:entries}
+
+	{if:else}
+		Not authorized to view this page
+	{/if}
+	
+{/exp:stash:set}

@@ -1,0 +1,18 @@
+{!-- 404 --}
+{!-- Redirect to /404/ if there are extra segments in the URL 
+	REMOVED LJR 26 March 2012
+		I think this was doing more harm than good.
+		Structure could throw a 404 with many, many segments that were all being redirected to /{segment_1}/
+		Better to just serve up the page, not muck with the URL, and show the 404 error
+--}
+
+{exp:stash:set name="main_content" scope="site" parse_tags="yes"}
+	{lv-404-body-en}
+{/exp:stash:set}
+
+{embed="_embeds/_body"
+	pagetype="404"
+	headtitle="404"
+	pagetitle="{lv-404-title-en}"
+	js_body_class="js_404"
+}

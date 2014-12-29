@@ -1,0 +1,101 @@
+{exp:rss:feed channel="blog"}<?xml version="1.0" encoding="{charset}"?>
+<rss version="2.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom">
+
+    <channel>
+    
+    <title>{site_name} - Blog Feed</title>
+    <link>{path='blog'}/</link>
+    <description>{lv-tagline-en}</description>
+    <dc:language>{lang}</dc:language>
+	<webMaster>{webmaster_email} (Lee Reamsnyder)</webMaster>
+    <dc:creator>{webmaster_email}</dc:creator>
+	<dc:rights>Copyright {gmt_date format="%Y"}</dc:rights>
+	<pubDate>{gmt_date format="%D, %d %M %Y %H:%i:%s %T"}</pubDate>
+	<atom:link href="{path='rss'}/" rel="self" type="application/rss+xml" />
+	
+	
+	{!-- Need to stash these. Get some weird PHP end_if errors otherwise. --}
+	{if get:tag != ""}
+		{exp:stash:set name="tag_entry_ids" parse_tags="yes"}{exp:tag:entries
+			websafe_separator="-" 
+			{if get:inclusive == "yes"}inclusive="yes"{/if}
+			tag="{get:tag}" backspace="1"}{entry_id}|{/exp:tag:entries}{/exp:stash:set}
+	{/if}
+    
+{exp:channel:entries 
+	channel="blog" 
+	status="open" 
+	limit="10" 
+	dynamic_start="yes"
+	dynamic="no"
+	{if get:username != ""}username="{get:username}"{/if}
+	
+	{if get:offset != ""}offset="{get:offset}" {/if}
+
+	{if get:workgroup != ""}search:cf-blog-r-specs="{get:workgroup}"{/if}
+
+	{if get:limit != ""}limit="{get:limit}"{/if}
+	
+	{if get:tag != ""} parse="inward" entry_id="{exp:stash:get name='tag_entry_ids'}" {/if}
+
+
+	{global:disable_default}
+	}
+    <item>
+      <title><![CDATA[{title}]]></title>
+      <dc:creator>{author}</dc:creator>
+	  <link>{page_url}</link>
+	  
+      <guid isPermaLink="false">{page_url}#When:{gmt_entry_date format="%H:%i"}</guid>
+      	<description>
+			<![CDATA[
+				
+				<div>{cf-blog-w-summary}</div>
+				
+				<p><a href="{page_url}">Read more &rarr;</a></p>
+				
+				<hr />
+				
+				{!-- Workgroups --}
+				{cf-blog-r-specs}
+					{if count == 1}
+						<p>Workgroups: 
+					{/if}
+					
+						<a href="{path='blog/workgroup'}/{url_title}/" title="{lv-seepostsabout-en} {title}">{title}</a>
+						&emsp;
+					
+					{if count == total_results}
+						</p>
+					{/if}
+				{/cf-blog-r-specs}
+				
+				{!-- tags --}
+				{exp:tag:tags backspace="0" entry_id="{entry_id}" orderby="tag_name" type="weblog" websafe_separator="-"}
+					{if tag_count == 1}
+						<p>Tagged: 
+					{/if}
+						<a title="See posts tagged with &ldquo;{tag}&rdquo;" href="{path='blog/tag'}/{websafe_tag}/">{tag}</a> 
+						&emsp;
+					
+					{if tag_count == tag_total_results}
+						</p>
+					{/if}
+				{/exp:tag:tags}
+			
+			]]>
+		</description>
+		{cf-blog-r-specs}<dc:subject><![CDATA[ {title} ]]></dc:subject>{/cf-blog-r-specs}
+		{exp:tag:tags backspace="0" entry_id="{entry_id}" orderby="tag_name" type="weblog" websafe_separator="-"}
+			<dc:subject><![CDATA[ {tag} ]]></dc:subject>
+		{/exp:tag:tags}
+      <pubDate>{gmt_entry_date format="%D, %d %M %Y %H:%i %T"}</pubDate>
+    </item>
+{/exp:channel:entries}
+    
+    </channel>
+</rss>
+
+{/exp:rss:feed}

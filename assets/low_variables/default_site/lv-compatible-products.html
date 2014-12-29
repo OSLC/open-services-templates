@@ -1,0 +1,53 @@
+{!-- 
+	Template partial for the Software page
+
+	Returns a list of compatible products.
+	
+	----------------------
+	LV Preparse variables
+	----------------------
+	
+	spec_entry_id
+	[REQUIRED -- ABSOLUTELY REQUIRED]
+	The entry_id of the specification/workgroup. Pass in via {entry_id}
+	
+	this_product_entry_id
+	[Required]
+	The entry_id of the product. Used for to exclude the requesting product from results (b/c products aren't compatible with themselves)
+	
+	matrix_field_id
+	[OPTIONAL]
+	The ID of the Matrix field that holds the Playa cell (specified with matrix_row_id)
+	
+	matrix_row_id
+	[OPTIONAL]
+	The ID of the Matrix row in the specified field that holds the Playa cell
+	
+
+	Reference: http://pixelandtonic.com/playa/docs/templates#playa:coparents
+	
+--}
+
+{exp:playa:coparents 
+	channel="products"
+	child_id="{spec_entry_id}"
+	coparent_id="not {this_product_entry_id}" {!-- Exclude the requesting product from results --}
+	field_id="{matrix_field_id}"
+	col="{matrix_row_id}"
+	orderby="title"
+	sort="asc"
+	search:cf-pr-s-isconnector="IS_EMPTY" {!-- Excludes adapter products --}
+	}
+	{if count == 1}
+	<ul class="nobullets nospacing">
+	{/if}
+	<li class="mbs"><a class="db" href="{page_url}">{title}</a></li>
+	
+	{if count == total_results}
+	</ul>
+	{/if}
+	
+	{if no_results}
+		<em>None yet!</em>
+	{/if}
+{/exp:playa:coparents}

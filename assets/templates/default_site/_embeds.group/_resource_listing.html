@@ -1,0 +1,112 @@
+{!-- 
+
+	Template partial for listing resources (in many channels) on the Resources main page
+	
+	=====================================
+	Embed variables
+	=====================================
+	
+	channel
+	The short name of the channel
+	
+	limit
+	Limit number of returned entries
+	
+	sort
+	Change sort order asc|desc. Defaults to desc
+	
+	show_future
+	If you put anything here, it'll include future entries. Leave blank to not show them.
+	
+	see_more_entry_id
+	The entry ID to "see more" of the resource. (the topic that contains that listing)
+	
+ --}
+
+{exp:channel:entries
+	channel="{embed:channel}"
+	dynamic="no"
+	{if embed:limit}limit="{embed:limit}"{/if}
+	{if embed:show_future}show_future_entries="yes"{/if}
+	{if embed:sort}sort="{embed:sort}"{/if}
+	{global:disable_default}
+}
+	{if embed:channel == "resource_tools" || embed:channel == "tutorial"}
+
+		<h3 class="mbn">
+			<a {if channel_name != "tutorial"} 
+					rel="external" 
+					class="trackDownload"
+					href="{cf-resource-t-url}"
+				{if:else}
+					href="{page_url}"
+				{/if}
+				>
+				{title} 
+			</a>
+		</h3>
+	
+		
+		{!-- Tutorial alternate versions --}
+		{if cf-tut-m-altversions} 
+			<p class="deemph mbs">
+				(<i>Download as 
+					{cf-tut-m-altversions}
+						{if row_count > 1 && row_count == total_rows} or {/if}
+							<a href="{altfile}">{altdescription}</a>
+						{if row_count != total_rows && total_rows > 2},{/if}
+					{/cf-tut-m-altversions}
+				</i>)
+			</p>
+		{/if}
+		
+		<div class="mbl">
+			{!-- General resource description --}
+			{if cf-resource-w-desc}{cf-resource-w-desc}{/if}
+			
+			{!-- Tutorial overview description --}
+			{if cf-tut-w-description}{cf-tut-w-description}{/if}
+		</div>
+	
+	{if:else}
+	
+		{if count == 1}
+			<ul class="nobullets pan man">
+		{/if}
+				<li>
+					{if entry_date > current_time}
+					<span class="label notice">Upcoming</span>
+					{/if}
+				
+					<a href="{page_url}">
+						<strong>{title}</strong>
+					</a>
+						
+						{if cf-resource-cv-videos != ""}
+							{exp:channel_videos:videos entry_id="{entry_id}" limit="1"}
+							{exp:eehive_hacksaw words="15" append="&hellip;" allow="<a>"}
+								{video:description}
+								{/exp:eehive_hacksaw}
+							{/exp:channel_videos:videos}
+						{if:else}	
+							{exp:eehive_hacksaw words="15" append="&hellip;" {!--allow="<a>"--}}{cf-resource-w-desc}{/exp:eehive_hacksaw}
+						{/if}
+					
+				</li>
+		{if count == total_results}
+			</ul>
+		{/if}
+	
+	{/if}
+
+{/exp:channel:entries}
+
+{if embed:see_more_entry_id}
+	{exp:channel:entries
+		entry_id="{embed:see_more_entry_id}"
+		dynamic="no"
+		{global:disable_all}
+	}
+		<p class="mtl"><a href="{page_url}"><b>See more {title}</b></a></p>
+	{/exp:channel:entries}
+{/if}

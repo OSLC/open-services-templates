@@ -1,0 +1,107 @@
+{exp:stash:set name="stash-simple-body" scope="site" parse_tags="yes"}
+	{exp:channel:entries status="open|closed" {global:disable_default}}
+		{cf-sp-w-body-en}
+	{/exp:channel:entries}
+{/exp:stash:set}
+
+{embed="_embeds/_body"
+	
+	{if structure:page:entry_id == 70} {!-- All members page --}
+		pagetype="members_all"
+	{if:elseif structure:page:entry_id == 188} {!-- Legal agreement pg. Deprecated???? --}	
+		pagetype="basic_legal_agreement"
+		agreement_name="Member Agreement"
+		freeform_collection_name="Member Agreement"
+	{if:else}
+		pagetype="simple"
+	{/if}
+	
+	{exp:channel:entries 
+		{if global:env != "production"}status='open|closed'{/if}
+		{global:disable_default}
+	}
+		headtitle="{if cf-sp-t-metatitle-en}{cf-sp-t-metatitle-en}{if:else}{structure:page:title}{/if}"
+		js_body_class="{simple_page__javascript-plugins}{option_name} {/simple_page__javascript-plugins}"
+	{/exp:channel:entries}
+	
+}
+
+{!-- All members listing. TODO this should really be a separate page --}
+{exp:stash:set name="main_content" match="#70#" against="{structure:page:entry_id}"}
+	
+	<ul class="nobullets nospacing columned-3 mtl">
+		{exp:channel:entries
+			dynamic="off"
+			channel="{structure:child_listing:short_name}" 
+			{global:disable_default}
+			limit="100"
+			orderby="title"
+			sort="asc"
+		}
+			<li class="mbm">{if cf-co-t-url}<a rel="external" href="{if global:env != 'production'}{page_url}{if:else}{cf-co-t-url}{/if}">{/if}{title}{if cf-co-t-url}</a>{/if}</li>
+		{/exp:channel:entries}
+	</ul>
+	
+{/exp:stash:set}
+
+{!-- Nav b/w Participate/FAQ pages --}
+{exp:stash:prepend name="stash-simple-body" match="#238#" against="{structure:page:entry_id}"}
+
+	<p><a id="toggledetails" href="#" class="button alt" onclick="toggle">Open all</a></p>
+	
+	<script>
+		var all_closed = true;
+		
+		$('#toggledetails').click( function(){
+			
+			if (all_closed) {
+				$('details').prop('open', true);
+				$(this).text('Close all');
+				all_closed = false;
+			} else {
+				$('details').prop('open', false);
+				$(this).text('Open all');
+				all_closed = true
+			}
+			
+		});
+	</script>
+
+{/exp:stash:prepend}
+
+{exp:stash:append name="stash-simple-body" match="#55#" against="{structure:parent:entry_id}"}
+	<div class="line ptl">
+	
+	{exp:ljr_structure_hierarchy_siblings 
+		start_from="{segment_1}"
+		status="open|closed" 
+	}
+	
+		{prev}
+			<a class="fl" title="Go to {title}" href="{url}">&larr; {title}</a>
+		{/prev}
+		
+		{next}
+			<a class="fr" title="Go to {title}" href="{url}">{title} &rarr;</a>			
+		{/next}
+		
+	{/exp:ljr_structure_hierarchy_siblings}
+	</div>
+{/exp:stash:append}
+
+
+{!--
+{if logged_in && global:env != "production"}
+
+<h1>Global variables</h1>
+<?php $EE = get_instance(); print('<pre><code>'.print_r($EE->config->_global_vars, TRUE) . '</code></pre>');  ?>
+
+<h1>Configuration variables</h1>
+<?php
+	print('<pre><code>'. print_r($this->EE->config->config, TRUE) . '</code></pre>');
+?> 
+
+
+{/if}
+
+--}

@@ -1,0 +1,175 @@
+{exp:stash:set name="stash-simple-body" scope="site" parse_tags="yes"}
+  	
+  <div class="line">
+    <div class="unit size3of5">
+      <div class="gutter">
+		{exp:channel:entries status="open|closed" {global:disable_default}}
+		  {cf-sp-w-body-en}
+		{/exp:channel:entries}
+      </div>
+    </div>
+    <div class="unit lastUnit">
+      {if freebie_last == "success"}
+    
+		<div class="callout-box body-text success">
+		  <p><b>Thanks!</b> Your proposal has been sent directly to the folks at ALM Forum; you&rsquo;ll hear back from them soon!</p>
+		  <p><a href="{structure:page:url}">Submit another?</a></p>
+		</div>
+	
+	  {if:elseif logged_in_member_id == "0"}
+	  
+		<p>Log in to propose a session for the ALM Forum conference. <a href="{path='/forums/member/register/'}">Register here</a>.</p>
+
+		{exp:member:login_form 
+			return="{structure:page:url}"
+			form_class="form box-inset"
+			form_id="agreement_login_form"
+			form_name="agreement_login_form"
+			}
+				<label for="agreement_login_username">Email or username</label>
+				<input form="agreement_login_form" type="text" class="input-small required" required name="username" id="agreement_login_username" value="" maxlength="32" placeholder="e.g. jon@example.com">
+				<label for="agreement_login_password">Password</label>
+				<input form="agreement_login_form" type="password" class="input-small required" required name="password" id="agreement_login_password" value="" maxlength="32" >
+				<p>
+				<button form="agreement_login_form" type="submit" name="submit" value="submit" class="button">Log in</button>
+				<a class="small" href="{path='forums/member/forgot_password'}">Forgot your password?</a>
+				</p>						
+		{/exp:member:login_form}
+
+	  
+	  {if:else}
+  
+		<h2 class="h2 mtn">Propose a session</h2>
+		
+		{exp:freeform:form
+		  form_name="oslc-connect-submission"
+		  required="name|email|speech_title|speech_abstract|speaker_bio|speech_track|speech_alt_track|speech_format"
+		  admin_notify="submissions@alm-forum.com|leereamsnyder@us.ibm.com|webmaster@open-services.net|seanpk@ca.ibm.com|jane.harnad@oasis-open.org"
+		  return="{structure:page:uri}success/"
+		  admin_notification_template="connect_submission"
+		  notify_user="yes"
+		  user_email_field="email"
+		  user_notification_template="connect_user_submission"
+		  form:id="connect_submission_form"
+		  form:class="form form-validate"
+		}
+  
+		<fieldset>
+		  <legend>Who are you?</legend>
+	
+		  <div class="control-group">
+			  <label for="speech_submission_name">Your name</label>
+		
+			  <div class="controls">
+				  <div class="input-wrap">
+					  <input class="required" required type="text" name="name" id="speech_submission_name" placeholder="e.g. John Smith" {if logged_in_member_id > 0}value="{logged_in_screen_name}"{/if} />
+				  </div>												
+			  </div>
+		  </div>
+	
+		  <div class="control-group">
+			  <label for="speech_submission_email">Email</label>
+		
+			  <div class="controls">
+				  <div class="input-wrap">
+					  <input class="required" required type="text" name="email" id="speech_submission_email" placeholder="e.g. jsmith@example.com" {if logged_in_member_id > 0}value="{logged_in_email}"{/if} />
+				  </div>												
+			  </div>
+		  </div>
+	  
+		  <div class="control-group">
+			<label for="speech_submission_bio">Bio</label>
+			<div class="controls">
+				<div class="input-wrap">
+					<textarea class="required" rows="4" placeholder="Tell us a little about yourself. Include any related presentations you&rsquo;ve given" required name="speaker_bio" id="speech_submission_bio"></textarea>
+				</div>
+			</div>
+		  </div>
+	
+		</fieldset>
+
+  
+		<fieldset>
+		  <legend>Propose a session</legend>
+	
+		  <div class="control-group">
+			  <label for="speech_submission_title">Title</label>
+		
+			  <div class="controls">
+				  <div class="input-wrap">
+					  <input class="required" required type="text" name="speech_title" placeholder="just a suggestion" id="speech_submission_title" />
+				  </div>												
+			  </div>
+		  </div>
+	
+		  <div class="control-group">
+			<label for="speech_submission_abstract">Abstract</label>
+			<div class="controls">
+				<div class="input-wrap">
+					<textarea class="required" rows="8" placeholder="be comprehensive, but keep it short" required name="speech_abstract" id="speech_submission_abstract"></textarea>
+				</div>
+			</div>
+		  </div>
+	
+		  <div class="control-group">
+			  <label for="speech_submission_track">Desired session track</label>
+		
+			  <div class="controls">
+				  <div class="input-wrap">
+					  <select name="speech_track" id="speech_submission_track">
+						  <option value="Business of Software Delivery">Business of Software Delivery</option>
+						  <option value="Lifecycle Architecture and Integration">Lifecycle Architecture &amp; Integration</option>
+						  <option value="Practices of DevOps">Practices of DevOps</option>
+						  <option value="Changing Role of Test">Changing Role of Test</option>
+					  </select>
+				  </div>
+				  <span class="help-inline"><a href="http://www.alm-forum.com/s14program.aspx#tracks">(More information on the tracks)</a></span>
+			  </div>
+		  </div>
+
+		  <div class="control-group">
+			  <label for="speech_submission_alt_track">Alternative session track</label>
+		
+			  <div class="controls">
+				  <div class="input-wrap">
+					  <select name="speech_alt_track" id="speech_submission_alt_track">
+						  <option value="None">No alternative really fits</option>
+						  <option value="Business of Software Delivery">Business of Software Delivery</option>
+						  <option value="Lifecycle Architecture and Integration">Lifecycle Architecture &amp; Integration</option>
+						  <option value="Practices of DevOps">Practices of DevOps</option>
+						  <option value="Changing Role of Test">Changing Role of Test</option>
+					  </select>
+				  </div>
+			  </div>
+		  </div>
+	
+		  <div class="control-group">
+			  <label for="speech_submission_format">Length</label>
+		
+			  <div class="controls">
+				  <div class="input-wrap">
+					  <select name="speech_format" id="speech_submission_format">
+						  <option value="Track session">Track session (about an hour)</option>
+						  <option value="Lightning session">Lightning session (10&ndash;20 minutes)</option>
+						  <option value="Could be either Track or Lightning">I could do either</option>
+					  </select>
+				  </div>												
+			  </div>
+		  </div>
+  
+		</fieldset>
+  
+		<div class="form-actions pls">
+		  <button type="submit" class="button">Submit</button>
+		  <p class="mtm"><em>This will go directly to the ALM Forum organizers!</em></p>
+		</div>
+  
+		{/exp:freeform:form}
+
+	  {/if}
+    </div>
+  </div>
+	
+{/exp:stash:set}
+
+{embed="_embeds/_body"}

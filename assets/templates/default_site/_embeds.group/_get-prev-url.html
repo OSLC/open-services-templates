@@ -1,0 +1,27 @@
+{!-- Utility embed to get the previous entry when:
+
+	1) The tutorial page has a previous sibling
+	2) That sibling has children
+	
+	So you need to grab the last child of that previous sibling for the link 
+	
+	Double embed required b/c all of this is in module tags, so lots of late-ish parsing
+	
+	Top template can grab the previous id w/ exp:structure:siblings
+	
+		--> Next embed can grab the children with exp:structure:child_ids
+			
+			--> This embed can use that to pass back a single link
+	
+	
+	--}
+	
+{exp:channel:entries
+	fixed_order="{embed:prev-child-ids}"
+	limit="1"
+	sort="desc"
+	{global:disable_all}
+}
+	<a class="button tutorial-prev" href="{page_url}" title="Go to {title}">Previous: {title}</a>
+
+{/exp:channel:entries}

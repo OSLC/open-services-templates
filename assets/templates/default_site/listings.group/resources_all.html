@@ -1,0 +1,96 @@
+{embed="_embeds/_body"
+	pagetype="resource_all"
+	js_body_class="resources"
+
+	{exp:channel:entries {global:disable_default}}
+		headtitle="{if cf-sp-t-metatitle-en}{cf-sp-t-metatitle-en}{if:else}{title}{/if}"
+	{/exp:channel:entries}
+
+}
+
+{exp:stash:set name="main_content"}
+	<div class="line body-text">
+		<div class="unit size1of2">
+			<div class="gutter">
+				<i class="icon-font icon-font-module-img" data-icon="&#xe03b;"></i>
+				<h2 class="mtn">Tools</h2>				
+				{embed="_embeds/_resource_listing" channel="resource_tools" sort="asc"}
+			</div>
+		</div>
+		<div class="unit size1of2 lastUnit">
+			<div class="gutter">
+				<i class="icon-font icon-font-module-img" data-icon="&#xe020;"></i>
+				<h2 class="mtn">Tutorials</h2>
+				
+				{embed="_embeds/_resource_listing" channel="tutorial"}
+													
+			</div>
+		</div>
+	</div>{!-- /.line --}
+	
+	<hr class="shadow-divider" />
+	
+	<h2 class="h2">Information about OSLC around the web</h2>
+	
+	<div class="line body-text">
+		<div class="unit size1of3">
+			<div class="gutter">
+				<i class="icon-font icon-font-module-img" data-icon="&#xe012;"></i>
+				<h3 class="mtn">Videos</h3>
+				
+				{embed="_embeds/_resource_listing" channel="resource_videos" limit="2" see_more_entry_id="67"}
+			
+			</div>
+		</div>
+		<div class="unit size1of3">
+			<div class="gutter">
+				<i class="icon-font icon-font-module-img" data-icon="&#xe04b;"></i>
+				<h3 class="mtn">Articles</h3>
+				
+				{embed="_embeds/_resource_listing" channel="resource_articles" limit="2" see_more_entry_id="59"}	
+				
+			</div>
+		</div>
+		<div class="unit size1of3">
+			<div class="gutter">
+				<i class="icon-font icon-font-module-img" data-icon="&#xe04d;"></i>
+				<h3 class="mtn">Presentations</h3>
+				
+				{embed="_embeds/_resource_listing" channel="resource_presentations" limit="2" see_more_entry_id="62" show_future="y"}	
+
+			</div>
+		</div>
+	</div>
+	
+	<div class="line mvl ptm body-text">
+		<div class="unit size1of3">
+			<div class="gutter">
+				<i class="icon-font icon-font-module-img" data-icon="&#xe056;"></i>
+				<h3 class="mtn">Websites</h3>
+				
+				{embed="_embeds/_resource_listing" channel="resource_sites" limit="2" see_more_entry_id="60"}		
+
+			</div>
+		</div>
+		
+		<div class="unit size1of3">
+			<div class="gutter">
+				<i class="icon-font icon-font-module-img" data-icon="&#xe048;"></i>
+				<h3 class="mtn">Whitepapers</h3>
+				
+				{embed="_embeds/_resource_listing" channel="resource_whitepapers" limit="2" see_more_entry_id="68"}
+				
+			</div>
+		</div>
+
+		<div class="unit size1of3 lastUnit">
+			<div class="gutter">
+				<i class="icon-font icon-font-module-img" data-icon="&#xe038;"></i>
+				<h3 class="mtn">Podcasts</h3>
+				
+				{embed="_embeds/_resource_listing" channel="resource_podcasts" limit="2" see_more_entry_id="61"}
+				
+			</div>
+		</div>
+	</div>{!-- /.line --}
+{/exp:stash:set}

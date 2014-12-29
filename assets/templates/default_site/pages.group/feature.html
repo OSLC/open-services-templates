@@ -1,0 +1,171 @@
+{!-- Membership check. Outputs "1" if YES --}
+{exp:stash:set name='is-a-member'}{lv-is-oslc-member}{/exp:stash:set}
+
+{!-- Build all the content --}
+{exp:channel:entries
+	entry_id="{structure:page:entry_id}"
+	limit="1"
+	{global:disable_default}
+}
+	{exp:stash:set name="headtitle"}
+		{if cf-fp-t-metatitle-en}{cf-fp-t-metatitle-en}{if:else}{structure:page:title}{/if}
+	{/exp:stash:set}
+	
+	{exp:stash:set name="js_body_class"}feature {feature_page__javascript-plugins}{option_name} {/feature_page__javascript-plugins}{/exp:stash:set}
+
+	{!-- Enable subnavigation JS if there's subsection content AND you haven't specified to disable the JS --}
+	{exp:stash:set name="js_body_id"}{if cf-fp-m-subsections-en != "" AND cf-fp-s-subtabsdisabled == ""}subnavigation{/if}{/exp:stash:set}
+
+	{exp:stash:set name="main_content"}
+
+			{!-- For legal pages, the publish date --}
+			{if cf-fp-s-subtabsdisabled}
+				<p class="deemph">{lv-lastrevised-en} {entry_date format="%Y %F %j"}</p> 
+			{/if}
+										
+			{!-- Main sections --}
+			{if cf-fp-m-main-en}
+				
+				<div class="line mbl">
+					
+					{cf-fp-m-main-en}
+					
+						<div class="unit size1of{total_rows} {if row_count == total_rows}lastUnit{/if}">
+							<div class="gutter body-text">
+								<h2 class="mtn">{heading}</h2>
+								
+								{content}
+								
+								{!-- Additional call to action on Participate pg --} 
+								{!--
+								{if structure:page:slug == "participate" && row_count == total_rows}
+									
+									{if logged_out}
+										<a class="button" href="/forums/member/register/">Sign up</a>
+									{if:else}
+										{if '{exp:stash:get name="is-a-member"}'}
+											
+											{if global:env != "production"}
+											<a class="button" href="/legal-agreements/">Join a workgroup</a>
+											{/if}
+										{if:else}
+											<a class="button" href="/legal-agreements/members-agreement/">Become an OSLC Member</a>
+										{/if}
+										
+									{/if}
+								
+								{/if}
+								--}
+							</div>
+						</div>
+					
+					{/cf-fp-m-main-en}
+				
+				</div>{!-- /.line --}
+				
+				<hr class="shadow-divider">
+				
+			{/if}
+			
+			{!-- Additional sections --}
+			{if cf-fp-w-body-en}
+												
+				<div class="body-text">
+					
+					{cf-fp-w-body-en}
+					
+				</div>
+				
+			{/if}
+						
+			{!-- Subsection navigation and content --}
+			{if cf-fp-m-subsections-en}
+			
+				{exp:switchee variable="{structure:page:slug}" parse="inward"}
+				
+					{case default="yes"}					
+					<div class="line {if cf-fp-s-subtabsdisabled}legal-beagles{/if}">
+						<div class="unit size1of3">
+							<div class="gutter">
+							{cf-fp-m-subsections-en}
+							
+								{if row_count == 1}
+									<ul class="nav-tabs nav-tabs-vertical nav-tabs-smaller mvl">
+								{/if}
+								
+									<li class="nav-tab"><a href="#{subid}">{subtitle}</a></li>
+								
+								{if row_count == total_rows}
+									</ul>
+								{/if}
+							
+							{/cf-fp-m-subsections-en}
+							</div>
+						</div>
+						<div class="unit lastUnit">
+							<div class="body-text">
+								{cf-fp-m-subsections-en}
+									
+									<div id="{subid}" role="tabpanel" class="fixWebkitText">
+										{subbody}
+									</div>
+								
+								{/cf-fp-m-subsections-en}
+							</div>
+
+						</div>
+					</div>
+					
+					{/case}
+					
+					{case value="participate|about"}
+					
+						<div class="tab-wrap">
+						{cf-fp-m-subsections-en}
+						
+							{if row_count == 1}
+							<ul role="tablist" class="line nav-tabs">
+							{/if}
+							
+							<li class="nav-tab {if row_count == 1}nav-tab-first active{/if} unit size1of3 {if row_count == total_rows}nav-tab-last lastUnit{/if}">
+								<a id="tab{row_count}" role="tab" aria-controls="panel{row_count}" href="#panel{row_count}">{subtitle}</a>
+							</li>
+							
+							{if row_count == total_rows}
+							</ul>
+							{/if}
+						{/cf-fp-m-subsections-en}
+						
+						{cf-fp-m-subsections-en}
+							{if row_count == 1}
+							<div class="tab-panel-wrap">
+							<div class="tab-content">
+							{/if}
+							
+							<div id="panel{row_count}" class="tab-panel drop {if row_count == 1}active in{/if} {if structure:page:slug == "about"}delayHide{/if}" role="tabpanel" aria-labelledby="tab{row_count}" data-tab="{row_count}" data-paper="paper{row_count}" data-callback="paper{row_count}start">
+								<h2 class="h2 onlynojs">{subtitle}</h2>
+							
+								{subbody}
+							</div>
+							
+							{if row_count == total_rows}
+							</div>{!-- /.tab-content --}
+							</div>{!-- /.tab-panel.wrap --}
+							{/if}
+						
+						{/cf-fp-m-subsections-en}
+					</div>{!-- /.tab-wrap --}
+
+					{/case}
+				{/exp:switchee}
+								
+			
+			{/if}
+		
+	{/exp:stash:set}
+
+{/exp:channel:entries}
+
+{embed="_embeds/_body"
+	pagetype="feature"
+}

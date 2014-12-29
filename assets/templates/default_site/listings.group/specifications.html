@@ -1,0 +1,107 @@
+{!-- Specifications index --}
+{embed="_embeds/_body"
+	pagetype="specifications_all"
+	
+	{exp:channel:entries {global:disable_default}}
+		headtitle="{cf-sp-t-metatitle-en}"
+		{exp:stash:set name="stash-simple-body"}
+			{cf-sp-w-body-en} 
+		{/exp:stash:set}
+	{/exp:channel:entries}	
+}
+
+{!-- Stash spec status descriptions for later --}
+{exp:stash:set}
+	{stash:js_body_class}js_popovers{/stash:js_body_class}
+
+	{stash:status_desc_Scope}The workgroup proposes, documents, and prioritizes the scenarios and technical objectives that will be addressed in this version.{/stash:status_desc_Scope}
+	
+	{stash:status_desc_Draft}Workgroup members comment on and contribute to a proposed Specification through a series of drafts.{/stash:status_desc_Draft}
+	
+	{stash:status_desc_Converge}The broader community reviews and comments on the draft Specification. Meanwhile, implementations and prototypes are initiated.{/stash:status_desc_Converge}
+	
+	{stash:status_desc_Finalize}The Steering Committee reviews the Specification. The Specification undergoes a final polish to correct errors or unclear language.{/stash:status_desc_Finalize}
+	
+	{stash:status_desc_Final}The Steering Committee approves the final form of the specification. A final specification must have a working implementation and a test suite.{/stash:status_desc_Final}
+
+{/exp:stash:set}
+
+{exp:stash:set name="main_content"}
+	
+	{exp:channel:entries
+		dynamic="no"
+		fixed_order="{lv-specpage-grouporder}"
+		{global:disable_default}
+	}
+	
+		<h2 class="h2 {if count > 1}mtl pts{/if} section-header">
+		  {title}
+		</h2>
+		
+		{cf-sg-r-specs search:cf-wg-r-specs="not IS_EMPTY"}
+		
+		<div class="section-row pbl">
+			<h3 class="h3 {if count == 1}mtn{/if}" >
+				<a href="{page_url}">{title}</a>
+        {exp:tag:tags entry_id="{entry_id}" websafe_separator="-"}
+          {if websafe_tag == "@oasis" || websafe_tag == "inactive"}
+          <span title="{tag}" data-tagname="{websafe_tag}" class="wg-tag wg-tag-{websafe_tag}" style="vertical-align:-5px;">{tag}</span>
+          {/if}
+        {/exp:tag:tags}
+
+			</h3>
+			
+			{!-- Get the last two non-deprecated specs --}
+			{cf-wg-r-specs sort="desc" limit="3" var_prefix="spec"}	
+				{exp:stash:context name="{entry_id}"}
+				{exp:stash:set_value context="{entry_id}" name="newer_spec_status" value="{spec:cf-spec-pill-status}" match="#^1$#" against="{spec:count}"}
+
+				{if "{spec:count}" == 1 
+					|| ("{spec:count}" == 2 && "{spec:cf-spec-pill-status}" == "Final" && "{exp:stash:get name='{entry_id}:newer_spec_status'}" != "Final")
+					|| ( "{entry_id}" == "11")
+					|| ( "{entry_id}" == "1") 
+					|| ( "{entry_id}" == "499") }
+					<div class="line {if "{spec:count}" > 1}mtm{/if}">
+						<div class="unit size1of5" style="padding-top:4px;">
+							{if "{spec:cf-spec-text}" != ""}<a href="{spec:cf-spec-text}" title="Read the {spec:title} specification">{/if}
+							<strong>{spec:title}</strong>
+							{if "{spec:cf-spec-text}" != ""}</a>{/if}
+						</div>
+						<div class="unit size2of5">
+							<div class="progress mrs">
+								<div 
+								{if '{spec:cf-spec-pill-status}' == 'Final'}
+								class="meter striped success"
+								style="width: auto;"
+								{if:else}
+								class="meter striped"
+								style="width: {spec:cf-spec-progress}%;"
+								{/if}
+								></div>
+							</div>		
+						</div>
+						
+
+						<div class="unit lastUnit">
+							<div class="mvn" style="padding-top:4px;">
+								<strong data-popover title="{exp:stash:get parse='inward' name='status_desc_{spec:cf-spec-pill-status}'}">{spec:cf-spec-pill-status}</strong>
+							
+							</div>
+							
+							
+						</div>
+					</div>{!-- /.line --}
+					
+					
+					
+
+				{/if}
+			{/cf-wg-r-specs}
+		
+		</div>
+		{/cf-sg-r-specs}
+				
+	{/exp:channel:entries}
+	
+	
+{/exp:stash:set}

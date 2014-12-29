@@ -1,0 +1,164 @@
+{exp:channel:entries
+	entry_id="{lv-current-ma}|{lv-current-bylaws}|{lv-current-wpa}|{lv-current-ipr}"
+	dynamic="no"
+	{global:disable_all}
+}
+
+	{exp:stash:set type="variable" name="bylaws_url" match="#{lv-current-bylaws}#" against="{entry_id}"}{page_url}{/exp:stash:set}
+	{exp:stash:set type="variable" name="ma_url" match="#{lv-current-ma}#" against="{entry_id}"}{page_url}{/exp:stash:set}
+	{exp:stash:set type="variable" name="wpa_url" match="#{lv-current-wpa}#" against="{entry_id}"}{page_url}{/exp:stash:set}
+	{exp:stash:set type="variable" name="ipr_url" match="#{lv-current-ipr}#" against="{entry_id}"}{page_url}{/exp:stash:set}
+
+{/exp:channel:entries}
+
+{!-- Build the WPA list --}
+{!-- To do: this could be a PLAYA, looking for Legal Agreement entries with non-empty --}
+{!-- Or possibly grouped as they are on the wiki home or specifications page --}
+{exp:channel:entries channel="legal_agreements" fixed_order="{structure:child_ids}" entry_id="not {lv-current-ma}" search:cf-charter-r-workgroup="not IS_EMPTY" {global:disable_default}}
+	
+	{!-- Prep the list, stash style --}
+	{exp:stash:prepend name="wpalist" match="#^1$#" against="{count}"}
+		<table class="table-basic">
+		<thead>
+			<tr>
+				<th>Workgroup</th>
+				<th>WPA</th>
+			</tr>
+		</thead>
+	{/exp:stash:prepend}
+		
+	{exp:stash:append name="wpalist"}
+		<tr>
+			{cf-charter-r-workgroup limit="1"}
+			
+				<td>{title}</td>
+			
+				{if logged_in}
+				<td>
+				{exp:low_variables:single var="lv-wgmember-signup"
+					preparse:url_title="{url_title}"
+					preparse:wg_entry_id="{entry_id}"
+					preparse:view_text="View"
+					preparse:signup_text="Join"
+				}
+				</td>
+				{/if}		
+				
+			{/cf-charter-r-workgroup}
+			
+			{if logged_out}
+				<td>
+					<a href="{page_url}">View</a>
+				</td>
+			{/if}
+		
+		</tr>
+	{/exp:stash:append}
+	
+	{exp:stash:append name="wpalist" match="#{total_results}#" against="{count}"}</table>{/exp:stash:append}
+
+{/exp:channel:entries}
+
+
+
+
+{exp:stash:set name="stash-simple-body" type="variable"}
+	{!-- There's a bug where if no_results doesn't work the first time. Blow that here. --}
+	{exp:member_categories:check errors="off"}{if no_results}{/if}{/exp:member_categories:check}
+	
+	<div class="line">
+		
+		{if logged_out}
+		
+			<div class="unit size1of5">
+			<div class="gutter">
+				
+				<div class="mvm box-inset">
+					{exp:member:login_form 
+						return="{structure:page:url}"
+						form_class="form form-validate"
+						}
+					    	<label for="agreement_login_username">Username or email</label>
+					    	<input type="text" class="input-small required" required name="username" id="agreement_login_username" value="" maxlength="32">
+					    	<label for="agreement_login_password">Password</label>
+					    	<input type="password" class="input-small required" required name="password" id="agreement_login_password" value="" maxlength="32">
+					    	<br />
+					    	<button type="submit" class="button">Log in</button>
+					    	<p class="mvs fs-smaller"><a href="{path='forums/member/forgot_password'}">Forgot your password?</a></p>
+					    								        
+					{/exp:member:login_form}
+				</div>
+				
+				<p class="mtm pls deemph">Log in  to complete the Members Agreement or a Workgroup Participation Agreement
+					<br />
+					<br />
+					New here? <a href="{path='forums/member/register'}">Sign up!</a>
+				</p>
+	
+			
+			</div>
+			</div>
+		
+		{/if}
+	
+		<div class="unit {if logged_out}size2of5{if:else}size1of2{/if}">
+			<div class="gutter">
+				<h2>Members Agreement</h2>
+				<p>Complete the Members Agreement to:</p>
+				<ul class="nobullets pln">
+					<li>&#x2714; Join OSLC Workgroups</li>
+					<li>&#x2714; Propose a new Workgroup</li>
+					<li>&#x2714; Represent OSLC at trade shows and events</li>
+					<li>&#x2714; Vote in Steering Committee elections</li>
+					<li>&#x2714; Nominate yourself for the Steering Committee</li>
+				</ul>
+				<p>For more information, see the <a href="/participate/faq/">Participation FAQ</a>.</p>
+				
+				{if oslc:user:is_member}
+					<p><a href="{exp:stash:get name='ma_url'}">View the Members Agreement</a></p>
+				{if:else}
+					<p><a class="button" href="{exp:stash:get name='ma_url'}">Complete the Members Agreement</a></p>
+				{/if}
+	
+				{if logged_out}
+					<p><a href="{exp:stash:get name='ma_url'}">View the Members Agreement</a></p>
+				{/if}
+				
+			</div>
+		</div>
+		
+		<div class="unit lastUnit">
+			<h2>Workgroup Participation Agreements</h2>
+			
+				<p>Complete a Workgroup Participation Agreement (WPA) to:</p>
+				<ul class="nobullets pln">
+					<li>&#x2714; Contribute to specification development</li>
+					<li>&#x2714; Vote in Workgroup decisions</li>
+					<li>&#x2714; Contribute to the wiki for a workgroup</li>
+				</ul>
+				<p>You must complete a WPA for each workgroup that you want to join. For more information, see the <a href="/participate/faq/">Participation FAQ</a> and <a href="/participate/workgroup-best-practices/">Workgroup Best Practices</a>.</p>
+				
+				
+				{if oslc:user:is_not_member}
+					<p>You must complete the Members Agreement before you can join any Workgroups.</p>
+				{/if}
+				
+				{if logged_out || oslc:user:is_not_member}
+					<p><a href="{exp:stash:get name='wpa_url'}">View a sample Workgroup Participation Agreement</a></p>
+				{/if}
+
+				
+				{exp:stash:get name="wpalist"}
+							
+		</div>
+	
+	
+	</div>
+	
+
+
+
+{/exp:stash:set}
+
+{embed="_embeds/_body" 
+	pagetype="all_legal_agreements"}

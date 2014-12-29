@@ -1,0 +1,183 @@
+{!-- 
+	TUTORIAL PAGE
+--}
+
+{!-- 
+	Determine whether or not this is the overview and store a slug for your custom variables
+	This saves some processing over Stash or (especially) an Embed, which is awesome.
+	http://gotolow.com/blog/snippets-and-preload-replace-variables 
+--}
+{if structure:page:channel_short_name == "tutorial_page"}
+	{preload_replace:tutbodyfieldslug="tutpage"}
+{/if}
+{preload_replace:tutbodyfieldslug="tut"}
+
+{if segment_1 == "participate"}
+	{preload_replace:tut_parent_slug="{segment_2}"}
+	{preload_replace:tut_parent_uri="/{segment_1}/{segment_2}/"}
+	{preload_replace:first_child_page_slug="{segment_3}"}
+	{preload_replace:overview_text="Get started"}
+{/if}
+{preload_replace:tut_parent_slug="{segment_3}"}
+{preload_replace:tut_parent_uri="/{segment_1}/{segment_2}/{segment_3}/"}
+{preload_replace:first_child_page_slug="{segment_4}"}
+{preload_replace:overview_text="{lv-tutoverviewtext-en}"}
+
+
+{!-- Get information about the Tutorial Main page for the pagetitle --}
+{exp:channel:entries
+	url_title="{tut_parent_slug}"
+	limit="1"
+	dynamic="off"
+}	
+	{exp:stash:append name="headtitle"}{title}{/exp:stash:append}
+	
+	{!-- If we're on a child, need the title prepended for the <head> 
+		The Regex pattern is looking for anything besides white space
+		http://stackoverflow.com/questions/4448829/regular-expression-for-not-empty
+	--}
+	{exp:stash:prepend name="headtitle" match="#^(?=\s*\S).*$#" against="{first_child_page_slug}"}{structure:page:title} - {/exp:stash:prepend}
+
+	{exp:stash:append name="pagetitle"}
+		{title}
+	{/exp:stash:append}
+	
+{/exp:channel:entries}
+
+{!-- Need to override standard breadcrumbs, capping them at the segment_3/overview topic --}
+{exp:stash:set name="breadcrumbs"}
+	{exp:structure:breadcrumb inc_here="no" separator="/" uri="{tut_parent_uri}"}
+{/exp:stash:set}
+
+{!-- More info about the current page --}
+{exp:channel:entries entry_id="{structure:page:entry_id}" {global:disable_default}}
+	
+	{exp:stash:append name="tutorial_section_title"}
+		{if "{first_child_page_slug}" != ''}
+			{if cf-tutpage-t-bodytitle}
+				{cf-tutpage-t-bodytitle}
+			{if:else}
+				{title}
+			{/if}
+		{if:else}
+			{overview_text}
+		{/if}
+	{/exp:stash:append}
+	
+	{exp:stash:append name="tutorial_body"}
+	
+		{if cf-tut-m-altversions} 
+			<p class="deemph mbs">(<i>Download as {cf-tut-m-altversions}{if row_count > 1 && row_count == total_rows} or {/if}<a href="{altfile}">{altdescription}</a>{if row_count != total_rows && total_rows != 2},{/if}{/cf-tut-m-altversions}.</i>)</p>
+		{/if}
+			
+		{!-- Body field --}
+		{!-- See the very top for the preload_replace wizardry that sets this --}
+		{cf-{tutbodyfieldslug}-w-body}
+	
+	{/exp:stash:append}
+	
+{/exp:channel:entries}
+
+{!-- This is needed to delay the parsing for an AJAX request 
+	"headtitle" is in a extension (channel:entries) tag, so this needs to also be in an extension tag
+	If you just tried to use exp:stash:get for headtitle, it'd be blank as it's not set when you call it
+ --}
+{exp:stash:set name="ajax_headtitle"}{exp:stash:get name="headtitle"}{/exp:stash:set}
+
+{exp:stash:set name="main_content"}
+	<div class="line">
+		<div class="unit size1of4" id="tutorial-nav" property="dc:tableOfContents" role="navigation">
+			
+			{!-- Don't bother with an AJAX request --}
+			{if not_ajax}
+				{exp:structure:nav 
+					start_from="{tut_parent_uri}" 
+					show_depth="5"
+					show_overview="yes" 
+					rename_overview="{overview_text}"
+					recursive_overview="no"
+					css_class="mhn pln pvm mvn tutorial-nav"
+					css_id="tutorial_navigation"
+					add_level_classes="yes"
+					has_children_class="yes"
+					current_class="active"
+				}
+			{/if}
+		</div>
+		
+		<div class="unit lastUnit">
+			
+			<div class="tutorial-body gutter body-text contain fixWebkitText">
+				
+				{!-- ID here for grabbing the content --}
+				<div id="tutorial-body" role="main">
+					{if {exp:stash:not_empty name="tutorial_section_title"}}
+						<h2 class="h2 bodytitle">{exp:stash:get name="tutorial_section_title"}</h2>
+					{/if}
+					
+					{exp:stash:get name="tutorial_body"}				
+				</div>
+				
+				<div class="mvl tutorial-nav-buttons">
+					
+					{!-- ID here for grabbing the content --}
+					<div id="tutorial-nav-buttons" class="clearfix">
+					
+						{exp:ljr_structure_hierarchy_siblings 
+							start_from="{tut_parent_uri}" 
+							show_overview="yes"
+							rename_overview="{overview_text}"}
+							
+								{prev}
+									<a class="button mbl unit tutorial-prev" title="Go to {title}" href="{url}">{lv-tutorial-previouslink-en} {title}</a>
+								{/prev}
+								
+								{next}
+									<a class="button mbl unitRight tutorial-next" title="Go to {title}" href="{url}">{lv-tutorial-nextlink-en} {title}</a>			
+								{/next}
+							
+						{/exp:ljr_structure_hierarchy_siblings}
+											
+					</div>
+																					
+				</div>
+				
+				<div class="body-text">
+					<div class="callout-box size3of5">
+						{lv-tutorialAnyProblems-en}
+					
+					</div>
+				</div>
+				
+				
+			
+			</div>
+			
+			
+		</div>		
+						
+	</div>
+{/exp:stash:set}
+
+{!-- OK, now the return data. A much simpler page for an AJAX request, and the full page otherwise --}
+{if ajax}
+	<html>
+		<head>
+			<title>{exp:stash:get name="ajax_headtitle"} - {site_label}</title>
+			{!-- On the off-chance that a request renders only this fragment, force a full refresh (which will render the entire page) --}
+			<script>
+				window.location.href=window.location.href;
+			</script>
+			
+		</head>
+		<body>
+			{exp:stash:get name="main_content"}
+		</body>
+	</html>
+{/if}
+{if not_ajax}
+	{embed="_embeds/_body"
+		pagetype="tutorial"
+		js_body_class="tutorial"
+	}
+{/if}

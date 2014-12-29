@@ -1,0 +1,37 @@
+{!-- 
+	Template partial for when you need to delay this parsing
+	
+	LV Preparse variables
+	-----------------------
+	
+	url_title
+	REQUIRED
+	The URL title of the workgroup.
+	
+	wg_entry_id
+	REQUIRED
+	The entry ID for the workgroup
+	
+	view_text
+	REQUIRED
+	Text to just view a link to the WPA
+	
+	signup_text
+	REQUIRED
+	Text to for a button to sign up
+	
+	additional_filter_param
+	OPTIONAL
+	Pass in additional parameters to limit the parents. Good options are sort="asc" or a specific parent_id
+ --}
+
+{exp:member_categories:check category_url_title="{url_title}" errors="off"}
+	<a href="{exp:playa:parents {additional_filter_param} entry_id='{wg_entry_id}' field_id="69" channel='legal_agreements' limit='1'}{page_url}{/exp:playa:parents}">{view_text}</a>
+	
+	{if no_results}
+	{!-- Field ID #69 is the "Target Workgroup" relationship field (as opposed to the "Additional Workgroups" field --}
+	{exp:playa:parents {additional_filter_param} entry_id='{wg_entry_id}' field_id="69" channel='legal_agreements' limit='1' }
+		<a class="button" href="{page_url}">{signup_text}</a>		
+	{/exp:playa:parents}
+	{/if}
+{/exp:member_categories:check}

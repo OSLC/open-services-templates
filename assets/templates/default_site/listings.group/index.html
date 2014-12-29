@@ -1,0 +1,112 @@
+{!-- News index and tag/spec filtered news --}
+
+{!-- 
+	This page uses the "Freebie" add-on so that I can parse archives, pages, and categories
+	See: http://www.3roadsmedia.com/blog/expressionengine-with-structure-and-categories/
+--}
+
+{if freebie_2 == "workgroup"}
+
+	{!-- If they don't supply a workgroup, kick them back to /blog/ eg /blog/workgroup/ --}
+	{if freebie_3 == ""}
+		{exp:http_header status='301' location="/{freebie_1}/"}
+	{/if}
+	
+	{!-- Unnecessary fifth segment for tag/workgroup: 301 redirect to /1/2/3/4/ --}
+	{if freebie_5 != ""}
+		{exp:http_header status='301' location="/{freebie_1}/{freebie_2}/{freebie_3}/{freebie_4}/"}
+	{/if}
+	
+	{exp:channel:entries
+		channel="workgroups"
+		dynamic="no"
+		require_entry="yes"
+		url_title="{freebie_3}"
+		limit="1"
+		{global:disable_all}
+	}
+		{!-- 404 any bad urls (no matching spec url title) --}
+		{if no_results}{redirect="404"}{/if}
+		
+		{!-- Stash these for the embed --}
+		{exp:stash:set parse_tags="yes"}
+			
+			{stash:workgroupname}{title}{/stash:workgroupname}
+			
+			{!-- You COULD just use {freebie_3}, but this is safer due to the {if no_results} parsing --}
+			{stash:workgroupurltitle}{url_title}{/stash:workgroupurltitle}
+							
+		{/exp:stash:set}
+
+	{/exp:channel:entries}
+	
+{/if}
+
+{if freebie_2 == "tag"}
+
+	{!-- If they don't supply a tag in segment_3, kick them back to /blog/ --}
+	{if freebie_3 == ""}
+		{exp:http_header status='301' location="/{freebie_1}/"}
+	{/if}
+	
+	
+	{!-- First, check that the third segment is a valid tag --}
+	{exp:tag:entries
+		require_entry="yes"
+		websafe_separator="-" 
+		tag="{freebie_3}"}
+		
+		{!-- 404 if not --}
+		{if no_results}{redirect="404"}{/if}
+		
+	{/exp:tag:entries}
+	
+	{exp:stash:set parse_tags="yes"}
+		
+		{stash:tagname}{exp:tag:tag_name websafe_separator="-"}{freebie_3}{/exp:tag:tag_name}{/stash:tagname}
+		
+		{stash:tagentryids}
+			{exp:tag:entries 
+				websafe_separator="-" 
+				tag="{freebie_3}"}
+				{entry_id}{if count != total_results}|{/if}
+			{/exp:tag:entries}
+		{/stash:tagentryids}
+		
+	{/exp:stash:set}
+	
+{/if}
+
+{embed="_embeds/_body"
+	pagetype="blog_listing"
+	
+	{exp:switchee variable="{freebie_2}" parse="inward"}
+		
+		{!-- Listings: either the index or pagination (eg P10) --}
+		{case value="#^P(\d+)$#|''"}
+			headtitle="{structure:page:title}"
+			{!-- Activates 5-per-page pagination --}
+			listings_limit="10"
+		{/case}
+		
+		{!-- By Specification --}
+		{case value="workgroup"}
+			headtitle="Posts filtered by workgroup: &ldquo;{exp:stash:get name="workgroupname"}&rdquo;"
+			pagetitle="Posts filtered by workgroup: &ldquo;{exp:stash:get name="workgroupname"}&rdquo;"
+			listings_search='search:cf-blog-r-specs="{exp:stash:get name="workgroupurltitle"}"'
+			{!-- Pagination DOES NOT WORK b/c of your URL muckery --}
+			listings_limit="100"
+		{/case}
+		
+		{!-- By Tag --}
+		{case value="tag"}
+			headtitle="Viewing all posts tagged with: &ldquo;{exp:stash:get name="tagname"}&rdquo;"
+			pagetitle="Viewing all posts tagged with: &ldquo;{exp:stash:get name="tagname"}&rdquo;"
+			listings_entries="{exp:stash:get name="tagentryids"}"
+			{!-- Pagination DOES NOT WORK b/c of your URL muckery --}
+			listings_limit="100"
+		{/case}
+		
+		
+	{/exp:switchee}
+}

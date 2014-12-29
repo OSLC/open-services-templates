@@ -1,0 +1,187 @@
+{if segment_3 == ''}
+	{exp:http_header status='404' location="/404/"}
+{/if}
+
+{if segment_4}
+	{exp:http_header status='301' location="/{freebie_1}/{freebie_2}/{freebie_3}/"}
+{/if}
+
+{embed="_embeds/_body"
+	pagetype="members_agreement_output"
+	js_body_class="js_details_polyfill"
+	}
+
+{exp:freeform:entries entry_id="{segment_3}" form_name="members-agreement"}
+
+	{if freeform:no_results}
+		{redirect='404'}
+	{/if}
+
+	{exp:stash:set}
+		{stash:headtitle}Members Agreement for {freeform:field:name}{/stash:headtitle}
+		{stash:pagetitle}Members Agreement for {freeform:field:name}{/stash:pagetitle}
+		{stash:agreement_date}{freeform:entry_date format="%F %j, %Y @ %g:%i %a"}{/stash:agreement_date}
+		{stash:agreement_text_entry_id}{freeform:field:agreement_entry_id}{/stash:agreement_text_entry_id}		
+		{stash:bylaws_entry_id}{freeform:field:bylaws_entry_id_at_signing}{/stash:bylaws_entry_id}
+		{stash:personal_info}
+			<p><strong>Name</strong>: {freeform:field:name}</p>
+			<p><strong>Email</strong>: {freeform:field:email}</p>
+			<p><strong>Job title</strong>: {freeform:field:job_title}</p>
+			<p><strong>Phone</strong>: {freeform:field:phone1}</p>
+			<p><strong>Address</strong>: {freeform:field:member_address}</p>
+		{/stash:personal_info}
+		
+		{stash:representative_info}
+			{if freeform:field:representing_or_independent == "Representing someone"}
+				<h3 class="mts">Representing {freeform:field:oslc_org}</h3>
+				<div class="box-inset">
+				<p><input type="checkbox" checked="checked" readonly disabled /> I am serving in a representative capacity for the Entity named below, and I represent and warrant that I have the authority to enter into this Agreement on behalf of the Entity.</p>
+				<p><strong>Organization name</strong>: {freeform:field:oslc_org}</p>
+				<p><strong>URL</strong>: {freeform:field:representing_org_url}</p>
+				
+				<p>
+					<input type="radio" checked="checked" readonly /> The above
+					{if freeform:field:employer_or_sponsor == "Employer"}
+						is my employer
+					{if:else}
+						is <strong>not</strong> my employer but sponsors or finances my participation in OSLC
+					{/if}
+				</p>
+				</div>
+				
+				{if freeform:field:is_principle_contact}
+					<p><input type="checkbox" checked="checked" readonly disabled /> I will be the primary contact for this organization</p>
+				{/if}
+			{if:else}
+				<h2>Independent member</h2>
+				<div class="box-inset">
+					<p><input type="checkbox" checked="checked" readonly disabled="disabled"/>I am joining OSLC as an Independent OSLC Member as described in the <a href="/bylaws/#independent-oslc-members">Bylaws section "Independent OSLC Members"</p>
+				</div>
+			{/if}
+		{/stash:representative_info}
+		
+	{/exp:stash:set}
+{/exp:freeform:entries}
+
+{exp:stash:set name="main_content"}
+
+	{!-- Admins only! --}
+	{if logged_in_group_id == 1}
+	
+	<div class="line">
+	
+		<h1>Information provided to us</h1>
+		
+		<p><strong>Submitted</strong>: {exp:stash:get name="agreement_date" type="variable"}</p>
+		
+		<div class="unit size1of2">
+			<div class="gutter body-text">
+
+			<h3 class="mts">Personal information</h3>
+			<div class="box-inset">
+			
+				{exp:stash:get name="personal_info"}
+			
+			</div>
+			</div>
+		</div>
+		<div class="unit lastUnit">
+			<div class="gutter body-text">
+				
+				{exp:stash:get name="representative_info"}
+			
+			</div>
+		
+		</div>
+	
+	
+	</div>
+
+	
+	{exp:channel:entries 
+		dynamic="off" 
+		status="open|closed"
+		parse="inward"
+		fixed_order="{exp:stash:get name='bylaws_entry_id'}|{exp:stash:get name='agreement_text_entry_id'}"}
+	
+		<h1>OSLC {title} <small class="deemph">(as of {exp:stash:get name="agreement_date"})</small></h1>
+		
+		<details>
+			<summary>View the whole text</summary>
+			
+			<div class="body-text">
+			{if cf-fp-m-subsections-en}
+				{cf-fp-m-subsections-en}
+					{if row_count == 1}
+					<div class="toc">
+					<ul>
+					{/if}
+					
+					<li><a href="#{url_title}_{subid}">{subtitle}</a></li>
+					
+					{if row_count == total_rows}
+					</ul>
+					</div>
+					{/if}
+				{/cf-fp-m-subsections-en}
+				
+				{cf-fp-m-subsections-en}
+				
+					<div id="{url_title}_{subid}">
+						{subbody}
+					</div>
+				
+				{/cf-fp-m-subsections-en}
+			{/if}
+			
+			{if cf-charter-m-text}
+			
+				{cf-charter-m-text}
+					{if row_count == 1}
+					<div class="toc">
+					<ul>
+					{/if}
+					
+					<li><a href="#{url_title}_{section_id}">{section_title}</a></li>
+					
+					{if row_count == total_rows}
+					</ul>
+					</div>
+					{/if}
+				{/cf-charter-m-text}
+				
+				{cf-charter-m-text}
+					<div id="{url_title}_{section_id}">
+						{section_text}
+					</div>			
+				{/cf-charter-m-text}
+			
+			{/if}
+			</div>
+			
+			
+		</details>
+			
+		
+		
+		{if count != total_results}
+		<hr class="shadow-divider" />
+		{/if}
+		
+	
+	{/exp:channel:entries}
+	
+	{if:else}
+	
+		Not authorized to view this page!
+	
+	{/if}
+
+{/exp:stash:set}
+
+{if logged_in && logged_in_group_id == "1"}
+<h1>Global variables</h1>
+<?php $EE = get_instance(); 
+print('<pre><code>'.print_r($EE->config->_global_vars, TRUE) . '</code></pre>');  ?>
+
+{/if}

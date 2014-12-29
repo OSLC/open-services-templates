@@ -1,0 +1,117 @@
+{!-- 
+	Template partial for the various relationship-driven single pages
+		- Members
+		- Software
+		- Resources
+		- Specifications
+		
+	Returns parents of the given page in a standard grid layout
+		
+	--------------------------
+	Embed variables
+	--------------------------
+
+	relationship
+	[REQUIRED! ABSOLUTELY REQUIRED! OMG DON'T FORGET IT!]
+	Which way are we going with Playa? Accepts "parents" or "children"
+	
+	related_channel
+	[REQUIRED]
+	Channel to limit results to
+		
+	entry_id
+	[REQUIRED]
+	ID of the page you want to find relationships to. Easily accessible with {structure:page:entry_id} for the current.
+	
+	size
+	[REQUIRED]
+	How big is the grid unit? Use standard OOCSS eg "1of2"
+	
+	heading_level
+	[optional]
+	Defaults to H2
+	
+	heading_text
+	[optional]
+	Text for the heading, if you want one
+	
+	orderby
+	[optional]
+	Like exp:channel:entries
+	
+	sort
+	[optional]
+	Like exp:channel:entries
+	
+	lastUnit
+	[optional]
+	If the block could be the last unit, set "y"
+	
+	lastUnit_check_channel
+	[optional]
+	The channel to check whether or not this SHOULD be the lastUnit grid
+	
+	append_channel_name
+	[optional]
+	Useful for resources: Stick the channel name before the {title}
+	
+	collapse_limit
+	[optional]
+	If you want a <details></details> expand-collapse twisty to keep long lists under control
+	It doesn't make sense to have a twisty for one thing. Set a minimum threshold with this. Set "0" to collapse everything
+	
+	expand_text
+	[optional]
+	Text for the "Click here to expand" <summary></summary> element	
+	
+ --}
+ 
+ 
+{exp:playa:{embed:relationship} 
+	channel="{embed:related_channel}" 
+	entry_id="{embed:entry_id}" 
+	orderby="{embed:orderby}"
+	sort="{embed:sort}" 
+	}
+	
+	{if count =="1"}
+		<div class="unit size{embed:size} 
+			{if embed:lastUnit != '' && embed:lastUnit_check_channel == ''}lastUnit{/if}
+			{if embed:lastUnit_check_channel}
+				{if '{exp:playa:total_parents entry_id="{embed:entry_id}" channel="{embed:lastUnit_check_channel}"}' > 0}lastUnit{/if}
+			{/if}
+			">
+			<div class="gutter">
+				<{if embed:heading_level}{embed:heading_level}{if:else}h2{/if} class="{if embed:heading_level}{embed:heading_level}{if:else}h2{/if}">
+					{embed:heading_text}
+				</{if embed:heading_level}{embed:heading_level}{if:else}h2{/if}>
+				
+				{if embed:collapse_limit != "" && total_results > embed:collapse_limit}
+				<details>
+					<summary class="mbs">{embed:expand_text} ({total_results} total)</summary>
+				{/if}
+				
+				<ul class="nospacing nobullets">	
+				
+	{/if}
+				
+				<li class="pbs">
+					<a href="{page_url}">
+						{title}
+					</a>
+					{if embed:append_channel_name}
+						<span class="deemph">({channel})</span>
+					{/if}
+				</li>
+					
+	{if count == total_results}
+	
+				{if embed:collapse_limit != "" && total_results > embed:collapse_limit}
+				</details>
+				{/if}
+	
+				</ul>
+			</div>
+		</div>
+	{/if}
+{/exp:playa:{embed:relationship}}

@@ -1,0 +1,15 @@
+{embed="_embeds/_body" 
+	headtitle="{structure:page:title}"	
+	pagetype="new_entry"
+}
+
+{if logged_in && global:env != "production"}
+	<h1>Global variables</h1>
+	<?php $EE = get_instance(); print('<pre><code>'.print_r($EE->config->_global_vars, TRUE) . '</code></pre>');  ?>
+	
+	<h1>Configuration variables</h1>
+	<?php
+		print('<pre><code>'. print_r($this->EE->config->config, TRUE) . '</code></pre>');
+	?> 
+
+{/if}

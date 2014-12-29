@@ -1,0 +1,309 @@
+{embed="_embeds/_body"
+	pagetype="software_single"
+	js_body_class="js_details_polyfill"
+}
+
+{exp:channel:entries entry_id="{structure:page:entry_id}" limit="1" dynamic='no'}
+{!-- Pagetitle override to add OSLC Org (if any) --}
+{exp:stash:set name="pagetitle"}{title}{if cf-pr-r-company}{cf-pr-r-company} <span class="pagetitle-deemph">by {title}</span>{/cf-pr-r-company}{/if}{/exp:stash:set}
+
+{exp:stash:set name="main_content"}
+	{if cf-pr-w-description-en}
+	<div class="body-text size3of4">
+		{cf-pr-w-description-en}
+	</div>
+	{/if}
+	
+	{if cf-pr-t-produrl}
+		<p>
+			<a href="{cf-pr-t-produrl}" class="button hero">Learn more at {exp:parse_url find_uris="no" parts="host" omit="www.|www-01.|www8.|msdn."}{cf-pr-t-produrl}{/exp:parse_url} &rarr;</a>
+			&emsp;
+			{if cf-pr-r-company}{cf-pr-r-company}<a href="{cf-co-t-url}" class="">Learn more about {title}</a>{/cf-pr-r-company}{/if}
+		</p>
+	{/if}
+	
+	<div class="line">
+	
+		<h2 class="h2 mtl mbn">
+
+		{if cf-pr-s-isconnector != "y"}
+			<a name="specs-compatibility"></a>Specifications &amp; Compatibility
+		{if:else}
+			Products &amp; Specifications
+		{/if}
+		</h2>		
+		
+		{!-- Consumers --}
+		{if cf-pr-m-consumes-en && cf-pr-s-isconnector != "y"}
+		<div class="unit {if cf-pr-m-produces-en}size1of2{if:else}size3of4{/if}">
+		<div class="gutter">
+			
+			<h3 class="h3">Consumable specifications and compatible providers</h2>
+			
+			<p>{title} can <strong>consume</strong> resources in accordance with the following OSLC specifications:</p>
+			
+			<table class="table-basic">
+				<thead>
+				<tr>
+					<th id="compatible-producers">Products that output the specification<a href="#compatibility-note"><sup><strong>*</strong></sup></a></th>
+					<th id="outputspecs" style="width:40%;">Specification that {title} can consume (input)</th>					
+				</tr>
+				</thead>
+			
+				<tbody>
+	
+			
+			{cf-pr-m-consumes-en}			
+					<tr>
+						<td headers="compatible-producers">
+							{spec}				
+								{exp:low_variables:single
+									var="lv-compatible-products"
+									preparse:spec_entry_id="{entry_id}"
+									preparse:this_product_entry_id="{structure:page:entry_id}"
+									preparse:matrix_field_id="22"
+									preparse:matrix_row_id="17"
+								}
+							{/spec}
+						</td>
+						<td headers="outputspecs" class="spec-flow">
+							
+							{spec var_prefix="the_specification"}
+								<a href="{the_specification:cf-spec-text}">{the_specification:title}</a>
+							{/spec}
+														
+							{if via_adapter}
+							<div class="box-inset mvm size3of4">
+							(Requires an adapter: 
+								{via_adapter backspace="2"}<a href="{page_url}">{title}</a>, {/via_adapter})
+							</div>
+							{/if}
+						</td>
+					</tr>	
+			{/cf-pr-m-consumes-en}
+				</tbody>
+			</table>
+
+		</div>	
+		</div> {!-- /.unit --}
+		{/if}		
+
+		
+		{!-- Producers --}
+		{if cf-pr-m-produces-en && cf-pr-s-isconnector != "y" }
+		<div class="unit {if cf-pr-m-consumes-en}lastUnit{if:else}size3of4{/if}">
+	
+			<h3 class="h3">Output specifications and compatible consumers</h2>
+			
+			<p>{title} can <strong>output</strong> resources in accordance with the following OSLC specifications:</p>
+			
+			<table class="table-basic">
+				<thead>
+				<tr>
+					<th id="inputspecs" style="width:40%;">Specification that {title} can produce (output)</th>
+					<th id="compatible-consumers">Products that consume the specification<a href="#compatibility-note"><sup><strong>*</strong></sup></a></th>
+				</tr>
+				</thead>
+			
+				<tbody>
+			{cf-pr-m-produces-en}
+					<tr>
+						<td headers="inputspecs" class="spec-flow">
+							{produces var_prefix="spec"}
+								<a href="{spec:cf-spec-text}">{spec:title}</a>
+							{/produces}
+							{if via_adapter}
+							<div class="box-inset mvm size3of4">
+							(Requires an adapter: 
+								{via_adapter backspace="2"}<a href="{page_url}">{title}</a>, {/via_adapter})
+							</div>
+							{/if}
+						</td>
+						<td headers="compatible-consumers">
+							{produces}
+								{exp:low_variables:single
+									var="lv-compatible-products"
+									preparse:spec_entry_id="{entry_id}"
+									preparse:this_product_entry_id="{structure:page:entry_id}"
+									preparse:matrix_field_id="21"
+									preparse:matrix_row_id="15"
+								}
+							{/produces}
+						</td>
+					</tr>
+			{/cf-pr-m-produces-en}
+				</tbody>
+			</table>
+			
+		</div>
+		{/if}
+				
+		{!-- Adapters --}
+		{if cf-pr-s-isconnector}
+			
+			{exp:playa:parents var_prefix="adapted" channel="products" }
+			
+				{if "{adapted:count}" == 1}
+				<p>{title} adds the following capabilities to these products:</p>
+				
+				<table class="table-basic">
+				<thead>
+				<tr>
+					{adapted:cf-pr-m-consumes-en search:via_adapter="{url_title}" limit="1"}
+						{if row_count == 1}<th id="inputspecs">Gains support to <em>consume</em> (input) these specifications</th>{/if}
+					{/adapted:cf-pr-m-consumes-en}
+
+						<th>Name</th>
+						
+					{adapted:cf-pr-m-produces-en search:via_adapter="{url_title}" limit="1"}
+						{if row_count == 1}<th id="outputspecs">Gains support to <em>produce</em> (output) these specifications</th>{/if}
+					{/adapted:cf-pr-m-produces-en}
+										
+				</tr>
+				</thead>
+			
+				<tbody>
+				{/if}
+				
+				<tr>
+					{!-- Products that can now consume a spec w/ adapter --}
+					{!-- Limit specs returned to those where the adapter is in the via_adapter cell --}
+					{adapted:cf-pr-m-consumes-en search:via_adapter="{url_title}"}
+						{if row_count == 1}
+						<td headers="inputspecs" class="spec-flow">
+							<ul class="nobullets nospacing">
+						{/if}
+							<li class="mbs">{spec var_prefix="spec"}{spec:title}{/spec}</li>
+						{if row_count == total_rows}
+							</ul>
+						</td>
+						{/if}
+					{/cf-pr-m-consumes-en}
+
+					<td><a href="{adapted:page_url}">{adapted:title}</a></td>
+
+					{!-- Products that can now output a spec w/ adapter --}
+					{!-- Limit specs returned to those where the adapter is in the via_adapter cell --}
+					{adapted:cf-pr-m-produces-en search:via_adapter="{url_title}"}
+						{if row_count == 1}
+						<td headers="outputspecs" class="spec-flow">
+							<ul class="nobullets nospacing">
+						{/if}
+							<li class="mbs mln">{produces var_prefix="spec"}{spec:title}{/produces}</li>
+						{if row_count == total_rows}
+							</ul>
+						</td>
+						{/if}
+					{/adapted:cf-pr-m-produces-en}
+				</tr>
+				
+				{if "{adapted:count}" == "{adapted:total_results}"}
+				</tbody>
+				</table>
+				{/if}
+			
+			{/exp:playa:parents}
+			
+		{/if}
+	
+	</div>{!-- /.line --}
+	
+	{if cf-pr-s-isconnector != "y"}
+		<p class="callout-box">
+			<a name="compatibility-note"></a>We make no guarantees about compliance with any specification. <a href="#specs-compatibility">Back to the compatibility table.</a>
+		</p>
+	{/if}
+
+		
+	{!-- Relationships --}
+	<div class="line">
+	
+		<div class="unit size1of2">
+		<div class="gutter">
+			{exp:low_variables:single 
+				var='lv-relationship-list'
+				preparse:direction='parents'
+				preparse:related_channel='tutorial'
+				preparse:related_to_entry_id="{structure:page:entry_id}"
+				preparse:size="1of1"
+				preparse:heading_text="Tutorials"
+				preparse:heading_level="h3"
+				preparse:orderby="title"
+				preparse:sort="asc"
+				preparse:collapse_limit="4"
+				preparse:expand_text="See all tutorials"
+			}
+			
+			{exp:low_variables:single 
+				var='lv-relationship-list'
+				preparse:direction='parents'
+				preparse:related_channel='resource_presentations|resource_videos'
+				preparse:related_to_entry_id="{structure:page:entry_id}"
+				preparse:size="1of1"
+				preparse:heading_text="Videos and presentations"
+				preparse:heading_level="h3"
+				preparse:orderby="title"
+				preparse:sort="asc"
+				preparse:collapse_limit="4"
+				preparse:expand_text="See all videos and presentations"
+			}
+			
+			{exp:low_variables:single 
+				var='lv-relationship-list'
+				preparse:direction='parents'
+				preparse:related_channel='resource_articles|resource_whitepapers'
+				preparse:related_to_entry_id="{structure:page:entry_id}"
+				preparse:size="1of1"
+				preparse:heading_text="Articles and whitepapers"
+				preparse:heading_level="h3"
+				preparse:orderby="title"
+				preparse:sort="asc"
+				preparse:collapse_limit="4"
+				preparse:expand_text="See all articles and whitepapers"
+			}
+			
+			{exp:low_variables:single 
+				var='lv-relationship-list'
+				preparse:direction='parents'
+				preparse:related_channel='resource_podcasts'
+				preparse:related_to_entry_id="{structure:page:entry_id}"
+				preparse:size="1of1"
+				preparse:heading_text="Podcasts"
+				preparse:heading_level="h3"
+				preparse:orderby="title"
+				preparse:sort="asc"
+				preparse:collapse_limit="4"
+				preparse:expand_text="See all podcasts"
+			}
+			
+			{!-- 
+				That leaves: resource_sites|resource_tools
+				It is unlikely that either of those will be related to a product
+			--}
+			</div> {!-- .gutter --}
+			</div> {!-- .unit --}
+			
+			<div class="unit lastUnit">
+			{exp:low_variables:single 
+				var='lv-relationship-list'
+				preparse:direction='parents'
+				preparse:related_channel='blog'
+				preparse:related_to_entry_id="{structure:page:entry_id}"
+				preparse:size="1of1"
+				preparse:heading_text="Blog posts"
+				preparse:heading_level="h3"
+				preparse:orderby="date"
+				preparse:sort="desc"
+				preparse:collapse_limit="4"
+				preparse:expand_text="See all blog posts"
+			}
+			</div>
+
+		
+	</div>
+{/exp:stash:set}
+	
+{/exp:channel:entries}
+	
+
+

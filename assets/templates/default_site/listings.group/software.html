@@ -1,0 +1,83 @@
+{embed="_embeds/_body"
+	pagetype="software_all"
+}
+
+{exp:stash:set 
+	name="main_content"
+	}
+	{exp:channel:entries
+			limit="1"
+			entry_id="{structure:page:entry_id}"
+			{global:disable_default}
+		}
+		<div class="body-text">
+		{cf-sp-w-body-en}
+		</div>
+	{/exp:channel:entries}
+	
+	{exp:channel:entries
+		channel="{structure:child_listing:short_name}"
+		dynamic="no"
+		orderby="title"
+		sort="asc"
+		search:cf-pr-s-isconnector="IS_EMPTY"
+		{global:disable_default}
+	}
+	
+		{if count == 1}		
+		<table id="fancy-software-table" class="table-basic mtl" cellspacing="0" summary="Products that can output one or more OSLC specifications">
+		<thead>
+			<tr>
+				<th id="inputspecs">Can <em>consume</em> (input) these specifications</th>
+				<th id="prodname">Name</th>
+				<th id="outputspecs">Can <em>produce</em> (output) these specifications</th>
+			</tr>
+		</thead>
+		<tbody>
+		{/if}
+			<tr>
+				{!-- Input/Consumed --}
+				<td headers="inputspecs" {if cf-pr-m-consumes-en}class="spec-flow"{/if}>
+					{cf-pr-m-consumes-en}
+						{if row_count == 1}
+						<ul class="nospacing nobullets">
+						{/if}
+							<li class="mbs">
+								{spec}{title}{/spec}{if via_adapter}<a title="Additional software may be required. Click for more information." href="{page_url}"><sup><strong>*</strong></sup></a>{/if}
+							</li>
+						{if row_count == total_rows}
+						</ul>
+						{/if}
+					
+					{/cf-pr-m-consumes-en}
+				</td>
+				
+				<td headers="prodname">
+					<a href="{page_url}" title="More information about {title}">{title}</a>
+				</td>
+				
+				{!-- Output/Produced --}
+				<td headers="outputspecs" {if cf-pr-m-produces-en}class="spec-flow"{/if}>
+					{cf-pr-m-produces-en}
+						{if row_count == 1}
+						<ul class="nospacing nobullets">
+						{/if}
+							<li class="mbs">
+								{produces}{title}{/produces}{if via_adapter}<a title="Additional software may be required. Click for more information." href="{page_url}"><sup><strong>*</strong></sup></a>{/if}
+							</li>
+						{if row_count == total_rows}
+						</ul>
+						{/if}
+					{/cf-pr-m-produces-en}
+				</td>
+			</tr>		
+		{if count == total_results}
+		</tbody>
+		</table>
+		{/if}
+
+	
+	{/exp:channel:entries}
+	
+	</table>	
+{/exp:stash:set}

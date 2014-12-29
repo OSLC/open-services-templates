@@ -1,0 +1,556 @@
+{!-- Specifications index --}
+{embed="_embeds/_body"
+	pagetype="workgroup_single"
+	headtitle="{structure:page:title} Workgroup"
+	js_body_class="js_tabs js_popovers"
+	debug="TRUE"
+}
+
+{!-- Cache all members of this workgroup --}
+{exp:member_categories:members category_url_title="{segment_2}" errors="off" order_by="screen_name" sort="asc"}
+	{exp:stash:append_list name='workgroup_members' match="#[2-9]|[1-9]\d+#" against="{member_id}"}
+		{stash:contributing_member_screen_name}{screen_name}{/stash:contributing_member_screen_name}
+		{stash:contributing_member_profile_url}{path="forums/member/{member_id}"}{/stash:contributing_member_profile_url}
+	{/exp:stash:append_list}
+{/exp:member_categories:members}
+
+
+{!-- Need to move this out to prevent count variable conflicts --}
+{exp:stash:set name="contributing_members"}
+	{exp:stash:get_list name="workgroup_members"}
+		{if count == 1}
+			<div class="unit size1of2">
+				<div class="gutter body-text">
+					<i class="icon-font icon-font-module-img-med" data-icon="&#xe042;"></i>
+					<h3 class="mtn">Contributing members</h3>
+					
+					{if logged_in && segment_2 != "steering-committee"}
+						<div class="box-inset mbm">
+							<div class="progress">
+								<div class="meter striped {if oslc:user:is_workgroup_member}success{/if}"
+								{if oslc:user:is_workgroup_member}
+									style="width: 100%;" title="Workgroup member"
+								{if:elseif oslc:user:is_member}
+									style="width: 67%;" title="OSLC Member"
+								{if:else}
+									style="width: 33%;" title="Logged in"
+								{/if}		
+								></div>
+							</div>{!-- /.progress --}
+							
+							<p class="mts mvn">
+							<strong>You</strong>: 
+							{if oslc:user:is_workgroup_member}
+								<span class="label success">Workgroup Member!</span>
+								
+								{if oslc:workgroup:is_user_group}
+									<span id="swap_user_group_membership_placeholder"></span>
+									<noscript>Activate JavaScript in your browser to leave the User Group</noscript>
+								{/if}
+								
+							{if:elseif oslc:user:is_member}
+								<span class="label notice">OSLC Member!</span>
+								
+								{if oslc:workgroup:is_user_group}
+									<span id="swap_user_group_membership_placeholder"></span>
+									<noscript>Activate JavaScript in your browser to join the User Group</noscript>
+								{if:else}
+									<a href="{exp:playa:parents entry_id="{structure:page:entry_id}" field_id='69' channel='legal_agreements' limit='1'}{page_url}{/exp:playa:parents}">Complete the WPA</a>
+									<span data-popover data-title="Workgroup Participation Agreement?" data-html="true" data-content="You must complete a Workgroup Participation Agreement for any OSLC domain workgroup that you want to join. <a href='/participate/faq/#faq-what-is-wpa'>See our FAQ</a>." title="You must complete a Workgroup Participation Agreement for any OSLC domain workgroup that you want to join">(&thinsp;<i data-icon="&#xe036;"></i>&thinsp;)</span>
+								{/if}
+							{if:else}
+								<span class="label notice">Logged in</span>
+								<a href="/legal-agreements/members-agreement/">Become an OSLC member</a>
+								<span data-popover data-title="OSLC Member?" data-html="true" data-content="You must become an OSLC Member &ndash; don&rsquo;t worry; it&rsquo;s free &ndash; to join any workgroup. <a href='/participate/faq/#faq-what-does-membership-mean'>See our FAQ</a>." title="You must become an OSLC Member before you can contribute to any workgroup">(&thinsp;<i data-icon="&#xe036;"></i>&thinsp;)</span>
+							{/if}
+							</p>
+						</div>
+					{/if}
+
+
+					<ul class="nospacing nobullets {if total_results > 6}columned-2{/if}">	
+		{/if}
+	
+			
+						<li class="mbs">
+						<a href="{contributing_member_profile_url}">{contributing_member_screen_name}
+						</a>
+						{!-- Little helper to change screen names --}
+						{if contributing_member_screen_name == logged_in_screen_name}
+						(<span data-popover data-title="That's you!" data-html="true" data-content="Don&rsquo;t like how your name appears here? <a href='{path="forums/member/edit_userpass"}'>Change it!</a> (It&rsquo;s the <i>Screen Name</i>)" title="Change how this appears">&thinsp;<i data-icon="&#xe036;"></i>&thinsp;</span>)
+						{/if}
+						</li>
+		
+		{if count == total_results}
+					</ul>
+					
+				</div>
+			</div>
+		{/if}
+		
+	{/exp:stash:get_list}
+{/exp:stash:set}
+
+{exp:stash:set name="main_content"}
+		
+	{exp:channel:entries entry_id="{structure:page:entry_id}" limit="1" {global:disable_default} }
+	
+		<div class="line mbl">
+			{if cf-wg-new-wiki != "" || cf-wg-t-wghome != ""}
+			<div class="unit size1of5">
+				<div class="gutter flag">
+					<div class="flag-image">
+						<i class="icon-font-strip-module-img icon-font-tinted mrs" data-icon="&#xe026;"></i>
+					</div>
+					<div class="flag-body">
+						{if cf-wg-new-wiki == 'y'}
+							<a href="/wiki/{url_title}/">Wiki</a>
+						{if:elseif cf-wg-t-wghome != ""}
+							<a href="{cf-wg-t-wghome}">Wiki</a>
+						{/if}
+					</div>
+				
+				</div>
+			</div>
+			{/if}
+			
+			{if cf-wg-t-meetings}
+			
+			<div class="unit size1of5">
+				<div class="gutter {if cf-wg-t-meetingtime}media{if:else}flag{/if}">
+					<div class="{if cf-wg-t-meetingtime}img{if:else}flag-image{/if}">
+						<i class="icon-font-strip-module-img icon-font-tinted mrs" data-icon="&#xe07d;"></i>
+					</div>
+					<div class="{if cf-wg-t-meetingtime}bd{if:else}flag-body{/if}">
+						<a href="{cf-wg-t-meetings}">Meetings</a>
+						{if cf-wg-t-meetingtime} 
+							<br/>
+							<span class="deemph">{cf-wg-t-meetingtime}</span>
+						{/if}
+					</div>
+				
+				</div>
+			</div>
+			
+			{/if}
+			
+			{if cf-wg-t-mailinglist}
+			<div class="unit size1of5">
+				<div class="gutter flag">
+					<div class="flag-image">
+						{!-- TODO: eventually this will be for Comms too: segment_2_category_group_id == 4 --}
+						{if segment_2_category_group_id == "4" && segment_2 != "communications"}
+							<i class="icon-font-strip-module-img icon-font-tinted mrs" data-icon="&#xe098;"></i>
+						{if:else}
+							<i class="icon-font-strip-module-img icon-font-tinted mrs" data-icon="&#xe04f;"></i>
+						{/if}
+					</div>
+					<div class="flag-body">
+						<a href="{cf-wg-t-mailinglist}">
+							{!-- TODO: eventually this will be for Comms too: segment_2_category_group_id == 4 --}
+							{if segment_2_category_group_id == "4" && segment_2 != "communications"}
+								Forum
+							{if:else}
+								Mailing list
+							{/if}
+						</a>
+					</div>
+				
+				</div>
+			</div>
+			{/if}
+			
+			{!-- Note the var_prefix here, just to avoid parse conflicts --}
+			{cf-wg-r-specs sort="desc" search:cf-spec-text="not IS_EMPTY" var_prefix="spec"}
+				{if "{spec:count}" == 1}
+					<div class="unit {if workgroup_grid_misc-links}size1of5{if:else}lastUnit{/if}">
+						<div class="gutter flag">
+							<div class="flag-image">
+								<i title="Specifications" class="icon-font-strip-module-img icon-font-tinted mrs" data-icon="&#xe071;"></i>
+							</div>
+							<div class="flag-body">
+				{/if}
+			
+					<p class="mvn" style="padding-bottom: 4px;">
+						<a href="{spec:cf-spec-text}">{spec:title}</a> 
+						<span class="label {if '{spec:cf-spec-pill-status}' == 'Final'}success{if:elseif '{spec:cf-spec-pill-status}' == 'Finalize'}warning{/if}">{spec:cf-spec-pill-status}</span>
+					</p>
+				
+				{if "{spec:count}" == "{spec:total_results}"}			
+							</div>
+						</div>
+					</div>
+				{/if}
+			{/cf-wg-r-specs}
+			
+			{if workgroup_grid_misc-links}
+			  <div class="unit lastUnit">
+			    <div class="flag">
+			    	<div class="flag-image">
+			    	  <i title="Links" class="icon-font-strip-module-img icon-font-tinted mrs" data-icon="&#xe00a;"></i>
+			    	</div>
+			    	<div class="flag-body">
+			    	  {workgroup_grid_misc-links}
+			    	    <p class="mvn"><a href="{url}">{name}</a></p>
+			    	  {/workgroup_grid_misc-links}
+			    	</div>
+			    </div>
+			  </div>
+			{/if}
+			
+		</div>{!-- .line.section-row --}
+				
+		{!-- Tags --}
+		{exp:tag:tags entry_id="{entry_id}" websafe_separator="-"}
+			{if tag_count == "1"}
+			<div class="flag">
+			  <div class="flag-image"><strong class="prs">Tagged:</strong></div>
+			  <div class="flag-body">
+          <ul class="inline-list nospacing wg-tags">
+			{/if}
+		
+          <li class="mrs"><span title="{tag}" data-tagname="{websafe_tag}" class="wg-tag wg-tag-{websafe_tag}">{tag}</span></li>
+			
+			{if tag_count == tag_total_results}
+          </ul>
+        </div>
+			</div>
+			{/if}
+		
+		{/exp:tag:tags}
+		
+		{!-- Groups being replaced --}
+    {if workgroup_rel_replaces}
+
+      <p><strong>Precursors</strong>:
+        {workgroup_rel_replaces var_prefix="replaced"}
+        <a href="{replaced:page_url}">{replaced:title}</a>&ensp;
+        {/workgroup_rel_replaces}    
+      </p>
+
+    {/if}
+
+		{if workgroup_exernal-url}
+      <div class="mvm">
+      <a href="{workgroup_exernal-url}" class="button">
+        At {exp:parse_url parts="host" omit="www."}{workgroup_exernal-url}{/exp:parse_url}
+        <i data-icon="&#xe08d;"></i> 
+      </a>
+      </div>		
+		{/if}
+		
+		{if cf-wg-w-description-en}
+		<div class="section-row pbm ptn">
+      <div class="line">
+        <div class="unit size3of5">
+          <div class="gutter">
+            {cf-wg-w-description-en}
+          </div>
+        </div>		
+        
+        {exp:playa:parents field="workgroup_rel_replaces" var_prefix="new_hotness" limit="1"}
+          <div class="unit lastUnit">
+            <div class="box-inset mts">
+              <div class="flag">
+                <div class="flag-image prm">
+                  <i class="icon-font icon-font-strip-module-img" data-icon="&#xe061;"></i>
+                </div>
+                <div class="flag-body">
+                  <strong>Sort of a ghost town here</strong> <br />
+                  Active specification development is now at 
+                  <a href="{new_hotness:page_url}">{new_hotness:title}</a>
+                  
+                </div>
+              </div>
+            </div>                    
+          </div>
+        {/exp:playa:parents}
+        
+      </div>      
+		</div>
+		{/if}
+		
+		<div class="section-row ptl">
+		
+			<ul role="tablist" class="line nav-tabs">
+				<li class="nav-tab nav-tab-first active unit size1of3" role="decoration">
+					<a id="tab1" role="tab" aria-controls="workgroup-members" href="#workgroup-members">Members</a>
+				</li>
+				<li class="nav-tab unit size1of3" role="decoration">
+					<a id="tab2" role="tab" aria-controls="workgroup-links" href="#workgroup-links">Around the site</a>
+				</li>
+				{exp:playa:parents channel="charters" field="cf-wgcharter-r-workgroup" status="open" limit="1"}
+					<li class="nav-tab unit nav-tab-last lastUnit" role="decoration">
+						<a id="tab3" role="tab" aria-controls="workgroup-charter" href="#workgroup-charter">Charter</a>
+					</li>
+				{/exp:playa:parents}
+				
+			</ul>
+			
+			<div class="tab-content">
+				<div id="workgroup-members" class="tab-panel drop active in" role="tabpanel" aria-labelledby="tab1" data-tab="1">
+					<h2 class="h2 onlynojs">Members</h2>
+					
+					
+					
+					<div class="line mts">
+						{if cf-wg-m-leads}
+						<div class="unit size1of4">
+							<div class="gutter body-text">
+								<i class="icon-font icon-font-module-img-med" data-icon="&#xe00d;"></i>
+								<h3 class="mtn">{if oslc:workgroup:is_at_oasis}Chair{if:else}Workgroup lead{/if}{if cf-wg-m-leads:total_rows > 1}s{/if}</h3>
+								
+								<ul class="nospacing nobullets">
+									{cf-wg-m-leads}
+									<li><a href="{path='forums/member/{lead}'}">{lead:names}</a></li>
+									{/cf-wg-m-leads}
+								</ul>
+								
+							</div>
+						</div>
+						{if:elseif cf-wg-t-wgleadname}
+						<div class="unit size1of4">
+							<div class="gutter body-text">
+								<i class="icon-font icon-font-module-img-med" data-icon="&#xe00d;"></i>
+								<h3 class="mtn">Workgroup lead</h3>
+								
+								<p>{cf-wg-t-wgleadname}</p>
+								
+							</div>
+						</div>
+						{/if}
+						
+						{if cf-wg-new-wiki}
+						
+							{exp:stash:get name="contributing_members"}
+						
+						{/if}
+						
+						{if cf-wg-r-members}
+						<div class="unit lastUnit">
+							<div class="gutter body-text">
+								<i class="icon-font icon-font-module-img-med" data-icon="&#xe06a;"></i>
+								<h3 class="mtn">Contributing organizations</h3>
+								<ul class="nospacing nobullets">
+								{cf-wg-r-members orderby="title" sort="asc"}
+									<li class="mbs"><a href="{page_url}">{title}</a></li>
+								{/cf-wg-r-members}
+								</ul>
+							</div>
+						</div>
+						{/if}
+					</div>
+					
+				</div>
+				
+				<div id="workgroup-links" class="tab-panel drop" role="tabpanel" aria-labelledby="tab1" data-tab="1">
+				
+					<h2 class="h2 onlynojs">Around the site</h2>
+					
+					<div class="line">
+						<div class="unit size1of2">
+							<div class="gutter">
+							{!-- Tuts --}
+							{exp:low_variables:single 
+								var='lv-relationship-list'
+								preparse:direction='parents'
+								preparse:related_channel='tutorial'
+								preparse:related_to_entry_id="{structure:page:entry_id}"
+								preparse:size="1of1"
+								preparse:heading_text="Tutorials"
+								preparse:heading_level="h3"
+								preparse:orderby="title"
+								preparse:sort="asc"
+							}
+							
+							{!-- Videos and presentations --}
+							{exp:low_variables:single 
+								var='lv-relationship-list'
+								preparse:direction='parents'
+								preparse:related_channel='resource_presentations|resource_videos'
+								preparse:related_to_entry_id="{structure:page:entry_id}"
+								preparse:size="1of1"
+								preparse:heading_text="Videos &amp; presentations"
+								preparse:heading_level="h3"
+								preparse:orderby="title"
+								preparse:sort="asc"
+							}
+							
+							{!-- Documents --}
+							{exp:low_variables:single 
+								var='lv-relationship-list'
+								preparse:direction='parents'
+								preparse:related_channel='resource_articles|resource_whitepapers'
+								preparse:related_to_entry_id="{structure:page:entry_id}"
+								preparse:size="1of1"
+								preparse:heading_text="Articles &amp; whitepapers"
+								preparse:heading_level="h3"
+								preparse:orderby="title"
+								preparse:sort="asc"
+							}
+							
+							</div>
+						</div>
+						
+						<div class="unit lastUnit">
+							{exp:low_variables:single 
+								var='lv-relationship-list'
+								preparse:direction='parents'
+								preparse:related_channel='blog'
+								preparse:related_to_entry_id="{structure:page:entry_id}"
+								preparse:size="1of1"
+								preparse:heading_text="Blog posts"
+								preparse:heading_level="h3"
+								preparse:orderby="date"
+								preparse:sort="desc"
+							}
+						</div>
+					</div>
+					
+				</div>
+				
+				{exp:playa:parents channel="charters" field="cf-wgcharter-r-workgroup" status="open" limit="1"}
+				<div id="workgroup-charter" class="tab-panel drop" role="tabpanel" aria-labelledby="tab3" data-tab="3">
+					<h2 class="h2 onlynojs">Charter</h2>
+				
+					<div class="line mtm">
+						<div class="unit size1of4">
+							<div class="gutter">
+								<ul class="nav-list box-inset">
+									<li class="li nav-header">Contents</li>
+									{if cf-wgcharter-w-scope}<li><a href="#{url_title}_scope">Scope</a></li>{/if}
+									{if cf-wgcharter-w-deliverables}<li><a href="#{url_title}_deliverables">Deliverables</a></li>{/if}
+									{if cf-wgcharter-w-capabilities}<li><a href="#{url_title}_capabilities">Capabilities</a></li>{/if}
+									{if cf-wgcharter-w-motivation}<li><a href="#{url_title}_motivation">Motivation</a></li>{/if}
+									{if cf-wgcharter-w-compatibility}<li><a href="#{url_title}_compatibility">Compatibility</a></li>{/if}
+									{if cf-wgcharter-w-relationships}<li><a href="#{url_title}_wg_relationships">Relationship to other activities and workgroups</a></li>{/if}
+									{if cf-wgcharter-r-sdos}<li><a href="#{url_title}_target_sdos">Target Specification Development Organizations (SDOs)</a></li>{/if}
+									{if cf-wgcharter-w-participation}<li><a href="#{url_title}_participation">Participation</a></li>{/if}
+									{if cf-wgcharter-w-meetings}<li><a href="#{url_title}_meetings">Meetings Frequency and Communications</a></li>{/if}
+									{if cf-wgcharter-w-decisions}<li><a href="#{url_title}_decisions">Decision Policy</a></li>{/if}
+									<li><a href="#{url_title}_ip">Intellectual property</a></li>
+								</ul>
+							</div>
+						</div>
+						<div class="unit lastUnit">
+							<div class="gutter body-text">
+								{!-- This LV snippet has all the basic strings and variables for a charter --}
+								{lv-charter-basis}
+							</div>
+						</div>
+					</div>
+				</div>
+				{/exp:playa:parents}
+				
+			</div>
+		</div>
+	{/exp:channel:entries}
+	
+	{if logged_in_member_id > 0}
+	
+		{!-- Self-executing so as not to put it in the global scope --}
+		<script>
+			(function(){
+				
+				$(document).ready(function(){
+				
+					// Store some variables
+					var cat_id = '{oslc:workgroup:category_id}',
+						is_member = '{oslc:user:is_workgroup_member}',
+						url = '{path="utilities/member_cats_form"}';
+
+						// stick on a trailing slash
+						url = url.replace(/\/?$/,'/');
+					
+					// insert form into memory
+					$.ajax({
+						url: url,
+						success: function(data) {
+							// get the form and appropriate input
+							var $form = $('#member_categories_form', data),
+								$input = $('input[value="' + cat_id + '"]', $form),
+								memberships = [],
+								current_cat_idx,
+								$link,
+								$placeholder = $('#swap_user_group_membership_placeholder');
+							
+							// find all existing memberships
+							$form.find('input:checked').each(function(){
+								memberships.push( $(this).val() );
+							});
+							
+							// check if the current wg is part of them
+							current_cat_idx = $.inArray( cat_id, memberships);
+							
+							// if so, remove that, as the current wg will change
+							current_cat_idx > 0 && memberships.splice( current_cat_idx, 1 );
+
+							// update the form's return value to the current page URL
+							$('input[name="RET"]', $form).val(window.location.href);
+							
+							$form
+								.addClass('hidden') // make sure the form stays hidden when inevitably inserted into DOM
+								.css({'display': 'none', 'visibility' : 'hidden' })
+								.on('submit', function(e){
+									
+									// validation
+									// check that the list of *other* wgs has not changed
+									
+									var new_memberships = [],
+										current_cat_idx,
+										valid;
+									
+									$form.find('input:checked').each(function(){
+										new_memberships.push( $(this).val() );
+									});
+									
+									// find and remove the current wg id
+									current_cat_idx = $.inArray( cat_id, new_memberships );
+									current_cat_idx > 0 && new_memberships.splice( current_cat_idx, 1 );
+									
+									// clever: http://stackoverflow.com/questions/1773069/using-jquery-to-compare-two-arrays
+									valid = $( memberships ).not( new_memberships ).length == 0 && $( new_memberships ).not( memberships ).length == 0;
+									
+									! valid && alert('hey sneaky! whatchu doin to my form?');
+									
+									return valid;
+									
+								});
+
+							
+							// build the action link and place it on my placeholder
+							$link = $(document.createElement('a'))
+								.addClass('button tiny-button' + (is_member ? ' neg' : '') )
+								.attr( {
+									'href': '#',
+									'id' : 'change_user_group_membership'
+									})
+								.html( '<i data-icon="' + (is_member ? '&#xe097;' : '&#xe0a2;') + '"></i> ' + (is_member ? 'Leave' : 'Join') + ' this User Group' )
+								.appendTo($placeholder);
+								
+
+							$placeholder.one('click', function(e){				
+								e.preventDefault();
+								
+								// Set the current category checkbox to its current opposite
+								$input.prop('checked', ! $input.prop('checked') );
+								
+								// Disable the button
+								$link.addClass('disabled').html('Submitting&hellip;');
+
+								// Submit the form
+								// (1) FF requires the form to be in the DOM to submit
+								$form
+									.appendTo('body') // (1)
+									.submit();
+							});
+						} // end success()
+					});
+						
+				});
+			})()		
+		</script>
+	
+	{/if}
+	
+{/exp:stash:set}

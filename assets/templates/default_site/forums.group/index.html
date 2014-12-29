@@ -1,0 +1,30 @@
+{!-- This tag stopped parsing within forum templates as of EE 2.7.2 and Discussion Forums 3.1.13 --}
+{if segment_3 == "edit_subscriptions"}
+  {exp:stash:set name="forums_subscription_list"}
+	<div class="mvl profileHeadingBG">
+		<h2 class="h2">Forum subscriptions</h2>
+		<p>Receive an email whenever someone starts a new thread in a forum.</p>
+		{exp:forum_subscribe:forums}
+			<h3 class="h3">{forum_category}</h3>
+
+			<table border='0' cellspacing='0' cellpadding='0' style='width:100%' class="table-basic">
+			{forums}
+					<tr>
+					   <td><b>{forum_name}</b></td>
+					   <td style="width:40%">
+							{if subscribed}
+									<a class="button neg tiny-button" href="{forum_subscribe_url}">Unsubscribe</a>
+							{if:else}
+									<a class="button tiny-button" href="{forum_subscribe_url}">Subscribe to forum</a>
+							{/if}
+					   </td>
+					</tr>
+			{/forums}
+			</table>
+		{/exp:forum_subscribe:forums}
+	</div>
+  {/exp:stash:set}
+{/if}
+
+{!-- Forums output --}
+{exp:forum}

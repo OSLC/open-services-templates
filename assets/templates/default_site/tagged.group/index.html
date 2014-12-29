@@ -1,0 +1,23 @@
+{!-- 301 handling for extra segment --}
+{if segment_3 != ''}
+	{exp:http_header status='301' location="/{segment_1}/{segment_2}/"}
+{/if}
+
+{!-- Check for no results --}
+{exp:tag:entries websafe_separator='-' tag='{segment_2}'}
+{if no_results}{redirect="404"}{/if}
+{/exp:tag:entries}
+
+{stash:embed
+  context="@URI"
+  file_name="viewmodels:listing"
+  parse_stage="both"
+  stash:_layout="standard"
+
+  stash:_type="tagged"
+  stash:_listing_style="cards"
+  stash:_bartender_controls="author,sort"
+
+  stash:_listing_ids="{exp:tag:entries websafe_separator='-' tag='{segment_2}' backspace='1' }{entry_id}|{/exp:tag:entries}"
+  parse="inward" {!-- Using an extension/module as a parameter --}
+}

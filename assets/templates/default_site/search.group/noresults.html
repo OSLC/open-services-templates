@@ -1,0 +1,15 @@
+{exp:stash:set name="stash-simple-body" scope="site" parse_tags="yes"}
+{exp:smartdown}
+Sorry about that. You can always try to search again.
+
+Unfortunately, this search engine only shows results for the main site (including the blog). You might have to go [to the wiki]({path='/bin/view/Main/WebHome'}), [the forums]({path='forums/'}),  or [the mailing lists]({path='/mailman/listinfo'}) to search those.
+{/exp:smartdown}	
+{/exp:stash:set}
+
+
+{embed="_embeds/_body"
+	pagetype="search_failed"
+	
+	headtitle="Search for &ldquo;{exp:search:keywords}&rdquo;"
+	pagetitle="No results for &ldquo;{exp:search:keywords}&rdquo;"
+}

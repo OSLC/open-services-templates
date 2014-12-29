@@ -1,0 +1,125 @@
+{embed="_embeds/_body"
+	pagetype="basic_legal_agreement"
+	js_body_class="forms_typeahead forms_validate"
+	
+	{if freebie_last != "success" && (structure:page:entry_id == lv-current-ma && oslc:member:name == "")}
+	show_form="y"
+	{/if}
+	
+	freeform_form_name='members-agreement'
+	freeform_required='name|email|job_title|phone1|member_address|representing_or_independent|member_id|agreement_category'
+	freeform_template='legal_agreement_template'
+		
+	{exp:channel:entries limit="1" entry_id="{structure:page:entry_id}" {global:disable_default}}
+		agreement_name="{title} and Bylaws"
+		
+		{!-- Legal agreement text --}
+		{exp:stash:append name="main_content"}
+		
+			{if cf-charter-m-text}
+							
+				<div class="line mbl">
+				
+					<div class="unit size1of3">
+						<div class="gutter">
+					
+						{cf-charter-m-text}
+							{if row_count == 1}
+							<ul role="tablist" class="nav-tabs nav-tabs-vertical nav-tabs-smaller">
+							{/if}
+							
+							<li class="nav-tab"><a role="tab" href="#{section_id}">{section_title}</a></li>
+							
+							{if row_count == total_rows}</ul>{/if}
+						{/cf-charter-m-text}
+						</div>
+					</div>
+					
+					<div class="unit lastUnit">
+					
+						{cf-charter-m-text}
+							
+							<div id="{section_id}" role="tabpanel" class="body-text">
+								{section_text}
+							</div>
+						
+						{/cf-charter-m-text}
+					
+					</div>
+				
+				</div>
+				
+			
+			{/if}
+		
+		{/exp:stash:append}{!-- /main_content --}
+
+		
+	{/exp:channel:entries}
+		
+}
+
+{!-- Jump and messages --}
+{exp:stash:set name="stash-simple-body"}
+
+	{if freebie_last != "success"}
+
+		{if structure:page:entry_id == lv-current-ma}
+
+			{if oslc:user:is_not_member}
+			
+				{if oslc:member:name}
+				{!-- Has completed a Members Agreement (ie in limbo) --}
+					<div class="callout-box body-text">
+						<p><strong>Hey there!</strong> You've already submitted this form. Your application for membership is under review.</p>
+						<p>We'll get back to you soon.</p>
+					</div>
+				{if:else}
+					<p><a href="#sign_agreement_form">Scroll down to sign this form &darr;</a></p>
+				{/if}
+			
+			{if:else}
+			{!-- Is a member --}
+			<div class="callout-box body-text">
+				<p><strong>Hey!</strong> You're already an OSLC Member! Yay!</p>
+					<p>But, um, why are you here? Maybe you&rsquo;re looking for the other <a href="{structure:parent:url}">legal agreements</a>?</p>
+			</div>
+			{/if}
+		
+		{/if} {!-- / on Members Agreement Pg --}
+		
+	
+	{if:else}{!-- /freebie_last != "success" --}
+	
+		<div class="callout-box body-text success">			
+			{!-- Successful Members Agreement --}
+			{if structure:page:entry_id == lv-current-ma}
+				{if oslc:user:is_member}
+					<p><strong>Success!</strong> You're now an OSLC Member!</p>
+					<p>If you're ready to complete the WPA for a specification workgroup, here are all of our <a href="{structure:parent:url}">legal agreements</a>.</p>
+					<p>Or perhaps join one of our User Groups:</p>
+					
+					{!-- Pull in user groups from the workgroup_group entry 
+						@todo: anything more elegant here?
+					--}
+					{exp:channel:entries url_title="user-groups" dynamic="off" limit="1" {global:disable_default}}
+					
+						{cf-sg-r-specs}
+							{if count == 1}<ul>{/if}
+							<li><a href="{page_url}">{title}</a></li>
+							{if count == total_results}</ul>{/if}
+						{/cf-sg-r-specs}
+					
+					{/exp:channel:entries}
+					
+				{if:else}
+					{!-- Less successful Members Agreement: Successful submission, but requires review --}
+					<p><strong>Thanks!</strong> We&rsquo;ll review your information and get back to you soon!</p>
+				{/if}
+			{/if}
+		</div>
+	
+	{/if}
+
+	
+{/exp:stash:set}
