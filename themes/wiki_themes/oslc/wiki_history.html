@@ -1,0 +1,45 @@
+
+{if no_history}
+<div class="callout-box callout-warning">There is no history for this page.</div>
+{/if}
+
+{if history}
+<table cellspacing="0" class="table-basic">
+<thead>
+	<tr>
+	
+		<th>Date</th>
+		<th>Author</th>
+		<th>Revision notes</th>
+		<th>Status</th>
+	</tr>
+</thead>
+<tbody>
+
+{wiki:revisions}
+<tr>
+	<td><a  href="{path:revision_link}">{revision_date format="%Y %F %j, %H:%i"}</a> </td>
+	<td><a href="{path:member_profile}">{revision_author}</a> </td>
+	<td>{if notes}{revision_notes}{/if}</td>
+	<td>{if revision_status == 'closed'}Closed{if:else}<a href="{path:revision_link}">Open</a>{/if} 
+
+	{!-- Admin access only for WG members or superadmins --}
+	{if oslc:user:is_workgroup_member || logged_in_group_id == "1"}
+		{!-- Note for later: To do anything "admin" in the wiki, the person must be a member of the appropriate user group. No getting around it. --}
+		{if can_admin}
+		&emsp;
+		{if revision_status == 'closed'} <a class="button" href="{path:open_revision}">Open/Approve</a> {/if}{if revision_status == 'open'} <a class="button neg" href="{path:close_revision}">Close</a> {/if}
+		{/if}
+	{/if}
+	</td>
+
+</tr>
+{/wiki:revisions}
+
+
+</tbody>
+</table>
+
+{/if}
+
+	

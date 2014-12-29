@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--[if lt IE 7 ]> <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{lang}" lang="{lang} class="no-js ie6 ltie8"> <![endif]-->
+<!--[if IE 7 ]> <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{lang}" lang="{lang}" class="no-js ie7 ltie8"> <![endif]-->
+<!--[if IE 8 ]> <html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="{lang}" lang="{lang}" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]> <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{lang}" lang="{lang}" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="{lang}" lang="{lang}" class="no-js" > <!--<![endif]-->
+<head>
+<title>{page_title} &ndash; {forum_name}</title>
+{include:meta_tags}
+
+<link rel="stylesheet" href="/css/oslc.css?v=20120520" type="text/css" />
+
+<script src="/js/modernizer.js"></script>
+
+{include:javascript}
+{include:head_extra}
+
+<!-- Markdown scripts -->
+<script src="/js/pagedown/Markdown.Converter.js" type="text/javascript"></script>
+<script src="/js/pagedown/Markdown.Sanitizer.js" type="text/javascript"></script>
+<script src="/js/pagedown/Markdown.Editor.js" type="text/javascript"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+$(function() {
+	//Move the mini login form
+	{if logged_out}
+		//Pop the login form out of #main as it's position absolute
+		$('#meta > .container').css('position','relative')
+		$('#login').appendTo('#meta > .container');
+		
+		$('#forum_login').find('a').click(function(e) {
+			e.preventDefault();
+			$('#login').slideToggle('fast');
+			
+			// Hide it on escape
+			$(window).keyup(function(e) {
+				if (e.keyCode == 27) {
+					$('#login').slideUp('fast');									
+				}
+			});
+			
+			
+		});
+	{/if}
+
+	// Add '/forums' to the logout link
+//		{if logged_in}
+//			$('#forum_logout').attr('href', $('#forum_logout').attr('href').replace('/?ACT','/forums?ACT'))
+//		{/if}
+	
+	//Fix thumbnails for attachments
+//		$('a[href^="javascript:showimage"]').each(function(){
+//			var $this = $(this);
+//			
+//			$this.attr( 'href', $this.attr('href').replace('/?ACT=28','/forums?ACT=28') )
+//		});
+//		
+//		$('img[src*="thumb="]').each(function(){
+//			var $this = $(this);
+//			
+//			$this.attr( 'src', $this.attr('src').replace('/?ACT','/forums?ACT') )
+//		});
+	
+
+	//Fix form actions while you're running off of index_ee.php
+	//Can probably remove when you move to index.php
+	//FIXED: Don't do 301 redirects with a missing trailing slash if there's POST data.
+//	$('form').each(function(){
+//		var form_action = $(this).attr('action');
+//			
+		//Have a problem with Trailing slashes.
+		//If they're not there, the .htacess redirect loses them	
+//		if ( $(this).attr('method') === 'post' && form_action.search(/\/$/) === -1 )
+//		{
+//			
+//			$(this).attr('action',form_action + '/');
+//			
+//		}
+//		
+//	});
+	
+	$('.buttons').removeClass('buttons').addClass('button');
+	$('#add').prepend('<i data-icon="&#xe075;"></i> ');
+	$('#delete').addClass('neg').prepend('<i data-icon="&#xe029;"></i> ');
+	
+    /* Need to fix these pop-up menus b/c div#main is position:relative */
+	$('#copy, #move').each(function() {
+		var $this = $(this),
+			$thismenu = $('#' + this.id + 'menu');
+
+		$this.click(function(){
+			var btnoffset = $this.offset(),
+				mainoffset = $('#main').offset();
+				
+			/* Subtract #main's offset and you're good */
+			$thismenu.css(
+			 {
+			 	'top': btnoffset.top + 31 - mainoffset.top + 'px',
+			 	'left': btnoffset.left - mainoffset.left + 'px'
+			 }
+			);
+		})
+	})
+	
+	//Add a .container to #footer
+	$('#footer').html('<div class="container">' + $('#footer').html() + '</div>');
+	
+	
+	
+
+	
+});
+</script>
+</head>
+
+<body {include:body_extra}>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id='mainwrap'>
+    
+    	<div id='header' class="clearfix">

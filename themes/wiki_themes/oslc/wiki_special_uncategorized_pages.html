@@ -1,0 +1,56 @@
+{!-- THIS PAGE HAS A BUG. IT SHOWS ALL PAGES. It appears to be a bug in the framework code 
+	http://expressionengine.com/bug_tracker/bug/16862
+ --}
+<div class="form form-inline onlywithjs mbl">
+<label for="namespace_choice">Namespace</label>  
+
+<span class="input-wrap">
+<select id="namespace_choice" onchange="location.href=this.value">
+<option value="{path:wiki_base_url}{special_namespace}:Uncategorized/">{main_namespace}</option>
+{wiki:custom_namespaces_list}
+<option value="{path:wiki_base_url}{special_namespace}:Uncategorized/{namespace_short_name}/" {namespace_selected}>{namespace_label}</option>
+{/wiki:custom_namespaces_list}
+</select>
+</span>
+
+</div>
+
+
+{wiki:title_list columns="1"}
+
+{if no_results}
+<div class="callout-box callout-warning">There are no articles in that Namespace</div>
+{/if}
+
+	<table class="table-basic">
+	
+		<thead>
+			<tr>
+				<th>Topic title</th>
+				<th>Last edited</th>
+				<th>Author</th>
+			</tr>
+		</thead>
+		<tbody>
+			{articles}
+				{row_start}<tr>{/row_start}
+				
+				{row_column}
+				<td>
+				<a href="{path:view_article}">{title}</a><br />
+				</td>
+				<td>{last_updated format="%d %F %Y"}</td>
+				<td><a href="{path:author_profile}">{author}</a></td>
+				{/row_column}
+				
+				{row_blank}<td>&nbsp;</td>{/row_blank}
+				
+				{row_end}</tr>{/row_end}
+			{/articles}
+		</tbody>
+	</table>
+
+{/wiki:title_list}
+
+	
+	

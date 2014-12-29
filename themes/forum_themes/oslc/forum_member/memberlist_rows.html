@@ -1,0 +1,44 @@
+<tr>
+
+<td class='{member_css}' width="20%">
+<span class="defaultBold"><a href="{path:profile}">{name}</a></span>
+</td>
+
+<td class='{member_css}'>{total_forum_posts}</td>
+
+<td class='{member_css}'>
+{if accept_email}
+<a class="button alt" href="#" {email_console} title="{lang:email_console}">Email</a>
+{/if}
+</td>
+
+<td class='{member_css}'>
+{if url}
+<a class="button alt" href="{url}" target="_blank" title="{url}">www.</a>
+{/if}
+</td>
+
+<td class='{member_css}'>
+{if aol_im}
+<a class="button alt" href="#" {aim_console} title="{lang:mbr_aim_console}">AOL</a>
+{/if}
+</td>
+
+<td class='{member_css}'>
+{if icq}
+<a class="button alt" href="#" {icq_console} title="{lang:mbr_icq}">ICQ</a>
+{/if}
+</td>
+
+<td class='{member_css}'>
+{if yahoo_im}
+<a class="button alt" href="{yahoo_console}" title="{lang:mbr_yahoo}" target="_blank">Yahoo</a>
+{/if}
+</td>
+
+
+<td class='{member_css}'>{join_date  format="%m/%d/%Y"}</td>
+
+<td class='{member_css}'>{last_visit  format="%m/%d/%Y"}</td>
+
+</tr>

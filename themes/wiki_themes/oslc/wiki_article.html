@@ -1,0 +1,68 @@
+{if revision}
+
+<div class="callout-box callout-warning">This is the revision from <strong>{revision_date format="%Y %F %j at %h:%i %a"}</strong> &emsp;
+<a href="/{segment_1}/{segment_2}/{if topic != 'index'}{segment_3}/{/if}">View the current live version of the article.</a>
+</div>
+
+{/if}
+
+<div class="body-text check-table-size">
+{!-- Stashed in wiki_page --}
+{exp:stash:get name='article_content'}
+</div>
+
+
+<!-- BEGIN 'Category' Namespace Stuff -->
+
+{if namespace == category_namespace}
+
+{if new_article}{if:else}<hr />{/if}
+
+<div>
+{wiki:category_subcategories style="nested"}
+
+{header}
+<h2 class="h2">Subcategories</h2>
+{!-- There {if subcategory_total == '1'}is 1 subcategory{if:else}are {subcategory_total} subcategories{/if} for this category --}
+{/header}
+<a href="{path:view_category}">{category_name}</a>
+{/wiki:category_subcategories}
+</div>
+
+
+
+<div class="body-text mvl">
+{!-- To do: need to modify core {letter_header} to match multiple times (preg_match_all) instead of once if you want to use a Table (needed to close the TR and TD) --}
+
+{wiki:category_articles limit="100"}
+
+{header}
+<h2>{if articles_total == '1'}1 article{if:else}{articles_total} articles{/if} in category &ldquo;{topic}&rdquo;</h2>
+<dl>
+{/header}
+{letter_header}<dt>{letter}</dt>{/letter_header}
+
+<dd><a href="{path:view_article}">{title}</a></dd>
+
+{footer}</dl>{/footer}
+{/wiki:category_articles}
+</div>
+
+{/if}
+
+<!-- END 'Category' Namespace Stuff -->
+
+
+<!-- BEGIN Categories for Page -->
+{if categories}
+<hr />
+
+<h2 class="h2">Categories</h2>
+{wiki:categories style="nested"}
+<a href="{path:view_category}">{category_name}</a>
+{/wiki:categories}
+{/if}
+
+<!-- END Categories for Page -->
+
+	

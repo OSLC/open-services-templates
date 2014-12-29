@@ -1,0 +1,17 @@
+<div class="previewheading">Preview</div>
+<div class="preview fixmarkdownblockquotes">
+  <h2>{post_title}</h2>
+    {!--  
+	    For future people, here's all the processing that goes into this little post_body tag:
+	    1. On submission, some tags are stripped for security.
+	    2. Content is converted according to the following settings:
+	      - Security conversion: Add-ons > Modules > Forums > Forum Management > [forum name] > Edit > Text and HTML formatting HTML Formatting in Posts (set to "Allow All" [probably])
+	      - Markdown conversion: Add-ons > Modules > Forums > Forum Management > [forum name] > Edit > Text and HTML formatting Text Formatting in Posts (set to "Smartdown")
+	    3. Check my extension exp.oslc_wiki_markdown_fixes for additional "fixes"
+	      - Un-encodes some brackets for Markdown Extra header IDs
+	      - Un-encodes some double-encoded characters in code blocks
+	  --}
+
+  
+  {post_body}
+</div>

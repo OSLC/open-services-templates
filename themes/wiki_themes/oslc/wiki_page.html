@@ -1,0 +1,412 @@
+{!-- For the EDIT page, I think extra long pages (like Spec vocabs) can get HUUUUGE, which can block parsing. 
+	Outputting and stashing the raw content separately seems to help.
+	This always outputs (annoyingly)
+ --}
+{exp:stash:set name='edit_page_content'}{content}{/exp:stash:set}
+
+{!-- Also for the EDIT/PREVIEW page, if the preview gets too long, you block parsing  --}
+{exp:stash:set name='edit_page_parsed_preview'}{preview}{/exp:stash:set}
+
+{!-- Also for the converted page content --}
+{exp:stash:set name='article_content'}{article}{/exp:stash:set}
+
+{!-- The parser does NOT like if you output the wiki:page variable multiple times. Stash to the rescue --}
+{exp:stash:set name='the_wiki_page_content' parse_tags='yes' parse_vars='yes'}
+	{!-- These conditionals are defined in your oslc_wiki_markdown extension --}
+	{if page_is_not_secret || (page_is_secret && oslc:user:is_workgroup_member)}
+	{wiki:page}
+	{/if}
+{/exp:stash:set}
+
+{exp:stash:set parse_tags="yes"}
+	{stash:rss_feed}
+	<link rel="alternate" title="Recent changes for this wiki" type="application/rss+xml" href="{path='{segment_1}/{segment_2}/rss'}/">	
+	{/stash:rss_feed}
+
+	{stash:headtitle}
+		{title} | {wiki_name}
+	{/stash:headtitle}
+	
+	{stash:nav_links}
+	
+		<ul class="clearfix">
+			<li><a class="dropdown-toggle" data-toggle="dropdown" href="{path='{segment_1}'}">All wikis <span class="onlywithjs-inline">&darr;</span></a>
+				{exp:stash:get name="nav_links_all_wikis"}
+			</li>
+			{if logged_out}
+			<li><a href="{path:register}">Register</a></li>
+			{/if}
+			{if logged_in}
+			<li><a href="{path:your_control_panel}">Your Control Panel</a></li>
+			<li><a href="{path:your_profile}">Your public profile</a></li>
+			{/if}
+		</ul>
+	
+	{/stash:nav_links}
+	
+	{stash:pagetitle}
+		{if edit_article}
+		{if can_edit}
+		
+			{if oslc:user:is_workgroup_member}
+				<span class="pagetitle-deemph">Editing:</span>
+			{if:else}
+				<span class="pagetitle-deemph">Source:</span>
+			{/if}
+		
+		{/if}
+		{if cannot_edit}<span class="pagetitle-deemph">View Source:</span>{/if}
+		{/if}
+		
+		{if article_history}
+		<span class="pagetitle-deemph">Viewing History:</span>
+		{/if}
+		{if revision}
+		<span class="pagetitle-deemph">Revision:</span> 
+		{/if}
+		
+		{if topic == 'index'}
+			{exp:stash:get name="wiki_workgroup_title"} Wiki Home
+		{if:else}
+			{title}
+		{/if}
+		
+		{if special_page} 
+		{if:elseif file_page}
+		{if:else}
+			{if edit_article}
+			{if:else}
+				{if can_edit}
+					{if oslc:user:is_workgroup_member}
+						<a class="fs-reset" href="{path:edit_article}{if revision}/revision/{revision_id}/{/if}" >Edit</a>
+					{/if}
+				{/if}
+			{/if}
+		{/if}
+				
+	{/stash:pagetitle}
+	
+	{stash:breadcrumbs}
+		<a href="{path='/'}">Home</a> / 
+		<a href="{path='{segment_1}'}">Wiki</a>{if segment_3} / <a href="{path:wiki_home}">{wiki_name}</a>{/if}
+	{/stash:breadcrumbs}
+
+{/exp:stash:set}
+
+{exp:stash:set name='main_content' parse_tags="yes"}
+		
+	{!-- This has to be high-level; it's used by both the "Go to page" form in the sidebar (all pages) and the Link to Page modal on the wiki_edit page --}
+	<div class="totallyinvisible">
+		<datalist id="all_titles">
+			<option value="Special:Recentchanges">Special:Recentchanges</option>
+			<option value="Special:Categories">Special:Categories</option>
+			<option value="Special:Titles">Special:Titles</option>
+			{!-- Only members can upload --}
+			{if oslc:user:is_workgroup_member}<option value="Special:Uploads">Special:Uploads</option>{/if}
+			<option value="Special:Files">Special:Files</option>
+			
+			{exp:query sql="SELECT page_name 
+				FROM exp_wiki_page
+				INNER JOIN exp_wikis ON exp_wiki_page.wiki_id = exp_wikis.wiki_id
+				WHERE exp_wikis.wiki_short_name = '{segment_2}'"}
+			 <option value="{exp:low_replace find='-' replace='SPACE'}{page_name}{/exp:low_replace}">{exp:low_replace  find="-" replace="SPACE"}{page_name}{/exp:low_replace}</option>
+				 {!-- Hyphens not allowed --}
+			{/exp:query}
+			
+		</datalist>													
+	</div>
+
+	<div class="line">
+		
+		{if edit_article}
+		{!-- Hide the sidebar on Edit pages --}
+		{if:else} 
+			<div class="unit size1of4" id="wiki_sidebar">
+				<div class="gutter">
+					{if logged_out}
+						<div class="mbl box-inset">
+							{exp:member:login_form 
+								return="{global:base_url}/{freebie_original_uri}"
+								form_class="form form-validate"
+								}
+							    	<label for="agreement_login_username">Username or email</label>
+							    	<input type="text" class="input-small required" required name="username" id="agreement_login_username" value="" maxlength="32">
+							    	<label for="agreement_login_password">Password</label>
+							    	<input type="password" class="input-small required" required name="password" id="agreement_login_password" value="" maxlength="32">
+							    	<br />
+							    	<button type="submit" class="button">Log in</button>
+							    	<a class="fs-smaller" href="{path='forums/member/forgot_password'}">Forgot your password?</a>
+							    								        
+							{/exp:member:login_form}
+							<p class="mbn">New here? <a href="{path:register}">Sign up!</a></p>
+						</div>
+					{if:else}
+						
+						{if oslc:user:is_workgroup_member}
+							<div class="onlywithjs mbl">
+								<a data-toggle="modal" data-backdrop="true" href="#newPageModal" class="button"><i data-icon="&#xe075;"></i> New page</a>
+							</div>
+							<div class="modal fade" id="newPageModal">
+								<div class="modal-header">
+									<button class="close" data-dismiss="modal">&times;</button>
+									<h3>Create a new page</h3>
+								</div>
+								<form autocomplete="off" method="post" class="form" name="newPageForm" action="{path:wiki_base_url}{special_namespace}:Find_page">
+								<div class="totallyinvisible"><input type="hidden" name="XID" value="{XID_HASH}" /></div>
+								<div class="modal-body">
+									<label for="wikiPageName">Page name</label>
+									<input type="text" class="" autocomplete="off" name="title" id="wikiPageName"  />
+								</div>
+								<div class="modal-footer">
+									<a href="#" class="minor" data-dismiss="modal">Cancel</a> &emsp;
+								    <button href="#" class="button" id="newPageSubmit" type="submit">Create page</button>
+								</div>
+								</form>
+							</div>
+							
+							<script>
+								Modernizr.load([{
+									load: 
+									[
+										'/js/plugins/bootstrap/bootstrap-transition.js'
+										, '/js/plugins/bootstrap/bootstrap-modal.js'
+									]
+									, complete: function()
+									{
+										$('#newPageSubmit').on('click', function(e){
+											e.preventDefault();
+											
+											var $page_name_input = $('#wikiPageName');
+											
+											// Remove spaces and replace with hyphens
+											var page_name = $page_name_input.val().trim().replace(/\s/g,'-');
+											
+											if ( page_name !== "" )
+											{
+												// kick them straight to the 'edit' page
+												window.location.href = '{path:wiki_base_url}' + page_name + '/edit/';
+											}
+										});
+									}
+								}]);
+							</script>
+						
+						{if:else}
+							{!-- Direct them to WPA --}
+							<div class="mbl callout-box callout-warning body-text">
+								<p>You are not a member of the {exp:stash:get name='wiki_workgroup_title'} workgroup. You cannot edit or create pages in this wiki.</p>
+								{!-- Generates a link to the WPA if one exists --}
+								{!-- Field ID #69 is the "Target Workgroup" relationship field (as opposed to the "Additional Workgroups" field --}
+								{exp:playa:parents parse='inward' entry_id="{exp:stash:get name='workgroup_entry_id'}" field_id="69" channel='legal_agreements' limit='1'}<p><a class="button" href="{page_url}">Join this Workgroup</a></p>{/exp:playa:parents}
+								{if oslc:workgroup:is_user_group}
+									<p>To join this User Group, <a href="{path='workgroups/{segment_2}'}">go to the main page for the Workgroup</a> and click <b>Join this User Group</b>.</p>
+								{/if}
+								
+							</div>
+						{/if} {!-- not workgroup member --}
+
+					{/if} {!-- /logged in --}
+					
+					{!-- Global navigation --}
+					<ul class="nav-list box-inset mvn">
+						<li>
+							<form class="nav-list-item nav-list-form form form-inline" autocomplete="off" method="post" action="{path:wiki_base_url}{special_namespace}:Find_page">
+							<div class="totallyinvisible"><input type="hidden" name="XID" value="{XID_HASH}" /></div>
+							<input type="text" class="input-xsmall" name="title" list="all_titles" placeholder="Go to page" maxlength="80" /><button type="submit" class="button fs-smaller" >Go <i data-icon="&#xe08d;"></i></button>
+							</form>
+						</li>
+						<li class="nav-divider"></li>
+						
+						<li {if title == 'Special:Recentchanges'}class="active"{/if}><a href="{path:wiki_base_url}{special_namespace}:Recentchanges" title="Most recent changes">Recent changes</a></li>
+						<li class="nav-divider"></li>
+						
+						<li {if topic == 'index'}class="active"{/if}><a href="{path:wiki_home}">{exp:stash:get name="wiki_workgroup_title"} home</a></li>
+						<li {if title == 'Special:Titles'}class="active"{/if}><a href="{path:wiki_base_url}{special_namespace}:Titles" title="List of Titles">All pages</a></li>
+						<li {if title == 'Special:Categories'}class="active"{/if}><a href="{path:wiki_base_url}{special_namespace}:Categories" title="">Categories</a></li>
+						{!--<li {if title == 'Special:Uncategorized'}class="active"{/if}><a href="{path:wiki_base_url}{special_namespace}:Uncategorized" title="Uncategorized Pages">Uncategorized Pages</a></li>--}
+						<li><a href="{path:wiki_base_url}{special_namespace}:Random_page" title="Random Page">Random Page</a></li>
+						<li class="nav-divider"></li>
+						
+						<li>
+							<form class="nav-list-item nav-list-form form form-inline" autocomplete="off" method="post" action="{path:wiki_base_url}{special_namespace}:Search_results">
+							<div class="totallyinvisible"><input type="hidden" name="XID" value="{XID_HASH}" /></div>
+							<input type="text" class="input-xsmall" placeholder="Search" name="keywords" value="" maxlength="80" />
+							<button type="submit" class="button fs-smaller">Search</button>
+							</form>
+						</li>
+						
+						<li class="nav-divider"></li>
+						{!-- This seems to be "logged in user can upload" --}
+						{if uploads}
+							{if oslc:user:is_workgroup_member}
+							<li {if title == 'Special:Uploads'}class="active"{/if}><a href="{path:wiki_base_url}{special_namespace}:Uploads" title="Uploads">File Upload</a></li>
+							{/if}
+						{/if}		
+						<li {if title == 'Special:Files'}class="active"{/if}><a href="{path:wiki_base_url}{special_namespace}:Files" title="Uploaded Files">Uploaded Files</a></li>
+						<li class="nav-divider"></li>
+						<li><a href="{path:wiki_base_url}rss/" title="Recent Changes in RSS">RSS</a></li>
+						<li class="nav-divider"></li>
+						<li><a href="http://stackoverflow.com/editing-help">Basic syntax guide</a></li>
+						<li><a href="http://expressionengine.com/user_guide/modules/wiki/wiki_syntax.html">Linking and categories syntax</a></li>
+					</ul>
+					
+					{if "{exp:stash:not_empty name='workgroup_is_deprecated'}"}
+					  <div class="mvl">
+              {exp:stash:get name="workgroup_is_deprecated"}
+					  </div>					  
+					{/if}
+					
+					{if oslc:user:is_not_workgroup_member && segment_2 != "steering-committee"}
+						<h3>Want to contribute?</h3>
+						<ol class="mln pln">
+							<li class="mbn">{if logged_out}<a href="/forums/member/register/">{/if}Register{if logged_out}</a>{/if} {if logged_in}<i class="icon-font icon-font-good" data-icon="&#xe093;"></i>{/if}</li>
+							<li class="mbn">{if oslc:user:is_not_member}<a href="/legal-agreements/members-agreement/">{/if}Complete Members Agreement{if oslc:user:is_not_member}</a>{/if} {if oslc:user:is_member}<i class="icon-font icon-font-good" data-icon="&#xe093;"></i>{/if}</li>
+							<li>
+								{if oslc:user:is_not_workgroup_member}<a href="{exp:stash:get name='wiki_wpa_url'}">{/if}
+								{if oslc:workgroup:is_domain_group}Complete WPA{if:else}Join User Group{/if}
+								{if oslc:user:is_not_workgroup_member}</a>{/if} 
+								{if oslc:user:is_workgroup_member}<i class="icon checkbox"></i>{/if}</li>
+						</ol>
+					{/if}
+					
+					{if "{exp:stash:not_empty name='workgroup_mailinglist'}"}
+						<div class="mtl">
+							{if segment_2_category_group_id == "4" && segment_2 != "communications"}
+								<i class="icon-font icon-font-tinted mrs" data-icon="&#xe098;"></i>
+							{if:else}
+								<i class="icon-font icon-font-tinted mrs" data-icon="&#xe04f;"></i>
+							{/if}
+							<a href="{exp:stash:get name='workgroup_mailinglist'}">
+								{if segment_2_category_group_id == "4" && segment_2 != "communications"}Forum{if:else}Mailing list{/if}
+							</a>
+						</div>
+					{/if}
+					
+					<p class="mtl">
+						<i class="icon-font icon-font-tinted mrs" data-icon="&#xe057;"></i>
+						<a href="{path='workgroups/{segment_2}'}" title="See more details about the {oslc:workgroup:title} Workgroup">Workgroup information</a>
+					</p>
+											
+				</div>
+			</div>
+		{/if}
+					
+		<div class="unit {if edit_article}size1of1{if:else}size3of4{/if}">
+			<div class="">
+				
+				<div class="pbs mbm" style="border-bottom: 1px solid #ccc;">
+					{if special_page} 
+					{if:elseif file_page}
+					{if:else}
+						{if can_edit}
+							{if oslc:user:is_workgroup_member}
+								{if edit_article}
+									<span class="button disabled">Editing</span>
+								{if:else}
+									<a class="button" href="{path:edit_article}{if revision}/revision/{revision_id}/{/if}"><i data-icon="&#xe043;"></i> Edit</a>
+								{/if}
+								 &emsp;
+							{/if} {!-- /is workgroup member --}
+						{/if} {!-- / can edit (also logged in) --}
+					{/if}
+					
+					{if special_page}
+					<a href="{path:view_article}">&infin; Permalink</a>
+					{if:elseif file_page}
+					<a href="{path:view_article}">&infin; Permalink</a>
+					{if:else}
+					<a href="{path:article_history}">History</a> &emsp;
+					<a href="{path:view_article}">View</a> &emsp;
+					<a href="{path:wiki_base_url}{special_namespace}:Associated_Pages/{url_title}" title="Links to this page">Links to this page</a>
+					{/if}
+					
+					{if special_page}
+					{if:elseif file_page}
+					{if:elseif edit_article}
+					{if:elseif new_article}
+					{if:elseif article_history}
+					{if:elseif revision}
+						<span class="deemph mll"><strong>Revision from</strong>: {revision_date format="%Y %F %j | %h:%i %a"}</span>
+					{if:else}
+						<span class="deemph mll">{current_revision_date format="%Y %F %j | %h:%i %a"}</span>
+					{/if}
+					
+					
+				</div>
+				
+				{if redirected}
+				<p class="deemph">Redirected from: <a href="{path:original_page}">{original_page}</a></p>
+				{/if}
+				
+				{if redirect_page}
+				<p class="deemp">This page redirects to: <a href="{path:redirect_page}">{redirect_page}</a></p>
+				{/if}
+				
+				{!-- namespace == category_namespace is so you don't see this message on Category:title pages  --}					
+				{if new_article && namespace != category_namespace}
+					<div class="callout-box">
+						<strong>Welcome to limbo!</strong> This page has no content, so it technically doesn&rsquo;t exist. But you're here now! I know &ndash; it&rsquo;s weird!
+						{if logged_in}
+							{if oslc:user:is_workgroup_member}
+								<p><a href="{path:edit_article}">Write some content</a> to officially create the page.</p>
+							{if:else}
+								<p>Sadly, you can&rsquo;t edit this wiki and relieve this page of its existential torment. 
+									{if "{exp:stash:not_empty name='wiki_wpa_url'}"}
+										To create and edit pages for this Workgroup, <a href="{exp:stash:get name='wiki_wpa_url'}">{if is_oslc_user_group}join this group{if:else}complete the Workgroup Participation Agreement{/if}</a>.
+									{/if}
+									</p>
+							{/if}
+							{if cannot_edit}
+							You are unable to add articles to the wiki. Sorry!
+							{/if}
+						{if:else}
+							<p>You should log in to see if you can fix that.</p>
+						{/if}
+					</div>
+				{/if}
+				
+				{if page_is_secret}
+
+					{if oslc:user:is_workgroup_member}
+						<div class="callout-box callout-warning">
+							Hey, this page is only visible to members of this workgroup, including you! Just thought you should know!
+						</div>
+
+					{/if}
+					
+					{if oslc:user:is_not_workgroup_member}
+						<div class="callout-box callout-warning">
+							<p>This page is only visible to members of this workgroup!</p>
+
+							{if logged_out}<p>If you <strong>are</strong> a member of this workgroup, please log in.</p>{/if}
+						</div>
+													
+					{/if}
+					
+				{/if}
+				
+        {if oslc:workgroup:is_steering_committee}
+          <div class="box-inset">
+            <div class="flag">
+              <div class="flag-image prm">
+                <i class="icon-font icon-font-strip-module-img" data-icon="&#xe061;"></i>
+              </div>
+              <div class="flag-body">
+                <strong>Sort of a ghost town here</strong> <br />
+                The Steering Committee is now active <a href="https://wiki.oasis-open.org/oslc-sc" rel="external">at OASIS</a>. This wiki will remain up for historical purposes.
+              </div>
+            </div>
+          </div>
+        {/if}
+
+								
+				{!-- Finally, the wiki:page content. See the other theme files for the output here --}
+				<div class="mvm">
+					{exp:stash:get name='the_wiki_page_content'}
+				</div>
+									
+			</div>
+		</div>
+	</div>	
+
+{/exp:stash:set}

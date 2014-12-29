@@ -1,0 +1,23 @@
+</div> <!-- /#header -->
+
+<div id="main">
+	<div id="main_inner">
+	
+	<!-- Survey Notify banner March 2012 -->
+	<div id="surveynotify"></div>
+
+<div id="pageheader" class="clearfix">
+
+	{if logged_in}
+	{include:private_message_box}
+	{/if}
+	
+	{if logged_out}
+	{include:login_form_mini}
+	{/if}
+	
+	<div class="breadcrumb">{include:breadcrumb}</div>
+	
+</div>
+
+

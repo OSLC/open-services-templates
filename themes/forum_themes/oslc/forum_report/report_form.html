@@ -1,0 +1,92 @@
+{form_declaration:forum:do_report}
+
+<table class="tableBorderLeft" cellpadding="0" cellspacing="0" border="0" style="width:100%;" align="center">
+<tr>
+<td class="tableHeadingBG" colspan="2"><div class="tableHeading">{lang:report}</div></td>
+
+</tr><tr>
+
+{if is_topic}
+	<td class="tableRowHeadingBold" colspan="2">{lang:thread_title} &nbsp;{title}</td>
+{/if}
+{if is_post}
+	<td class="tableRowHeadingBold" colspan="2">{lang:reply}</td>
+{/if}
+
+</tr><tr>
+
+
+<td class="tableCellTwo" colspan="2">
+<div class="itempadbig">
+<div class="defaultBold">{lang:report_info}</div>
+</div>
+</td>
+
+</tr><tr>
+
+<td class="tableCellTwo">
+<div class="itempad"><div class="defaultBold">{lang:author}:</div></div>
+</td>
+<td class="tableCellOne">
+<div class="itempad">{author}</div>
+</td>
+
+</tr><tr>
+
+<td class="tableCellTwo" width="10%" style="vertical-align: top;">
+<div class="itempad"><div class="defaultBold">{lang:content}:</div></div>
+</td>
+<td class="tableCellOne">
+<div class="itempadbig" width="90%">
+	<div class="fixmarkdownblockquotes">
+	  {!--  
+	    For future people, here's all the processing that goes into this little body tag:
+	    1. On submission, some tags are stripped for security.
+	    2. Content is converted according to the following settings:
+	      - Security conversion: Add-ons > Modules > Forums > Forum Management > [forum name] > Edit > Text and HTML formatting HTML Formatting in Posts (set to "Allow All" [probably])
+	      - Markdown conversion: Add-ons > Modules > Forums > Forum Management > [forum name] > Edit > Text and HTML formatting Text Formatting in Posts (set to "Smartdown")
+	    3. Check my extension exp.oslc_wiki_markdown_fixes that latches onto Smartdown hooks for additional "fixes"
+	      - Un-encodes some brackets for Markdown Extra header IDs
+	      - Un-encodes some double-encoded characters in code blocks
+	  --}
+
+		{body}
+	</div>
+</div>
+</td>
+
+</tr><tr>
+
+<td class="tableCellTwo" colspan="2">
+<div class="itempadbig">
+<div class="defaultBold">{lang:report_instructions}</div>
+</div>
+</td>
+
+</tr><tr>
+
+<td class="tableCellOne" colspan="2">
+<div class="itempadbig">
+<input type="checkbox" class="checkbox" name="reason[]" value="spam" /> {lang:spam}
+&nbsp;&nbsp;<input type="checkbox" class="checkbox" name="reason[]" value="harassment" /> {lang:harassment}
+&nbsp;&nbsp;<input type="checkbox" class="checkbox" name="reason[]" value="language" /> {lang:language}
+&nbsp;&nbsp;<input type="checkbox" class="checkbox" name="reason[]" value="other" /> {lang:other}
+</div>
+</td>
+
+</tr><tr>
+
+<td class="tableCellOne" colspan="2">
+<div class="itempadbig"><textarea name='notes' style='width:100%' class='textarea' rows='12' cols='90'></textarea></div>
+</td>
+
+</tr><tr>
+
+<td class="tableCellTwo" colspan="2">
+<div class="itempadbig"><input type="submit" name="submit" class="button" value="{lang:report}" /></div>
+</td>
+
+</tr>
+</table>
+
+</form>

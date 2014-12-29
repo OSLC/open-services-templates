@@ -1,0 +1,155 @@
+<div class="form form-horizontal">
+
+<div class="line">
+
+<div class="unit size2of3">
+	<fieldset class="gutter">
+		<legend>Create your account</legend>
+		
+		<div class="control-group">
+			<label for="member-registration-username">{lang:username}</label>
+			<div class="controls">
+				<span class="input-wrap">
+					<input type="text" id="member-registration-username" name="username" value="" minlength="4" maxlength="50" class="input required" required="required" placeholder="e.g., JohnSmith" />
+				</span>
+				<span class="help-inline">This is only for logging in to the site. {lang:username_length}</span>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label for="member-registration-screenname">{lang:screen_name}</label>
+			<div class="controls">
+				<span class="input-wrap">
+					<input type="text" id="member-registration-screenname" name="screen_name" value="" maxlength="50" class="input" placeholder="e.g., John Smith" />
+				</span>
+				<p class="help-block">How your name will appear on the site. You can change this later. {lang:screen_name_explanation}</p>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label for="member-registration-email">Your email</label>
+			<div class="controls">
+				<span class="input-wrap">
+					<input type="email" id="member-registration-email" name="email" value="" maxlength="72" class="input email required" required="required" placeholder="e.g. jsmith@example.com" />
+				</span>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label for="member-registration-email-confirm">Re-enter email</label>
+			<div class="controls">
+				<span class="input-wrap">
+					<input type="email" id="member-registration-email-confirm" name="email_confirm" value="" maxlength="72" equalTo="#member-registration-email" class="input email required" required="required" />
+				</span>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label for="member-registration-password">New password</label>
+			<div class="controls">
+				<span class="input-wrap">
+					<input type="password" id="member-registration-password" name="password" value="" minlength="5" maxlength="40" class="input required" required="required" />
+				</span>
+				<span class="help-inline">{lang:password_length}</span>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label for="member-registration-password-confirm">Re-enter password</label>
+			<div class="controls">
+				<span class="input-wrap">
+					<input type="password" id="member-registration-password-confirm" name="password_confirm" equalTo="#member-registration-password" value="" minlength="5" maxlength="40" class="input required" required="required" />
+				</span>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label for="registration_accept_terms">{lang:terms_of_service}</label>
+			<div class="controls">
+				<label class="checkbox">
+					<input type="checkbox" id="registration_accept_terms" name="accept_terms"  class="required" required="required" value='y' />
+					{lang:terms_accepted}
+				</label>
+				<p class="help-block"><a href="/terms/">Read the {lang:terms_of_service}</a></p>
+			</div>
+		</div>
+		
+		{if captcha}
+		<div class="control-group">
+			<label for="recaptcha_response_field">Verify that you're a human</label>
+			<div class="controls">
+				
+				{captcha}
+				
+			</div>
+		</div>
+		{/if} 
+	
+	
+		<!-- replacement for Captcha -->
+		<div style="position: absolute !important; top: -10000px !important; left: -10000px !important; "><input type="text" id="snap_ziJVO" name="snap_ziJVO" value="cCMqQRX" /></div>
+		<script type="text/javascript">document.getElementById("snap_ziJVO").value = "wYvMAVa";</script>
+	
+	
+		<div class="form-actions">
+			<button type="submit" class="button">{lang:submit}</button>
+		</div>
+	
+	</fieldset>
+</div>
+<div class="unit lastUnit">
+	<div class="callout-box">
+	<p><strong>Thanks for the interest! <br /> We think you&rsquo;re pretty great!</strong></p>
+	<p> Register for the OSLC website to:</p>
+	<ul class="nobullets pln">
+	<li>&#x2714; Post on the <a href="/forums/">forums</a></li>
+	<li>&#x2714; Be able to complete the <a href="/legal-agreements/members-agreement/">OSLC Members Agreement</a></li>
+	</ul>
+	<p>(Learn more about <a href="/participate/">getting involved</a> and <a href="/participate/faq/">becoming an OSLC Member</a>)</p>
+	</div>
+</div>
+
+</div> {!-- /.line --}
+
+</div>
+
+
+<!-- Validation!! -->
+<script type="text/javascript">
+
+	Modernizr.load([
+		{
+			
+			load: '/js/jquery.validate.js',
+			complete: function(){						
+				
+				// Rules are read from the Markup (classes and attributes)
+				// See here: http://docs.jquery.com/Plugins/Validation#List_of_built-in_Validation_methods
+				$('#register_member_form').validate({
+					// Want to track a Google Analytics event when people submit the form
+					submitHandler: function(form) {
+						// Immediately submit the event to Google Analytics
+						if (window._gaq) {
+							_gaq.push(['_trackEvent', 'Forum registration', document.location.href, document.location.href, 0]);	
+						}
+
+						// give it a few ms and submit
+						setTimeout(function(){
+							form.submit();			
+						}, 200);
+						
+					}
+				});
+								
+			}
+		}
+	]);
+	
+/*
+	$('#register_member_form').on('submit', function(e){
+			
+	});
+*/
+	
+	
+</script>

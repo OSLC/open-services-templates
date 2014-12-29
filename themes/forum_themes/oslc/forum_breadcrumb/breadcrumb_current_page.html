@@ -1,0 +1,13 @@
+<h1 class="currentcrumb heading h1 mtn ptn">
+	<?php
+		$crumb_title = '{crumb_title}';
+		$thread_lang = '{lang:thread}';
+		$page_title = '{page_title}';
+		
+		if ($crumb_title == $thread_lang) {
+			echo($thread_lang . ': ' . $page_title);
+		} else {
+			echo($crumb_title);
+		}
+	?>
+</h1>

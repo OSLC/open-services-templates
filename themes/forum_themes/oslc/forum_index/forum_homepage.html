@@ -1,0 +1,21 @@
+{include:html_header}
+{include:top_bar}
+{include:page_header}
+
+	{if logged_out}
+		<div class="mbl mtn">
+			<p><strong>New here?</strong> You should <a class="button" href="{path:register}" title="Register for the forums">{lang:register}</a> Already a member? <a class="button" href="{path:login}" title="Log in to the forums">{lang:login}</a></p>
+				
+		</div>
+	{/if}
+
+<div id="content">
+{include:main_forum_list}
+</div><!-- END content -->
+</div>
+</div>
+<div id='footerwrap'>
+	<div id="footer">
+		{include:visitor_stats}
+		{include:html_footer}
+		

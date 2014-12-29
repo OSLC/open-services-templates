@@ -1,0 +1,735 @@
+{if can_edit}
+
+	{if oslc:user:is_workgroup_member}
+		{if moderated && cannot_admin}
+		<p class="deemph">Submissions to this topic are moderated and will not go live until approved by an Admin.</p>
+		{/if}
+		
+		{if old_revision}
+		<div class="callout-box callout-warning"><strong>Warning</strong>: You are editing an old revision. Submitting will overwrite more recent versions of this article.</div>
+		{/if}
+		
+		{if preview}
+		<div class="callout-box callout-warning"><strong>Warning</strong>: You are viewing a preview of your submission. No changes to the article have been made; this will not update as you make changes below. Click <strong>Submit</strong> to save your changes.</div>
+		<div class="body-text mvl size3of4"> 
+			{exp:stash:get name='edit_page_parsed_preview'}
+		</div>
+		{/if}
+		
+		<div class="callout-box callout-warning hide" id="dataRestoreBox">
+			<p>Hey, I'm seeing that you edited this page, but those changes were never saved.</p>
+			<p><a id="dataRestoreYep" class="button" href="#">Recover my changes</a> &ensp; <a id="dataRestoreNope" href="#">Ignore</a></p>
+		</div>
+			
+		{form_declaration:wiki:edit}
+		
+		<div class="form">
+			
+			<div class="control-group">
+				<div class="controls">
+					<div class="onlywithjs">
+						<table style="width: 100%">
+							<tr>
+								<td>
+									
+									<a href="#wikiLinkModal" data-toggle="modal">[[Wiki page]]</a>
+									<div class="modal fade" id="wikiLinkModal">
+										<div class="modal-header">
+											<button class="close" data-dismiss="modal">&times;</button>
+											<h3>Create a link to a page on this wiki</h3>
+										</div>
+										<div class="modal-body">
+											<label for="wikiLinkPages">Wiki page to link to</label>
+											{!-- This input pulls from the same <datalist> (#all_titles) as the Go to Page input on the sidebar --}
+											<input type="text" autocomplete="off" list="all_titles" name="wikiLinkPages" id="wikiLinkPages"  />
+											<label class="help-block mbm">Only the full page name. <br /> For URLs or #anchors, use Markdown <code>[link text](url)</code> syntax instead.</label>
+											
+											<label for="wikiLinkText">(Optional) Link text</label>
+											<input type="text" name="wikiLinkText" id="wikiLinkText"  />
+										</div>
+										<div class="modal-footer">
+											<a href="#" class="minor" data-dismiss="modal">Cancel</a> &emsp;
+										    <a href="#" class="button" id="createWikiLink" data-dismiss="modal">Create link</a>
+										</div>
+									</div>
+									
+								</td>								
+								<td style="width:70%">
+									<div id="wmd-button-bar"></div>
+								</td>
+								<td><a href="http://stackoverflow.com/editing-help">Basic syntax</a> | <a href="http://michelf.com/projects/php-markdown/extra/">Advanced syntax</a></td>
+							</tr>
+						</table>
+					</div>
+					<textarea class="format-markdown monospaced input-full resize-vert" name='article_content' id='wmd-input' rows="25">{exp:stash:get name='edit_page_content'}</textarea>
+				</div>
+				
+			</div>		
+	
+		<!-- Little Help for Uploading/Linking Files -->
+		{if uploads}		
+			
+			<details class="mvm">
+				<summary>10 Most Recent File Uploads</summary>
+				<div class="body-text" id="recent_uploads">
+				<table border="0">
+					<thead>
+					<tr>
+						<th>File name</th>
+						<th>Upload date</th>
+						<th> </th>
+					</tr>
+					</thead>
+					<tbody>
+						{wiki:files limit="10" orderby="upload_date" sort="desc"}
+							<tr>
+								<td><a href="{path:view_file}">{file_name}</a></td>
+								<td>{upload_date format="%j %M %Y"}</td>
+								<td>
+									<div class="onlywithjs">
+									<a class="append-replace" data-target="#wmd-input" data-namespace="{file_namespace}" data-filename="{file_name}" data-tag="[[{file_namespace}:{file_name}]]" href="#">Add File</a>
+									{if is_image}
+									<a class="append-replace" data-target="#wmd-input" data-namespace="{image_namespace}" data-filename="{file_name}" data-tag="[[{image_namespace}:{file_name}]]" href="#">Add Image</a>
+									{/if}
+									</div>
+									
+									<div class="onlynojs">
+										<input readonly="readonly" type="text" value="[[{file_namespace}:{file_name}]]" />
+										{if is_image}
+										<input readonly="readonly" type="text" value="[[{image_namespace}:{file_name}]]" />
+										{/if}
+									</div>
+									
+								</td>
+							</tr>
+						{/wiki:files}
+					</tbody>
+				</table>
+							
+				
+				</div>
+			</details>
+			
+			<div class="control-group">
+				<label for="revision_notes">Comments for this revision</label>
+				<div class="controls"><input class="input" name="revision_notes" id="revision_notes" value="{revision_notes}" type="text" size="50" maxlength="80" /></div>
+			</div>
+			
+			<div class="control-group">
+				<label for="redirect">Redirect</label>
+				<div class="controls"><input class="input" list="all_titles" name="redirect" id="redirect" type="text" value="{redirect_page}" size="50" maxlength="80" /></div>
+			</div>
+			
+			{!-- Conditional from my custom extension --}
+			{!-- Need to specify old_revision here or else it won't show up for those because /shrugs/ --}
+			{if can_secrefy || old_revision}
+				<div class="control-group">
+					<div class="controls">
+						<label for="secrefy_it" class="checkbox"><input name="secrefy_article" id="secrefy_it" type="checkbox" value="y" {if page_is_secret}checked="checked"{/if} /> For workgroup members only</label>
+					</div>
+				</div>		
+			{/if}
+			
+			{if can_admin}
+			<details class="mvm">
+				<summary>Administrative stuff</summary>
+				
+				<div class="control-group mtm" >
+					<label for="rename">Rename</label>
+					<div class="controls">
+						<input class="input" name="rename" id="rename" type="text" value="{rename}" size="50" maxlength="80" />
+						<label for="rename" class="help-block">Links to this page will <strong>not update</strong> if you change the name</label>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<div class="controls">
+						<label for="lock_article" class="checkbox"><input name="lock_article" id="lock_article" class="checkbox" type="checkbox" value="y" {if locked}checked="checked"{/if} /> Lock Article <span class="help-inline">Only Workgroup leads can modify locked articles</span></label>
+						
+						<label for="moderate_article" class="checkbox"><input name="moderate_article" id="moderate_article" class="checkbox" type="checkbox" value="y" {if moderated}checked="checked"{/if} /> Moderate Article <span class="help-inline">If moderated, a Workgroup lead must approve any changes before they are visible to everyone else</span></label>
+						<br />
+		
+						<label for="delete_article" class="checkbox"><input name="delete_article" id="delete_article" class="checkbox" type="checkbox" value="y" /> {if namespace == category_namespace}Delete Category{if:else}Delete Article{/if} <span class="help-inline">Careful! There's no un-do for this!</span></label>
+					</div>
+				</div>
+			
+			</details>
+			
+			{/if}
+						
+		{/if} {!-- /uploads --}
+		
+		<div class="form-actions mbm" id="edit-first-submit-buttons">
+			<button class="button mlm" type="submit" name="submit" value="Submit" onclick="is_preview = false;">Submit</button> 
+			<button class="button alt mlm" type="submit" name="preview" value="Preview" onclick="is_preview = true;">Preview</button>
+		</div>
+		
+		{!-- Markdown preview will go here --}
+		
+		{!-- Submission bar for after the Markdown Preview --}
+		<div class="form-actions" id="last-submit-buttons">
+			<div class="container">
+			<button class="button mlm" type="submit" name="submit" value="Submit" onclick="is_preview = false;">Submit</button> 
+			<button class="button alt mlm" type="submit" name="preview" value="Preview" onclick="is_preview = true;">Preview</button>
+			
+			<span class="onlywithjs-inline">
+				&ensp;
+				<a href="#edit_article_form">Edit text</a>
+				&ensp;
+				<a href="#wmd-preview">Live preview</a>
+			</span>
+			
+			</div>
+		</div>
+		
+	{!-- Opera seems to have a problem with async loading of autosize --}
+	<script src="/js/plugins/jquery.autosize-min.js"></script>		
+	<script>
+	// Load Markdown/Pagedown conversion scripts, text selection helpers, and Bootstrap modal for my custom Wiki link generator
+	Modernizr.load([{
+		load: [
+				'/js/pagedown/Markdown.Converter.js'
+				, '/js/pagedown/Markdown.Sanitizer.js'
+				, '/js/pagedown/Markdown.Editor.js'
+				, '/js/plugins/ljr-textselection.js'
+				, '/js/plugins/bootstrap/bootstrap-transition.js'
+				, '/js/plugins/bootstrap/bootstrap-modal.js'
+				]
+		, complete: function()
+		{					
+			// Insert Markdown/Pagedown preview box
+			$(document.createElement('div'))
+				.attr('id','wmd-preview')
+				.addClass('body-text md-preview size3of4')
+				.insertAfter('#edit-first-submit-buttons');
+				
+			var $input = $('#wmd-input'),
+				$link_modal = $('#wikiLinkModal');
+			
+			// Invoke Mardown/Pagedown
+			var markdownconverter = new Markdown.getSanitizingConverter() // Invoke Markdown converter
+				, editor 	 = new Markdown.Editor(markdownconverter); //Create the editor
+				
+			editor.run();
+			
+			// Custom text replacement for images/files
+			$('.append-replace').on('click', function(e){
+				e.preventDefault();
+				
+				var $this = $(this)
+					, $textarea = $( $this.data('target') )
+					, tag = '[[' + $this.data('namespace') + ':' + $this.data('filename') + ']]'
+					
+					$textarea.focus().replace_selection(tag);
+					
+					//Refresh the preview
+					editor.refreshPreview();
+					
+			});
+			
+			// Clear out "{#header_id}" header ID attributes (Markdown Extra formatting)
+			markdownconverter.hooks.chain("postConversion", function(text){
+				
+				// Pagedown only converts h1-3				
+				text = text.replace(
+					/<h([1-3])>.*(?=\{#)(\{#[a-zA-Z][a-zA-Z0-9\-_:\.]+\}[ ]*)<\/h\1>/g,
+					function($0, $1, $2) {
+						return $0.replace($2, '');
+					}
+				);
+				
+				return text;
+				
+			});
+			
+			
+			// Adding a hook to Pagedown for fenced code blocks
+			// see PHP markdown for how this came together
+			// JS doesn't support some parts: the \A 'start of string' and (?> atomic groups 
+			// I've seen with big copy-paste jobs, this can gum up the works. Consider dropping
+			markdownconverter.hooks.chain("preConversion", function(text){
+			
+				text = text.replace(
+					/(?:\n|^)(~{3,})[ ]*\n((?:(?!\1[ ]*\n).*\n+)+)(\1[ ]*\n)/gm
+					, function(match, $1, $2, $3) {
+						
+						//basic escaping. The usual
+						$2 = $2.replace(/&/g, '&amp;');
+						$2 = $2.replace(/</g,'&lt;');
+						$2 = $2.replace(/>/g, '&gt;')
+						
+						// un-do double escapes (this isn't standard but I do this via an EE extension ext.oslc_wiki_markdown_fixes.php)
+						$2 = $2.replace(/&amp;gt;/g, '&gt;');
+						$2 = $2.replace(/&amp;lt;/g, '&lt;');
+	
+						// Return the code wrapped in PRE/CODE. Pagedown will not do further Markdown conversion in a PRE block
+						return '\n\n<pre><code>' + $2 + '</code></pre>\n\n';
+					}
+				);
+				
+				return text;
+			
+			});
+			
+			
+			// Adding a hook on the editor for local inline [text](#name) links
+			markdownconverter.hooks.chain("preConversion", function(text){
+				
+				// a valid ID/name starts with a letter, then a-z,0-9,hyphen,underscore,colon,period
+				text = text.replace(
+					/\[(.+?)\]\((#[a-z][a-z0-9_\:\.-]+?)\)/gim,
+					function(match, $1, $2) {
+						// Prepend the full current URL to the the #name. Then PageDown will convert it properly 
+						return match.replace($2, window.location.href + $2);
+					}
+				);
+				
+				return text;
+				
+			});
+			
+			
+			// Add support for inline <url> links (to match Markdown Extra formatting)
+			markdownconverter.hooks.chain('preConversion', function(text){
+				
+				// basic inline links
+				text = text.replace(
+					/<((https?|ftp|dict):[^\'\">\s]+)>/gi,
+					function(match, $1){
+						
+						// return standard link format, but same for each [url](url)
+						return '[' + $1 + '](' + $1 + ')';
+					}
+				);
+				
+				// mailto <name@example.com> links
+				text = text.replace(
+					/<(?:mailto:)?([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})>/gi,
+					function(match, $1){
+						return '[' + $1 + '](mailto:' + $1 + ')'; 					
+					}
+				);
+				
+				// todo: pagedown suppresses mailto: links (but returns the text)
+				
+				return text;
+				
+			});
+			
+			// Adding a hook on the editor to look for EE Wiki links
+			markdownconverter.hooks.chain("preConversion", function(text) {
+				
+				// this will be filled-in by EE before any JS runs
+				var base_url = "{path='{segment_1}/{segment_2}'}";
+				// Make sure there's a trailing slash
+				if ( base_url.substr( base_url.length - 1, 1 ) !== '/' )
+				{
+					base_url = base_url + '/';
+				}
+				
+				text = text.replace( 
+					/\[\[(:?[ -:\w]+)(\s\|\s)?([ :\w\?\.\(\);,'"-]+)?\]\]/gim, 
+					function(match, $1, $2, $3) {
+						
+						var markdown_link = "[$linktext$]($url$)";
+						
+						// remove leading colon (for Categorizing URLs)
+						if ($1.substr(0,1) === ":")
+						{	
+							// return the full string, less the first character
+							$1 = $1.substr(1);
+						}
+						
+						markdown_link = markdown_link.replace('$linktext$', $3 ? $3 : $1);
+						
+						// convert the $1 to be URL-friendly
+						// <IE8 doesn't do str.trim(). Use jQuery.trim();
+						var url = $.trim($1).replace(/\s/g,'-'); // replace spaces with hyphens and trim whitespace						
+						url = base_url + url + '/';
+						
+						markdown_link = markdown_link.replace('$url$', url);
+						
+						return markdown_link;
+					}
+				)
+				
+				return text;
+				
+			});
+			
+				function _markdown_table_callback( match, head, underline, content)
+				{
+					// clear out ending pipes
+					head = head.replace(/[|][ ]*$/, "");
+					underline = underline.replace(/[|][ ]*$/, "");
+					content = content.replace(/[|][ ]*$/, "");
+					
+					// clear out closing </p> and (possible) extra newline that I captured
+					content = content.replace(/<\/p>\n?/, "");
+					
+					// Cell alignment
+					var separators = underline.split( /[ ]*[|][ ]*/ );
+					
+					var alignment = new Array();
+					
+					for (var i = 0; i < separators.length; i++) 
+					{
+						var separator = separators[i];
+						if ( separator.match( /^[ ]*-+:[ ]*$/) ) alignment.push( ' align="right"' );
+						else if ( separator.match( /^[ ]*:-+:[ ]*/ ) ) alignment.push(' align="center"');
+						else if ( separator.match(/^[ ]*:-+[ ]*$/) ) alignment.push(' align="left"');
+						else alignment.push('');
+					}
+					
+					
+					var headers = head.split(/[ ]*[|][ ]*/);
+					var column_count = headers.length
+					
+					var text = "<table>\n";
+					text += "<thead>\n";
+					text += "<tr>\n";
+					
+					for (var i = 0; i < column_count; i++ )
+					{
+						text += "<th" + alignment[i] + ">" + headers[i] + "</th>\n";
+					}
+					
+					text += "</tr>\n";
+					text += "</thead>\n";
+					
+					
+					var rows = content.split(/\n/);
+					
+					
+					text += "<tbody>\n";
+					
+					for (var i = 0; i < rows.length; i++)
+					{
+						var row = rows[i];
+						
+						// remove opening "| " if present
+						row = row.replace(/^[ ]*[|]/, "");
+						
+						// Split into cells, up to max column_count
+						var row_cells = row.split(/[ ]*[|][ ]*/, column_count)
+						
+						// Check that row_cells has at least as many items as column_count. If not, push empty strings to fill it out
+						Array_pad(row_cells, column_count, "");
+						
+						text += "<tr>\n";
+						
+						for ( var x = 0; x < row_cells.length; x++)
+						{
+							text += "<td" + alignment[x] + ">" + row_cells[x] + "</td>\n";
+						}
+						
+						text += "</tr>\n"
+					}
+					
+					text += "</tbody>\n";
+					
+					text += "</table>\n";
+					
+					return text;
+					
+				}
+				
+					// Utility to make sure there are equal table cells as rows
+					function Array_pad(target, size, value) {
+				        while(target.length < size) {
+				            target.push(value);
+				        }
+				    }
+			
+							
+			// Tables
+			// Have to do this after conversion as Pagedown tosses <table> tags in its default conversion
+			// Plus then the span level stuff (code, links, bold) is already converted! Win!
+			markdownconverter.hooks.chain("postConversion", function(text) {
+				
+				// Regex is modified from Markdown.php source to capture table markup wrapped in <p> tags
+				
+				// Part 1: Tables using opening "|" syntax
+				text = text.replace(
+					/^<p>[ ]{0,3}[|](.+)\n[ ]{0,3}[|]([ ]*[-:]+[-| :]*)\n((?:[ ]*[|].*(?:\n|<\/p>))*)(?=\n|$)/gm,
+					_markdown_table_callback
+				);
+				
+				// Part 2: Tables without opening "|" syntax
+				text = text.replace(
+					/^<p>[ ]{0,3}(\S.*[|].*)\n[ ]{0,3}([-:]+[ ]*[|][-| :]*)\n((?:.*[|].*(?:\n|<\/p>))*)(?=\n|$)/gm,
+					_markdown_table_callback
+				);
+				
+				return text;				
+
+			});
+			
+			
+			
+			// refresh the editor after adding my hooks
+			editor.refreshPreview();
+			
+			// Sanitize Word characters and tabs that can break things
+			// Reference: http://www.andornot.com/blog/post/Replace-MS-Word-special-characters-in-javascript-and-C.aspx
+			//   Although this had an error
+			// More reference: http://www.hopstudios.com/software/word_cleaner/
+			//
+			// TO DO: instead of 'change', do this before submitting
+			// ALSO do it server-side
+			// ALSO rewrite to use an array of possible values a la PHP: http://stackoverflow.com/questions/5069464/javascript-string-replace-array
+			$input.on('change', function() {
+				t = $input.val();
+				
+				// tabs (these are SUPER bad)
+				t = t.replace(/\t/g, "    "); 
+	
+				// single smart quotes and apostrophes
+				t = t.replace(/\u2018|\u2019|\u201A/g, "\'"); // original from andornot site was "/[\u2018|\u2019|\u201A]/" which isn't right. Putting "|" in a [] characater group INCLUDES "|" as a possible character to match. Not using a group OR removing the "|" from the group fixes this.
+	
+				// double quotes
+				t = t.replace(/\u201C|\u201D|\u201E/g, "\""); //escaping doesn't hurt anything
+				
+				// elipsis
+				t = t.replace(/\u2026/g, "...");
+				
+				// en dash
+				t = t.replace(/\u2013/g, "--");
+				
+				// em dash
+				t = t.replace(/\u2014/g, "---");
+				
+				// nbsp
+				t = t.replace(/\u00A0/g, " ");
+				
+				// open angle quote
+				t = t.replace(/\u2039/g, "&lt;");
+				
+				// close angle quote
+				t = t.replace(/\u203A/g, "&gt;");
+				
+				// circumflex ... not sure when we'd see this but OK
+				t = t.replace(/\u02C6/g, "^");
+				
+				// And set it
+				$input.val(t);
+				editor.refreshPreview();
+							
+			});
+			
+			
+	
+			// Pre-fill #wikiLinkText (and maybe #wikiLinkPages) fields with selection text
+			// 'show' is a custom modal event. See http://twitter.github.com/bootstrap/javascript.html#modals
+			$link_modal.on('show', function(){
+				
+				var selection = $input.get_selection().text
+					, page_text = '' // default to nothing
+					, selection_text = selection // default to the selection
+					, basic_wiki_link_syntax = /\[\[(.*)\]\]/;
+					
+					
+				
+				// Scan the selected text for wiki link syntax eg '[[SOMETHING]]'
+				if ( basic_wiki_link_syntax.test(selection) )
+				{
+					// Look specifically for [[page | text]]
+					var full_wiki_link = /\[\[(.*)\s\|\s(.*)\]\]/;
+					
+					if ( full_wiki_link.test(selection) ) { // Matches a full wiki link
+						page_text = selection.replace( full_wiki_link, '$1'); // First back-reference would be the wiki page name
+						selection_text = selection.replace( full_wiki_link, '$2' ); // Second back-reference would be the text
+					} else { // Just a link to a wiki page
+						page_text = selection.replace(basic_wiki_link_syntax, '$1');
+						selection_text = ''; // Reset this to nothing
+					}
+				}
+				
+				
+				// Set pages input 
+				$('#wikiLinkPages').val(page_text);
+			
+				// Set Link Text field to current selection
+				$('#wikiLinkText').val(selection_text);
+				
+				// On focus for the inputs, watch for "Enter" (13) and 'submit' the form
+				$('#wikiLinkPages, #wikiLinkText').on('focus.wiki-link',function(){
+					$(this).on('keydown.wiki-link', function(e){
+						if (e.keyCode === 13 && !$('ul.typeahead').is(':visible') ) {
+							$('#createWikiLink').click();
+						}
+					});
+				});
+							
+			});
+			
+			// Un-bind the focus/keydown event listeners on the inputs when the modal goes away
+			$link_modal.on('hidden', function(){
+				$('#wikiLinkPages, #wikiLinkText').off('focus.wiki-link keydown.wiki-link');
+			});
+			
+			// Create link tag and replace selection with it 
+			$('#createWikiLink').on('click', function(){
+			
+				// Format is [[Wiki page name | link text]] or just [[Wiki page name]]
+				var page_name = $('#wikiLinkPages').val()
+					, link_text = $('#wikiLinkText').val()
+					, link_tag = '[[' + page_name + (link_text ? ' | ' + link_text : '') + ']]'
+				
+				if (page_name) {
+					$link_modal.one('hidden', function(){
+						$input.focus().replace_selection(link_tag);
+						
+						//Refresh the preview
+						editor.refreshPreview();	
+					});
+				}
+				
+			});
+			
+			// Custom localstorage / backup solution
+			if (Modernizr.localstorage)
+			{
+				var saved;
+				var restored;
+				var saveInterval;
+				var defaultInterval = 10000;
+				var wikiName = '{segment_2}';
+				var urlTitle = '{url_title}';
+				var href = location.hostname + location.pathname;
+				
+				// Build the prefix with either the wiki shortname and page title, or else just the href if you don't have those
+				var prefix = (wikiName !== '' && urlTitle !== '') ? wikiName + '__' + urlTitle : href;
+
+				// Hmm, better to target just the right ones:
+				var $fields = $('#wmd-input, #revision_notes, #redirect, #secrefy_it');
+				
+				function saveData() {
+					console.log('saving!');
+					$fields.each(function(){
+						value = $(this).is(':checkbox') ? $(this).prop('checked') : $(this).val();
+						localStorage.setItem( prefix + '__' + this.name, value );
+					});
+					saved = true;
+				}
+				
+				function restoreData() {	
+					$fields.each(function(){
+						value = localStorage.getItem( prefix + '__' + this.name );
+						if ( $(this).is(':checkbox') )
+						{
+							$(this).prop('checked', value === 'true');
+							// .prop requires a boolean, not a string
+						} else
+						{
+							$(this).val(value);
+						}
+					});
+					editor.refreshPreview();
+					restored = true;					
+				}
+								
+				// First, on load, check if there is something in localstorage for the content field
+					var 
+					  mainContentItem = prefix + '__' + $('#wmd-input')[0].name,
+					  stored = localStorage.getItem(mainContentItem),
+					  val = $('#wmd-input').val();
+					
+					/*
+					if (window.console) {
+            console.log('----------------------','THIS IS WHAT IS SAVED LOCALLY','----------------------');
+            console.log(stored)
+            console.log('----------------------','HERE IS THE INPUT VALUE','----------------------');
+            console.log(val);
+            console.log('----------------------','ARE THEY THE SAME?','----------------------');
+            console.log(val === stored ? 'Yep' : 'Nope');
+            console.log('----------------------','WHAT IF YOU TRIM THEM?','----------------------');
+            console.log($.trim(val) === $.trim(stored) ? 'Yep; Same' : 'Nope, actually different');
+					}
+					*/
+					
+					// valid localStorage items are always strings!
+					// Also only bother if the saved content is different from the current field value
+					// UPDATE 11 June 2014: The wiki might remove some trailing or starting whitespace/returns
+					// $.trim will help
+					if ( typeof stored === "string" && $.trim(stored) !== $.trim(val) )
+					{	
+						// Show the option to restore lost data
+						$('#dataRestoreBox').removeClass('hide');
+						// TO DO: Build this box programatically
+						
+						$('#dataRestoreYep').one('click', function(e){
+							e.preventDefault();
+							restoreData();
+							
+							// Hide the option box
+							$('#dataRestoreBox').remove();
+							
+							// And start saving again
+							saveInterval = setInterval(saveData, defaultInterval);
+						});
+						
+						$('#dataRestoreNope').one('click', function(e){
+							e.preventDefault();
+							
+							// Hide the option box
+							$('#dataRestoreBox').remove();
+							
+							// Ok, save immediately
+							// And start saving at a regular interval
+							saveData();
+							saveInterval = setInterval(saveData, defaultInterval);
+						});							
+					} else
+					{
+						// If there is no previous stored item or it's the same, just start saving immediately
+						saveInterval = setInterval(saveData, defaultInterval);
+					}
+					
+				// Next, on the form submit, save the data
+				$('#edit_article_form').on('submit', function(){
+					saveData();
+				});
+				
+			}
+			
+			// Auto-resize textarea http://www.jacklmoore.com/autosize
+			// The extra appended "\n" helps out FF, which seems to come in juuuuust too small
+			$('#wmd-input').autosize({append: "\n"});
+			
+			
+			// Affix the last form actions
+			$('#last-submit-buttons').addClass('affix affix-bottom');
+			
+		} // end complete()
+	}]);
+	
+	</script>
+		
+	{/if} {!-- /is_workgroup_member --}
+
+{/if} {!-- /can_edit --}
+
+{if cannot_edit || oslc:user:is_not_workgroup_member}
+<div class="callout-box callout-warning">
+	<p>You are not allowed to edit this page.</p>
+	{if oslc:user:is_not_workgroup_member}
+		{if segment_2 != "steering-committee"}
+		<p>To edit this wiki, <a href="{exp:stash:get name='wiki_wpa_url'}">join this workgroup.</a></p>
+		{if logged_out}<p>If you <b>are</b> a member of this workgroup, please log in.</p>{/if}
+		{/if}
+	{/if}
+</div>
+
+<form method="#" class="form">
+
+<div class="control-group">
+	<label for="source">Page source</label>
+	<div class="controls">
+		<textarea class="format-markdown monospaced input-full" style='width:98%;' id="source" cols='90' rows='25' class='textarea' readonly="readonly">{content}</textarea>
+	</div>
+</div>
+
+{/if}
+</div>
+</form>

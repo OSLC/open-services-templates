@@ -1,0 +1,34 @@
+
+{if no_files}
+<div class="callout-box callout-warning">No Files Have Been Uploaded</div>
+{/if}
+
+{if files}
+
+<table cellspacing="0" class="table-basic">
+	<thead>
+	<tr>
+		<th>File name</th>
+		<th>Upload date</th>
+		<th>Uploaded by</th>
+	</tr>
+	</thead>
+	<tbody>
+{wiki:files limit="10" paginate="bottom"}
+		<tr>
+			<td><a href="{path:view_file}">{file_name}</a></td>
+			<td>{upload_date format="%j %M %Y"}</td>
+			<td><a href="{path:author_profile}">{author}</a></td>
+		</tr>
+
+{paginate}
+	</tbody>
+</table>
+
+<div><p>Page {current_page} of {total_pages} pages</p> {pagination_links}</div>
+{/paginate}
+
+{/wiki:files}
+
+
+{/if}

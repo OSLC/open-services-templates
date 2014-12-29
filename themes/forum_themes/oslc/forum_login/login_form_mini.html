@@ -1,0 +1,33 @@
+<div id="login">
+
+{form_declaration:member:member_login}
+<table cellpadding="0" cellspacing="0" border="0">
+	<tr>
+		<td><label for="loginmini_username">{lang:username}</label>:</td>
+		<td colspan="2"><input type="text" class="logpass" name="username" required id="loginmini_username" maxlength="50" size="15" value="" /></td>
+	</tr>
+	<tr>
+		<td><label for="loginmini_password">{lang:password}</label>:</td>
+		<td><input type="password" class="logpass" id="loginmini_password" required name="password" maxlength="40" size="15" /></td>
+		<td>
+			(<a href="{path:forgot}">{lang:forgot_your_password}</a>)
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td colspan="2">
+			<input type="checkbox" class="checkbox" name="auto_login" id="loginmini_remember" value="1" checked="checked" /> <label for="loginmini_remember">{lang:remember_me}</label>
+		</td>
+								
+	</tr>
+	<tr>
+		<td></td>
+		<td colspan="2">
+			<input type='submit' value='{lang:login}' class='' />
+		</td>
+	</tr>
+</table>
+
+</form>
+
+</div><!-- END login -->

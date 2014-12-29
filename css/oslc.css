@@ -1,0 +1,3976 @@
+/* @group Common styles */
+/**********************************************************
+ * Common Styles
+ **********************************************************/
+	/* @group Reset */
+	
+	a img { border: none; }
+	blockquote:before, blockquote:after, q:before, q:after { content: ""; }
+
+	blockquote, q { quotes: "" ""; }
+	
+	/* Basic form usability 101 */
+	label[for] {
+		cursor: pointer;
+	}
+	/* @end */
+
+/* HTML 5 resets */
+	/* Datalist needs to be hidden */
+	datalist {
+		display: none;
+	}
+	
+	/* Summary/Details
+	   h/t http://mathiasbynens.be/notes/html5-details-jquery */
+	details, summary {
+		display: block;
+	}
+	
+	summary {
+		cursor: pointer;
+		color: #6666FF; /* Look like a link! */
+		box-shadow: none; /* need to un-do the line that you add to open ones (below) */
+	}
+		
+		/* Styles to go with my JS-based polyfill */
+		.no-details summary:hover, .no-details summary:focus {
+			text-decoration: underline;
+		}
+		
+		/* Hide all descendants of <details> */
+		.no-details details > *  {
+			display: none;
+		}
+		
+		/* But bring back <summary> */
+		.no-details details summary {
+			display: block;
+		}
+
+	
+	details[open] > summary {
+		padding-bottom: 3px;
+		margin-bottom: 3px;
+		box-shadow: 0 1px 0 #999; /* box shadow allows a line without adding to box size like a border would */
+	}
+	
+	figure {
+		display: block;
+		margin: 0;
+	}
+	
+	figcaption { font-style: italic; }
+	
+	ins { 
+		background-color: #dbffdb; 
+		text-decoration: none;
+	}
+	
+	del {
+		background-color: #FFDBDB;
+		text-decoration: line-through;
+	}
+	
+/* No javscript support */
+.no-js .fb_like_div,
+.no-js #supportButton_wrap,
+.no-js_video,
+.no-js .embedded_video,
+.no-js .next_prev_nav, 
+.no-js #pt1_tut_toggle_button,
+.no-js #pt2_tut_toggle_button
+{
+	visibility: hidden;
+	display: none;
+}
+
+/* http://stackoverflow.com/questions/5190787/how-to-fix-crispy-text-in-safari-5-mac-os-x-after-using-css-3d-transforms */
+.fixWebkitText {
+	background-color: white;
+}
+
+.form-basic {
+	padding: 1.5em 10px;
+	max-width: 40em;
+	border: 5px solid #CCC;
+	-moz-border-radius: 10px; /* FF1-3.6 */
+	-webkit-border-radius: 10px; /* Saf3-4, iOS 1-3.2, Android <1.6 */
+	border-radius: 10px; /* Opera 10.5, IE9, Saf5, Chrome, FF4, iOS 4, Android 2.1+ */
+		
+	-moz-box-shadow: 0 3px 4px rgba(0, 0, 0, 0.45);
+	-webkit-box-shadow: 0 3px 4px rgba(0, 0, 0, 0.45);
+	box-shadow: 0 3px 4px rgba(0, 0, 0, 0.45);
+}
+
+.text {
+	-webkit-appearance: none;
+	background-color: white;
+	border: 1px solid #333;
+	line-height: 1.5;
+	padding: 4px;
+	-moz-border-radius: 4px; /* FF1-3.6 */
+	-webkit-border-radius: 4px; /* Saf3-4, iOS 1-3.2, Android <1.6 */
+	border-radius: 4px; /* Opera 10.5, IE9, Saf5, Chrome, FF4, iOS 4, Android 2.1+ */
+}
+
+.field {
+	padding: .35em 7px .45em;
+}
+
+.field.s-focused {
+	background-color: #F1F1F1;
+}
+
+.field label,
+.field .input,
+.field .text {
+	display: block;
+}
+
+.field label {
+	font-weight: bold;
+}
+
+.field + .field {
+	margin-top: 1em;
+}
+
+.field .text {
+	width: 30em;
+}
+
+	/* @group Form bootstrap */
+	.form {
+		
+	}
+	
+	.form fieldset {
+		margin: 0;
+		padding: 0;
+		border: 0;
+	}
+	
+	.form fieldset + fieldset {
+		margin-top: 3em;
+	}
+	
+	.form legend {
+		display: block;
+		width: 100%;
+		padding: 0 0 2px; /* Webkit adds some user stylesheet padding that needs to be zeroed out */
+		border: 0;
+		border-bottom: 1px solid #EEE;
+		font-size: 21px;
+		font-size: 1.5rem;
+		margin-bottom: 21px;
+		margin-bottom: 1.5rem;
+	}
+	
+	legend + .control-group {
+		margin-top: 14px;
+		margin-top: 1rem;
+		-webkit-margin-top-collapse: separate;
+	}
+	
+	.form label {
+		margin-bottom: 3px;
+		display: block;
+	}
+	
+	.control-group:before,
+	.control-group:after {
+		content:  "";
+		display: table;
+	}
+	
+	.control-group:after {
+		clear: both;
+	}
+	
+	.control-group {
+		margin-bottom: 21px;
+		margin-bottom: 1.5rem;
+		zoom: 1;
+	}
+		
+	.form input,
+	.form textarea,
+	.form select,
+	.uneditable-input {
+		display: inline-block;
+		*display: inline;
+		*zoom:1;
+		width: 300px;
+		font-size: 14px;
+		font-size: 1rem;
+		line-height: 19px;
+		line-height: 1.3rem;
+		padding: 5px;
+		margin-bottom: 10px;
+		margin-top: 0;
+		vertical-align: middle;
+		border: 1px solid #CCC;
+		color: #555;
+		-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.09);
+		-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.09);
+		box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.09);
+		background-color: white;
+	}
+		/* For autosize.js textarea auto-resizing, you need this for IE8 to properly know the line-height
+			.autosizejs is the default class for the mirrored textarea
+			See: http://www.jacklmoore.com/autosize
+		*/
+		.ie8 .autosizejs {
+			line-height: 19px;
+		}
+	
+		/* Equalize heights across browsers for inputs */
+		.form input {
+			height: 19px;
+			height: 1.3rem;
+		}
+		
+		.form .input-small {
+			width: 125px;
+		}
+		
+		.form .input-xsmall {
+			width: 100px;
+		}
+		
+		.form .input-full {
+			width: 95%;
+		}
+		
+		.resize-vert {
+			resize: vertical;
+		}
+	
+		/* This is for <span> elements, not <inputs>. Used to display something that the user can't change. */
+		.uneditable-input {
+			border-color: #eee;
+			color: #AAA;
+			cursor: not-allowed;
+		}
+		
+		.form input[disabled],
+		.form textarea[disabled],
+		.form select[disabled],
+		.form input[readonly],
+		.form textarea[readonly],
+		.form select[readonly] {
+			background-color: #f5f5f5;
+			cursor: not-allowed;
+			border-color: #ddd;
+		}
+	
+	.input-wrap {
+		display: inline-block;
+		*display: inline;
+		*zoom: 1;
+		padding: 5px 5px 6px;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		background: #eee url('images/tiny-stripes-pattern.png');
+	}
+				
+	.input-wrap > input,
+	.input-wrap > textarea,
+	.input-wrap > .uneditable-input {
+		margin-bottom: 0;
+	}
+	
+		/* Prepend text to a text input */
+		.input-prepend {
+			
+		}
+		
+		.add-on {
+			float: left;
+			width: auto;
+			padding: 5px;
+			font-weight: normal;
+			line-height: inherit;
+			background-color: #f5f5f5;
+			color: #999;
+			font-size: 14px;
+			font-size: 1rem;
+			line-height: 19px;
+			line-height: 1.3rem;
+			height: 19px;
+			height: 1.3rem;
+			border: 1px solid #CCC;
+			margin-right: -1px; /* Sucks in the neighboring input to eliminate double borders */
+			-webkit-border-radius: 3px 0 0 3px;
+			-moz-border-radius: 3px 0 0 3px;
+			border-radius: 3px 0 0 3px;
+			text-shadow: 0 1px 0 rgba(255,255,255,1);
+		}
+		
+		.input-prepend input {
+			float: left;
+			padding-left: 2px;
+		}
+		
+		.input-wrap .add-on {
+			-webkit-border-radius: 0;
+			-moz-border-radius: 0;
+			border-radius: 0;
+		}
+	
+	.is-focused .input-wrap {
+		background-color: #A3C5F5;
+	}
+	
+	.form .help-inline {
+		display: inline-block;
+		*display: inline;
+		*zoom: 1;
+		vertical-align: middle;
+		margin-left: 5px;
+		color: #999;
+	}
+	
+	.form .help-block {
+		display: block;
+		color: #999;
+		margin-top: 2px;
+	}
+	
+	.input-wrap+.help-block {
+		margin-left: 5px;
+	}
+	
+		/* Eye candy transitions for borders */
+			.form input,
+			.form textarea {
+				-webkit-transition: border-color 0.25s;
+				-moz-transition: border-color 0.25s;
+				-o-transition: border-color 0.25s;
+				-ms-transition: border-color 0.25s;
+				transition: border-color 0.25s;
+			}
+			
+			.input-wrap {
+				-webkit-transition: background-color 0.25s;
+				-moz-transition: background-color 0.25s;
+				-o-transition: background-color 0.25s;
+				-ms-transition: background-color 0.25s;
+				transition: background-color 0.25s;
+			}
+		
+		/* Error & Success states from validation */
+			.control-group.control-error label,
+			.form-inline .help-error {
+				color: #bd3937;
+			}
+			
+			.control-group.control-error .input-wrap {
+				background-color: #f5a3a3;
+			}
+			
+			.form-inline .input-error {
+				border-color: #bd3937;
+			}
+			
+			/* Big honking glows and a border change for focus */
+			.control-group.control-error input:focus,
+			.control-group.control-error textarea:focus,
+			.form-inline .input-error:focus {
+				border-color: #ff3d3d;
+				-moz-box-shadow: 0 0 10px hsla(0, 100%, 55%, 0.8), inset 0 1px 1px rgba(0, 0, 0, 0.09);
+				-webkit-box-shadow: 0 0 10px hsla(0, 100%, 55%, 0.8), inset 0 1px 1px rgba(0, 0, 0, 0.09);
+				box-shadow: 0 0 10px hsla(0, 100%, 55%, 0.8), inset 0 1px 1px rgba(0, 0, 0, 0.09);
+			}
+			
+			
+			.control-group.control-valid label {
+				color: #3ebc37;
+			}
+			
+			.control-group.control-valid .input-wrap {
+				background-color: #a8f4a3;
+			}
+			
+			.form-inline input.valid,
+			.form-inline input.valid:focus {
+				border-color: #43ff38;
+			}
+			
+			.control-group.control-valid input:focus,
+			.control-group.control-valid textarea:focus {
+				border-color: #43ff38;
+				-moz-box-shadow: 0 0 10px hsla(116, 70%, 35%, 0.8), inset 0 1px 1px rgba(0, 0, 0, 0.09);
+				-webkit-box-shadow: 0 0 10px hsla(116, 70%, 35%, 0.8), inset 0 1px 1px rgba(0, 0, 0, 0.09);
+				box-shadow: 0 0 10px hsla(116, 70%, 35%, 0.8), inset 0 1px 1px rgba(0, 0, 0, 0.09);
+			}
+			
+			/* Lose the glow*/
+			.form-inline .valid:focus {
+				-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.09);
+				-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.09);
+				box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.09);
+			}
+			
+	
+	.form select {
+		background-color: white;
+	}	
+	
+	.form textarea,
+	.form select[multiple],
+	.form select[size] {
+		height: auto;
+	}
+	
+	.form input:focus,
+	.form textarea:focus {
+		outline: 0;
+		border-color: #3d8fff;
+	}
+	
+	/* Need to undo all that for other controls */
+		.form input[type="image"],
+		.form input[type="checkbox"],
+		.form input[type="radio"] {
+			width: auto;
+			height: auto;
+			padding: 0;
+			margin: 3px 0;
+			line-height: normal;
+			border: 0;
+			*margin-top: 0;
+		}
+		
+		.form input[type="file"] {
+		  padding: initial;
+		  line-height: initial;
+		  border: initial;
+		  background-color: white;
+		  background-color: initial;
+		  -webkit-box-shadow: none;
+		  -moz-box-shadow: none;
+		  box-shadow: none;
+		}
+		
+		.form input[type="hidden"] {
+			display: none;
+		}
+		
+		[hidden] {
+			display: none;
+		}
+	
+	
+	/* Reset focus styles for file, checkbox, selects */
+	.form input[type="file"]:focus,
+	.form input[type="checkbox"]:focus,
+	.form input[type="radio"]:focus,
+	.form select:focus {
+		outline: thin dotted;
+		outline: 5px auto -webkit-focus-ring-color;
+		outline-offset: -2px;
+	}
+	
+	/* Radio and checkboxes	*/
+		.form .checkbox,
+		.form .radio {
+			padding-left: 18px;
+		}
+		
+		.checkbox input[type="checkbox"],
+		.radio input[type="radio"] {
+			float: left;
+			margin-left: -18px;
+		}
+		
+		/* Undo vertical alignment for span.help-inline within .radio/.checkbox labels */
+		.radio > .help-inline,
+		.checkbox > .help-inline {
+			vertical-align: top;
+		}
+		
+		/* Drop the first option down (with padding) to line up with the label */
+		.controls > .radio:first-child,
+		.controls > .checkbox:first-child {
+			padding-top: 12px;
+		}
+		
+		/* Inline */
+		.controls .control-inline {
+			display: inline-block;
+			vertical-align: middle;
+			*display: inline;
+			*zoom: 1;
+			margin-bottom: 0;
+		}
+		
+		.controls .control-inline+.control-inline {
+			margin-left: .75em;
+			padding-top: 12px; /* All of them need the top padding now */
+		}
+		
+		.ie7 .checkbox input,
+		.ie7 .radio input {
+			margin-top: 0;
+		}
+		
+	.form-actions {
+		padding-top: 1.4em;
+		padding-bottom: 1.6em;
+		background-color: #f5f5f5;
+		border-top: 1px solid #ccc;
+	}
+	
+	
+	.form-horizontal .control-group > label {
+		float: left;
+		width: 150px;
+		text-align: right;
+		padding-top: 12px;
+	}
+	
+	.form-horizontal .controls {
+		margin-left: 170px;
+	}
+	
+	.form-horizontal input,
+	.form-horizontal textarea,
+	.form-horizontal select {
+		margin-bottom: 0;
+	}
+	
+	.form-horizontal .form-actions {
+		padding-left: 170px;
+	}
+	
+		.form-actions.affix {
+			position: fixed;
+			padding-top: 10px;
+			padding-bottom: 12px;
+		}
+		
+		.no-touch .form-actions.affix {
+			opacity: .5;
+			-webkit-transition: opacity .15s ease-in-out;
+			-moz-transition: opacity .15s ease-in-out;
+			-o-transition: opacity .15s ease-in-out;
+			-ms-transition: opacity .15s ease-in-out;
+			transition: opacity .15s ease-in-out;
+		}
+		
+		.no-touch .form-actions.affix:hover {
+			opacity: 1;
+		}
+		
+		.affix-bottom {
+			bottom: 0;
+			left: 0;
+			right: 0;
+		}
+	
+	.form-inline label {
+		display: inline-block;
+		vertical-align: middle;
+		*display: inline;
+		*zoom: 1;
+	}
+	
+	.form-inline input,
+	.form-inline select {
+		margin-bottom: 0;
+	}
+	
+	.form-inline input+input,
+	.form-inline input+button,
+	.form-inline input+label+input {
+		margin-left: 10px;
+	}
+	
+	.input-placeholder .form-hide-labels label:not([generated]) {
+		display: none;
+	}
+		
+	.ie7 .form-horizontal .input-wrap input:first-child,
+	.ie7 .form-horizontal .input-wrap textarea:first-child {
+		margin-left: -170px;
+		/* 
+			How's this for weirdness? The first input will inherit the sum of its ancestors margins. This undoes that 
+			http://www.positioniseverything.net/explorer/inherited_margin.html
+		*/
+	}
+	
+	.ie7 .checkbox input,
+	.ie7 .radio input {
+		margin-left: -20px; /* See above. No idea why this fix works */
+	}
+	
+	
+	
+	/* @end */
+
+/* Main Content Sections */
+#main {
+	padding: 20px 42px 0;
+	position: relative;
+	background-color: white;
+	margin: -40px auto 100px;
+	max-width: 1200px;
+	min-width: 960px;
+	-webkit-border-radius: 20px 20px 0 0;
+	-khtml-border-radius: 20px 20px 0 0;
+	-moz-border-radius: 20px 20px 0 0;
+	border-radius: 20px 20px 0 0;
+	-webkit-box-shadow: 0 -3px 3px -1px rgba(0,0,0,0.4);
+	-moz-box-shadow: 0 -3px 3px -1px rgba(0,0,0,0.4);
+	box-shadow: 0 -3px 3px -1px rgba(0,0,0,0.4);
+}
+
+.no-boxshadow #main {
+	border: 1px solid #eee;
+	border-bottom: none;
+}
+
+#main-inner {
+    background-color: #FFF;
+    position: relative;
+}
+
+#main-inner:before,
+#main-inner:after {
+  content: ".";
+  display: block;
+  height: 0;
+  overflow: hidden;
+}
+#main-inner:after {clear: both;}
+#main-inner {*zoom: 1;} /* IE < 8 */
+#home_wrap {
+    padding-bottom: 100px;
+}
+
+
+/* Buttons */
+	/* For minor actions. Apply to <button> (looks just like <a>, so don't bother to use on <a> actions) */
+	.minor {
+		border: none;
+		display: inline-block;
+		padding: 0;
+		margin: 0;
+		white-space: nowrap;
+		vertical-align: center;
+		background-color: transparent;
+		color: #6666FF;
+		cursor: pointer;
+		font: inherit;
+		font-weight: normal;	
+	}
+	
+	.minor:hover {
+		text-decoration: underline;
+	}
+	
+	.minor.neg {
+		color: #ad1e1e;
+	}
+
+.button {
+    display: inline-block;
+    vertical-align: middle;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    font-size: 1em;
+    line-height: 2em;
+    background-color: #5E85BA;
+	padding: 0 0.65em;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.35)), to(rgba(255,255,255,0))); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient(top, rgba(255,255,255,0.35), rgba(255,255,255,0)); /* Chrome 10+, Saf5.1+ */
+    background-image: -moz-linear-gradient(top, rgba(255,255,255,0.35), rgba(255,255,255,0)); /* FF3.6 */
+    background-image: -ms-linear-gradient(top, rgba(255,255,255,0.35), rgba(255,255,255,0)); /* IE10 */
+    background-image: -o-linear-gradient(top, rgba(255,255,255,0.35), rgba(255,255,255,0)); /* Opera 11.10+ */
+    background-image: linear-gradient(top, rgba(255,255,255,0.35), rgba(255,255,255,0));
+    -moz-border-radius: 4px; /* FF1-3.6 */
+    -webkit-border-radius: 4px; /* Saf3-4, iOS 1-3.2, Android <1.6 */
+    border-radius: 4px; /* Opera 10.5, IE9, Saf5, Chrome, FF4, iOS 4, Android 2.1+ */
+    border: 1px solid #777;
+    -webkit-background-clip: padding-box;
+	/*  Consider bumping up this opacity...  */
+	-webkit-box-shadow: 0 0 1px rgba(255,255,255,0.25) inset, 0 1px 2px rgba(0,0,0,0.1);
+	-moz-box-shadow: 0 0 1px rgba(255,255,255,0.25) inset, 0 1px 2px rgba(0,0,0,0.1);
+	box-shadow: 0 0 1px rgba(255,255,255,0.25) inset, 0 1px 2px rgba(0,0,0,0.1);
+    text-shadow: 0px -1px 1px rgba(0,0,0,0.33);
+}
+
+/* http://stairwellblog.com/2009/10/taming-firefoxs-button-element/ */
+.button::-moz-focus-inner {
+	padding: 0;
+	border: 0;
+}
+
+/* So, Firefox makes it impossible via browser style sheet to reset line height on inputs.
+	http://www.cssnewbie.com/input-button-line-height-bug/
+   So, for those, I'm using padding instead.
+ */
+[type="submit"].button {
+	padding-top: .5em;
+	padding-bottom: .60em;
+	line-height: 1;
+}
+
+.button em {
+    font-size: 14px;
+}
+
+/* Re-do color for links */
+.button:visited {
+    color: white;
+}
+
+.button:hover,
+.button:focus {
+    background-color: #82A0C9;
+    text-decoration: none;
+}
+
+.button:active {
+     -moz-box-shadow: inset 0px 1px 8px rgba(0,0,0,0.7); /* FF3.5+ */
+  -webkit-box-shadow: inset 0px 1px 8px rgba(0,0,0,0.7); /* Saf3.0+, Chrome */
+          box-shadow: inset 0px 1px 8px rgba(0,0,0,0.7); /* Opera 10.5, IE9, Chrome 10+ */
+}
+
+.button[disabled],
+.button.disabled {
+	cursor: default;
+	cursor: not-allowed;
+	opacity: .55; /* Opacity is easier than defining colors for everything */
+	background-image: none; /* Flatten the gradient */
+	/* Remove the bevel */
+	   -moz-box-shadow: none; /* FF3.5+ */
+	-webkit-box-shadow: none; /* Saf3.0+, Chrome */
+	        box-shadow: none; /* Opera 10.5, IE9, Chrome 10+ */
+}
+
+	/* @group Button extensions */
+	
+		/* @group Tiny button */
+			.button.tiny-button,
+			.button.button-tiny {
+				font-size: 85%;
+			}
+		/* @end */
+		
+		/* @group Hero button */
+			.button.hero {
+				font-size: 130%;
+			}
+		/* @end */
+		
+		/* @group Less colorful buttons */
+		
+			.button.alt {
+				border-color: #555;
+				color: #555;
+				background-color: #f2f2f2;
+				text-shadow: 0px 1px 1px rgba(255,255,255,0.33);
+			}
+			
+			.button.alt:hover {
+				background-color: #fafafa;
+			}
+			
+			.button.nw {
+				border-color: #444;
+				color: #444;
+				background-color: #EEE;
+				text-shadow: 0px 1px 1px rgba(255,255,255,0.33);
+			}
+			
+			.button.nw:hover {
+				background-color: white;
+			}
+		
+		/* @end	*/
+		
+		/* @group Negative action buttons */
+			
+			.button.neg {
+				background-color: #BA5E5E;
+			}
+			
+			.button.neg:hover {
+				background-color: #C98282;
+				-moz-box-shadow: 0 0 1px hsla(0, 100%, 1%, 0.61);
+				-webkit-box-shadow: 0 0 1px hsla(0, 100%, 1%, 0.61);
+				box-shadow: 0 0 1px hsla(0, 100%, 1%, 0.61);
+			}
+			
+			/* @end	*/
+			
+			/*	@group Buttons for Forum Table headings	*/
+			.tableHeadingButton {
+				border-color: #404040;
+				-moz-box-shadow: 0 1px 0px rgba(255,255,255,0.20);
+				-webkit-box-shadow: 0 1px 0px rgba(255,255,255,0.20);
+				box-shadow: 0 1px 0px rgba(255,255,255,0.20);
+				background-color: #3F5169;
+			}
+			
+			.tableHeadingButton:hover,
+			.tableHeadingButton:focus {
+				background-color: #4D6380
+			}
+			
+			.tableHeadingButton:active {
+				-moz-box-shadow: 0 1px 0px rgba(255,255,255,0.20),
+							inset 0px 1px 8px rgba(0,0,0,0.7);
+				-webkit-box-shadow: 0 1px 0px rgba(255,255,255,0.20),
+							inset 0px 1px 8px rgba(0,0,0,0.7);
+				box-shadow: 0 1px 0px rgba(255,255,255,0.20),
+							inset 0px 1px 8px rgba(0,0,0,0.7);
+			}
+			
+		/*	@end	*/
+		
+		.button.pm {
+			margin-left: 5px;
+		}
+		
+		/*	@end	*/
+	
+	/* @end */
+	
+	/* @group Button groups (Pillgroups/Dropdowns)	*/
+	.button-group {
+		position: relative;
+	}
+	
+	ul.button-group {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	
+	.button-group > li {
+		float: left;
+	}
+	
+	.toolbar .button-group {
+		display: inline-block;
+		*display:inline;
+		*zoom: 1;
+	}
+	
+	.button-group + .button-group {
+		margin-left: 10px;
+	}
+	
+	.button-group .button {
+		position: relative;
+		float: left;
+		margin-left: -1px; /* Clever girl: you could alter all their borders to avoid doubling them up, or just slide them 1px under each other */
+		-moz-border-radius: 0; /* FF1-3.6 */
+		-webkit-border-radius: 0; /* Saf3-4, iOS 1-3.2, Android <1.6 */
+		border-radius: 0; /* Opera 10.5, IE9, Saf5, Chrome, FF4, iOS 4, Android 2.1+ */
+	}
+	
+	.button-group > .button:first-child,
+	ul.button-group > li:first-child > .button {
+		margin-left: 0; /* Un-do your cleverness with the margins/borders above */
+		/*	Here's a time where I really hate prefixes */
+	   -webkit-border-top-left-radius: 4px;
+	       -moz-border-radius-topleft: 4px;
+	           border-top-left-radius: 4px;
+	-webkit-border-bottom-left-radius: 4px;
+	    -moz-border-radius-bottomleft: 4px;
+	        border-bottom-left-radius: 4px;
+		
+	}
+	
+	.button-group > .button:last-child,
+	ul.button-group > li:last-child > .button,
+	.button-group .dropdown-toggle {
+	   -webkit-border-top-right-radius: 4px;
+	       -moz-border-radius-topright: 4px;
+	           border-top-right-radius: 4px;
+	-webkit-border-bottom-right-radius: 4px;
+	    -moz-border-radius-bottomright: 4px;
+	        border-bottom-right-radius: 4px;
+		
+	}
+		
+		/* Active style (for toolbars) */	
+		.button-group .button-group-active {
+			background-color: white;
+		}
+		
+		/* @group Dropdown menus */
+		
+		/* NOTE TO SELF: Reduce specificity of #nav at some point */
+		
+		.dropdown-menu,
+		#nav .dropdown-menu {
+			display: none;
+			z-index: 100;
+			position: absolute;
+			top: 100%;
+			left: 0;
+			min-width: 200px;
+			_width: 200px;
+			padding: 5px 0;
+			margin: 0;
+			list-style: none;
+			background-color: white;
+			border: 1px solid #ccc;
+			-webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+			-moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+			box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+		}
+		
+		#nav .dropdown-menu {
+			margin-top: -1.4em;
+		}
+		
+		.dropdown-menu li,
+		#nav .dropdown-menu li {
+			display: block;
+			float: none;
+			margin: 0;
+		}
+		
+		.dropdown-menu a,
+		#nav .dropdown-menu a {
+			display: block;
+			padding: 4px 10px;
+			white-space: nowrap;
+		}
+		
+		#nav .dropdown-menu a {
+			color: #66F;
+			font-size: 14px;
+			font-size: 1rem;
+		}
+		
+		.dropdown-menu a:hover,
+		.dropdown-menu .active a,
+		#nav .dropdown-menu a:hover,
+		#nav .dropdown-menu .active a {
+			text-decoration: none;
+			background-color: #EEE;
+		}
+		
+		/* For wiki pages drop-down navigation */
+		#nav .dropdown-menu {
+			min-width: 300px;
+		}
+		
+		#nav .dropdown-header {
+			text-transform: uppercase;
+			font-weight: bold;
+			font-size: 13px;
+			padding: 4px 10px;
+			color: #999;
+		}
+		
+		/*	Extension for Typeahead */
+		.typeahead {
+			margin-top: 3px;
+		}
+		
+		#nav .is-open {
+			position: relative;
+		}
+		
+		.ltie8 .is-open {
+			/* IE7 needs Z-index on an ancestor or else the dropdown could appear under later page elements */
+			z-index: 100;
+		}
+		
+		.is-open .dropdown-menu,
+		#nav .is-open .dropdown-menu {
+			display: block;
+		}
+		
+		.is-open .dropdown-toggle {
+			background-image: none;
+			-webkit-box-shadow: none;
+			-moz-box-shadow: none;
+			box-shadow: none;
+			
+		}
+		
+		/* @end */
+		
+	.button-group:before,
+	.button-group:after {
+	    content:"";
+	    display:table;
+	}
+	
+	.button-group:after {
+	    clear:both;
+	}
+	
+	.ltie8 .button-group {
+		zoom: 1;
+	}
+	
+	/* @end	*/
+	
+
+/* Centered content */
+.centered {
+    max-width: 70%;
+    margin: 0 auto;
+}
+
+.centered_90 {
+    max-width: 90%;
+}
+
+/* @end */
+
+/* @group Main styling */
+/**********************************************************
+ * Main styling
+ **********************************************************/
+html {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    /*background:#D2E0F2 url("../images/background.png") repeat-x;*/
+    background: white;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+	margin: 0 auto;
+	padding: 0 10px;
+	max-width: 1200px;
+	min-width: 960px;
+}
+
+.ie7 body {
+    /*margin: 0 0 0 30px;*/
+}
+
+a {
+    text-decoration: none;
+    color: #6666FF;
+}
+
+a:visited {
+	color: #7a7ab7;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* @end */
+
+#top_login {
+	border-bottom: 1px solid #333;
+	background: #EEE url('images/tiny-stripes-pattern.png');
+}
+
+.slide {
+	-webkit-transition: max-height .5s ease-out;
+	-moz-transition: max-height .5s ease-out;
+	-ms-transition: max-height .5s ease-out;
+	-o-transition: max-height .5s ease-out;
+	transition: max-height .5s ease-out;
+	max-height: 0;
+	overflow: hidden;
+}
+
+.slide.in {
+	max-height: 100px;
+}
+
+/* TO DO: LTIE8 will probably need a fix for this */
+
+/* @group Header */
+/**********************************************************
+ * Header Section
+ **********************************************************/
+
+#header {
+    background: white url('images/bluealum.png');
+    color:#ffffff;
+    padding: 0;
+}
+
+
+	/* @group Header Logo */
+	/**********************************************************
+	 * Header Logo
+	 **********************************************************/
+    
+	#logolink {
+    	display: block;
+    	*zoom: 1;
+    }
+    
+    #logolink:hover {
+    	text-decoration: none;
+    }
+	
+	#logo {
+		height: 150px;
+		width: 97px;
+		top: -60px;
+		left: 0px;
+		cursor: pointer;
+	}
+	
+    #logofront, #logoback {
+		height: 150px;
+		width: 95px;
+		border: 1px solid #333;
+		top: 0;
+		left: 0;
+		background-color: #F9FAFA;
+		box-shadow: 1px 3px 5px rgba(0,0,0,0.5);
+    }
+    
+    #logofront img {
+    	position: absolute;
+    	bottom: 3px;
+    }
+    
+    .sitetitle-text,
+    #mainnav {
+    	margin-left: 94px;
+    }
+    
+    
+	    /* Plan 1: Top-flight browsers with animations/3d transforms get this boss little flipping animation */
+		    /*  DISABLED APRIL 9 2012: Webkit on the desktop does bad, bad things to text rendering 
+		    	when there are 3d transforms about
+		    */	
+		    /*.csstransforms3d #logo {
+		       	-webkit-perspective: 400;
+		       	-moz-perspective: 400;
+		       	-o-perspective: 400;
+		       	-ms-perspective: 400;
+		       	perspective: 400;
+		    }
+		    
+		    .csstransforms3d #logofront,
+		    .csstransforms3d #logoback {
+		    	-webkit-backface-visibility: hidden;
+		    	-moz-backface-visibility: hidden;
+		    	-o-backface-visibility: hidden;
+		    	-ms-backface-visibility: hidden;
+		    	backface-visibility: hidden;
+		    }
+		    
+		    .csstransitions #logoinner {
+		    	-webkit-transition-property: -webkit-transform, transform;
+		    	-webkit-transition-duration: .5s;
+		    	-webkit-transition-delay: .45s;
+		    	-webkit-transform-style: preserve-3d;
+		    	
+		    	-moz-transition-property: -moz-transform, transform;
+		    	-moz-transition-duration: .5s;
+		    	-moz-transition-delay: .45s;
+		    	-moz-transform-style: preserve-3d;
+		    	
+		    	-o-transition-property: -o-transform, transform;
+		    	-o-transition-duration: .5s;
+		    	-o-transition-delay: .45s;
+		    	-o-transform-style: preserve-3d;
+		    	
+		    	-ms-transition-property: -ms-transform, transform;
+		    	-ms-transition-duration: .5s;
+		    	-ms-transition-delay: .45s;
+		    	-ms-transform-style: preserve-3d;
+		    	
+		    	transition-property: transform;
+		    	transition-duration: .5s;
+		    	transition-delay: .45s;
+		    	transform-style: preserve-3d;
+		    }
+	    
+		    .csstransforms3d #logoback {
+		    	-webkit-transform: rotateY(180deg);
+		    	-moz-transform: rotateY(180deg);
+		    	-o-transform: rotateY(180deg);
+		    	-ms-transform: rotateY(180deg);
+		    	transform: rotateY(180deg);
+		    }
+		    
+		    .csstransforms3d #logolink:hover #logoinner {
+		    	-webkit-transform: rotateY(-180deg);
+		    	-moz-transform: rotateY(-180deg);
+		    	-o-transform: rotateY(-180deg);
+		    	-ms-transform: rotateY(-180deg);
+		    	transform: rotateY(-180deg);
+		    }*/
+	    
+	    /* Plan B: Near-modern browsers get a fade-in/out */
+	    
+	    	/* Add the background color to the whole logo block */
+	    	/* SEE NOTE ABOVE: Changed this for all browsers 09 April 2012 due to Webkit rendering issues */
+		    #logo {
+		    	background-color: #F9FAFA;
+		    }
+			/* Animate the opacity */
+		    #logoback {
+		    	-webkit-transition-property: opacity;
+		    	-webkit-transition-duration: .5s;
+		    	-webkit-transition-delay: .20s;
+		    	
+		    	-moz-transition-property: opacity;
+		    	-moz-transition-duration: .5s;
+		    	-moz-transition-delay: .20s;
+		    	
+		    	-o-transition-property: opacity;
+		    	-o-transition-duration: .5s;
+		    	-o-transition-delay: .20s;
+		    	
+		    	-ms-transition-property: opacity;
+		    	-ms-transition-duration: .5s;
+		    	-ms-transition-delay: .20s;
+		    	
+		    	transition-property: opacity;
+		    	transition-duration: .5s;
+		    	transition-delay: .20s;
+		    }
+		    
+			/* Hide what would be the 'back' */
+		    #logoback {
+		    	opacity: 0;
+		    }
+		    
+			/* Show it on hover */
+		    #logolink:hover #logoback {
+		    	opacity: .9;
+		    }
+		    
+		/* Plan C: No opacity or JS? Yipes. Just make it work */
+			.no-opacity #logoback,
+			.no-js #logoback {
+				display: none;
+			}
+	            
+    .gohome {
+    	text-align: center;
+    	top: 62%;
+    	width: 100%;
+    	color: #AAA;
+    	font-family: serif;
+    	font-style: italic;
+    }
+    
+    .sitetitle-text {
+    	padding: 10px 0 8px 3px;
+        color: white;
+    }
+
+    .sitetitle-top {
+    	display: block;
+        font-size: 24px;
+        text-shadow: 0 -1px 1px rgba(0,0,0,0.3);
+    }
+
+    .sitetitle-bottom {
+        top: -2px;
+        left: 1px;
+        font-size: 13px;
+    }
+
+    #metanav a {
+    	color: white;
+    	display: block;
+    	margin-left: 8px;
+    	padding-bottom: 2px;
+    	border-bottom: 2px solid transparent;
+    }
+    
+    #metanav a:hover {
+    	border-bottom-color: white;
+    	text-decoration: none;	
+    }
+    
+    
+    
+    .meta_forum {
+    	margin-left: 2em;
+    }
+    
+    #forum_logout {
+    	font-size: 80%;
+    	line-height: 1.75;
+    }
+    
+    #meta {
+    	background-color: rgba(255,255,255,0.1);
+    	border-bottom: 1px solid #445469;
+    }
+    
+    /* Fallback for the background color */
+    .no-rgba #meta {
+    	background: transparent url('/css/images/white-trans.png');
+    }
+    
+    
+    /* @end */
+
+	/* @group Main Navigation Bar */
+	/**********************************************************
+	 * Main Navigation Bar
+	 **********************************************************/
+	.nav ul {
+	    margin: 0;
+	    padding: 0;
+	}
+	
+	.nav li {
+	    display: block;
+	    float: left;
+	}
+	
+	#nav {
+	    border-top: 1px solid #51647C;
+	    padding-bottom: 2em;
+	}
+	
+	#nav ul {
+		font-size: 1.1em;
+		margin-top: 6px;
+	}
+	
+	#nav li {
+	    margin-right: 15px;
+	}
+		
+	#nav ul a {
+	    border-top: 2px solid transparent;
+	    color: white;
+	    display: block;
+	    padding: 2px 4px 2em;
+	}
+	
+	#nav ul a:hover {
+		text-decoration: none;
+	}
+	
+	/* Also .Selected for the forums */
+	/* Also .parent-current for Structure navigation */
+	#nav .current a,
+	#nav .parent-current a,
+	#nav .Selected {
+		background-color: rgba(255,255,255,0.1);
+	}
+	
+	.no-rgba #nav .current a,
+	.no-rgba #nav .parent-current a,
+	.no-rgba #nav .Selected {
+		background: url('images/white-trans.png');
+	}
+	
+	
+	#nav ul a:hover,
+	#nav .current a,
+	#nav .parent-current a,
+	#nav .Selected {
+		border-top-color: rgba(255,255,255,0.7);
+	}
+	
+	.no-rgba #nav a:hover,
+	.no-rgba #nav .current a,
+	.no-rgba #nav .parent-current a,
+	.no-rgba #nav .Selected {
+		border-top-color: white;
+	}
+	
+	
+	/* @end */
+
+	/* @group Search Form */
+	/**********************************************************
+	 * Search Form
+	 **********************************************************/
+	
+	a.advanced_search, 
+	a.advanced_search:visited, 
+	a.advanced_search:active {
+		color: white;
+		border-bottom: 2px solid transparent;
+		padding: 3px 0 1.5em 3px;
+		display: inline-block;
+	}
+	
+	a.advanced_search:hover {
+		border-bottom-color: white;
+	}
+	
+	/* @end */
+
+/* @end */
+
+
+/* @group Footer Section */
+/**********************************************************
+ * Footer Section
+ **********************************************************/
+#footer {	
+	background-color: #eee;
+	padding: 10px 0;
+	border-top: 1px solid #f6f6f6;
+}
+
+#footer_soc_media {
+	float: left;
+}
+
+#footer_soc_media li {
+    padding: 0 5px;
+}
+
+.ie8 #footer_soc_media li {
+	width: 34px;
+}
+
+#footer_soc_media a {
+    display: block;
+}
+
+#footer_links {
+    float: right;
+}
+
+#footer_links li {
+    padding: 5px;
+}
+
+#footer_links a {
+    display: block;
+}
+
+.ie7 #footer hr {
+    display: none;
+}
+
+/* @end */
+
+/* @group Home Page */
+/**********************************************************
+ * Home Page
+ **********************************************************/
+
+.megatitle {
+    text-indent: -9999px;
+    height: 83px;
+    width: 268px;
+    background: url('images/OSLC-home-text.png') no-repeat left top;
+}
+
+.homecaption {
+	font-size: 1.5em;
+	color: #919191;
+	margin-top: 0.5em;
+	margin-bottom: 1.5em;
+}
+
+.homelinks {
+	color: #222;
+	font-size: 1.15em;
+}
+
+.homelinks a {
+	border-bottom: 1px dashed #6666FF;
+	text-decoration: none;
+}
+
+.homelinks a:hover {
+	border-bottom-color: #6666FF;
+}
+
+#home_intro, #home_video {
+    margin-top: 25px;
+}
+
+/* Left Column */
+#home_intro {
+    margin-top: 5%;
+}
+
+#home_intro ul {
+    margin: 0;
+    padding: 1em 0;
+}
+
+#home_intro li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ie7 #home_intro li { /* IE hates us all */
+    width: 33%;
+}
+
+#home_intro ul a {
+    display: block;
+    text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+    color: #9c1e1e;
+    text-decoration: none;
+}
+
+#home_intro ul a:hover {
+    color: #9c1e1e;
+    text-decoration: none;
+}
+
+#home_intro a img {
+    border: none;
+    display: block;
+}
+
+#home_intro .intro_text {
+    color: #600b0b;
+    padding-bottom: 1em;
+}
+
+#supportButton {
+    margin-top: 1.5em;
+}
+
+.home-inline-left,
+.home-inline-right {
+	display: inline-block;
+	*display: inline;
+	*zoom: 1;
+	vertical-align: middle;
+}
+
+.home-inline-left { margin-right: 3.33%; }
+
+.home-name {
+	font-weight: bold;
+	line-height: 1.1;
+	font-size: 48px;
+	display: block;
+	color: #486390;
+}
+
+.home-tag {
+	font-size: 36px;
+	color: #777;
+	margin: 0 0 30px;
+}
+
+.home-aside {
+	color: #BBB;
+	font-family: Georgia, "Times New Roman", Times, serif;
+	display: block;
+	margin: 12px 0;
+	font-size: 24px;
+}
+
+.home-line {
+	margin: 4em 0;
+}
+
+.home-header {
+	font-size: 2.25em;
+	margin-top: 0;
+	font-weight: normal;
+	color: #627384;
+}
+
+.home-text {
+	font-size: 1.5em;
+	margin-bottom: 0;
+	color: #192634;
+}
+
+
+
+	#lyopromo {
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right:0;
+		background: white;
+		-webkit-animation: lyofade 1.2s 1;
+		-moz-animation: lyofade 1.2s 1;
+		-ms-animation: lyofade 1.2s 1;
+		animation: lyofade 1.2s 1;
+	}
+	
+	@-webkit-keyframes lyofade {
+		0% {
+			opacity: 0;
+			-webkit-transform: translate(0, -40px);
+		}
+		
+		75% {
+			opacity: 0;
+			-webkit-transform: translate(0, -40px);
+		}
+		
+		100% {
+			opacity: 1;
+		}
+	}
+	
+	@-moz-keyframes lyofade {
+		0% {
+			opacity: 0;
+			-moz-transform: translate(0, -40px);
+		}
+		
+		75% {
+			opacity: 0;
+			-moz-transform: translate(0, -40px);
+		}
+		
+		100% {
+			opacity: 1;
+		}
+	}
+	
+	@-ms-keyframes lyofade {
+		0% {
+			opacity: 0;
+			-ms-transform: translate(0, -40px);
+		}
+		
+		75% {
+			opacity: 0;
+			-ms-transform: translate(0, -40px);
+		}
+		
+		100% {
+			opacity: 1;
+		}
+	}
+	
+	@keyframes lyofade {
+		0% {
+			opacity: 0;
+			transform: translate(0, -40px);
+		}
+		
+		75% {
+			opacity: 0;
+			transform: translate(0, -40px);
+		}
+		
+		100% {
+			opacity: 1;
+		}
+	}
+	
+	#lyo-frame {
+		
+		position: absolute;
+		top: 10px;
+		bottom: 10px;
+		left: 10px;
+		right:10px;
+		
+		background: #9AA8BB url('/images/lyo-promo-frame-pattern.png');
+		border-radius: 20px;
+		border: 1px solid #777;
+		
+		box-shadow: 0px 3px 7px rgba(0,0,0,0.35);
+		
+	}
+	
+	#lyo-lion {
+		top: 0;
+		left: 0;
+		right: 60%;
+		bottom: 0;
+		
+		background: url('/images/lyo-promo-lion.png') -1px 35% no-repeat;
+		background-size: contain;
+	}
+	
+	.no-backgroundsize #lyo-lion {
+		background-position: -50px 35%;
+	}
+	
+	#lyo-text {
+		top: 0;
+		left: 45%;
+		right: 10%;
+		bottom: 0;
+		
+		color: white;
+		
+	}
+	
+	#lyo-text,
+	#lyo-text h2,
+	#lyo-text p,
+	#lyo-text a {
+		-webkit-animation: lyotextfade 1.5s 1;
+		-moz-animation: lyotextfade 1.5s 1;
+		-ms-animation: lyotextfade 1.5s 1;
+		animation: lyotextfade 1.5s 1;
+	}
+
+	#lyo-text h2 {
+		font-size: 60px;
+		line-height: .95;
+		margin-top: .75em;
+		margin-bottom: .5em;
+	}
+	
+	#lyo-text p {
+		font-size: 16px;
+		line-height: 24px;
+		-webkit-animation-delay: .3s;
+		-moz-animation-delay: .3s;
+		-ms-animation-delay: .3s;
+		animation-delay: .3s;
+	}
+	
+	#lyo-text a {
+		-webkit-animation-delay: .55s;
+		-moz-animation-delay: .55s;
+		-ms-animation-delay: .55s;
+		animation-delay: .55s;
+	}
+	
+	@-webkit-keyframes lyotextfade {
+		
+		0% {
+			opacity: 0;
+			-webkit-transform: translate(40px , 0);
+		}
+		
+		85% {
+			opacity: 0;
+			-webkit-transform: translate(40px , 0);
+		}
+		
+		100% {
+			opacity: 1;
+		}
+		
+	}
+	
+	@-moz-keyframes lyotextfade {
+		
+		0% {
+			opacity: 0;
+			-moz-transform: translate(40px , 0);
+		}
+		
+		85% {
+			opacity: 0;
+			-moz-transform: translate(40px , 0);
+		}
+		
+		100% {
+			opacity: 1;
+		}
+		
+	}
+	
+	@-ms-keyframes lyotextfade {
+		
+		0% {
+			opacity: 0;
+			-ms-transform: translate(40px , 0);
+		}
+		
+		85% {
+			opacity: 0;
+			-ms-transform: translate(40px , 0);
+		}
+		
+		100% {
+			opacity: 1;
+		}
+		
+	}
+	
+	@keyframes lyotextfade {
+		
+		0% {
+			opacity: 0;
+			transform: translate(40px , 0);
+		}
+		
+		85% {
+			opacity: 0;
+			transform: translate(40px , 0);
+		}
+		
+		100% {
+			opacity: 1;
+		}
+		
+	}
+
+
+/* @end */
+
+
+/* @group Forum adjustments */
+/**********************************************************
+ * Forums adjustments
+ **********************************************************/
+
+.forum_actions li {
+	margin-right: 10px;
+}
+
+.forum_actions .button {
+	white-space: nowrap;
+	font-size: 90%;
+}
+
+/* @end */
+
+/* @group Specifications table */
+.specs td {
+	padding-right: 15px;
+}
+
+.specname {
+	min-width: 20em;
+}
+
+.specversion {
+	font-size: 90%;
+	font-style: italic;
+}
+
+	/* @group Pill buttons */
+	
+	.pill {
+		display: inline-block;
+		padding: 5px 15px 6px;
+		border: 1px solid #666;
+		color: #888;
+		line-height: 1;
+		background-color: #FCFCFC;
+		background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.35)), to(rgba(255,255,255,0))); /* Safari 4+, Chrome */
+		background-image: -webkit-linear-gradient(top, rgba(255,255,255,0.35), rgba(255,255,255,0)); /* Chrome 10+, Safari 5.1+, iOS 5+ */
+		background-image:    -moz-linear-gradient(top, rgba(255,255,255,0.35), rgba(255,255,255,0)); /* Firefox 3.6-15 */
+		background-image:      -o-linear-gradient(top, rgba(255,255,255,0.35), rgba(255,255,255,0)); /* Opera 11.10-12.00 */
+		background-image:         linear-gradient(top, rgba(255,255,255,0.35), rgba(255,255,255,0)); /* Firefox 16+, IE10, Opera 12.50+ */
+	}
+	
+	.pill+.pill {
+		margin-left: -1px;
+	}
+		
+	.pill-solo {
+		color: black;
+	}
+	
+	.currentstate, .pill-current {
+		background-color: #1959B3;
+		color: white;
+		text-shadow: 0 -1px 0px rgba(0, 0, 0, 0.6);
+	}
+	
+	.pill-first {
+		border-radius: 4px 0 0 4px;
+		padding-left: 25px;
+		padding-right: 25px;
+	}
+	
+	.pill-xpadded {
+		padding-left: 70px;
+		padding-right: 70px;
+	}
+	
+	.pill-last {
+		border-radius: 0 4px 4px 0;
+	}
+	
+	
+	.pill-deprecated {
+		border-radius: 4px;
+		background-color: #FCD7D7;
+		border-color: #999;
+		color: #666;
+	}
+		
+	/* @end */
+
+/* @end */
+
+/* @group About page */
+/****************************************************************
+ * About Page
+ ****************************************************************/
+
+.nav-tabs,
+.tutorial-nav {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.nav-tab,
+.tutorial-nav li {
+	border-bottom: 7px solid #FFF;
+	  -webkit-transition: border-color 0.3s ease, color 0.3s ease;
+     -moz-transition: border-color 0.3s ease, color 0.3s ease;
+      -ms-transition: border-color 0.3s ease, color 0.3s ease;
+       -o-transition: border-color 0.3s ease, color 0.3s ease;
+          transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-tab a,
+.tutorial-nav a {
+	display: block;
+	*zoom: 1;
+	font-size: 18px;
+	font-size: 1.2857rem;
+	padding: 0.83333em 0.44444em 0.88889em;
+	text-decoration: none;
+	border-bottom: 1px solid #2E476B;
+  -webkit-transition: background-color 0.3s ease, color 0.3s ease;
+     -moz-transition: background-color 0.3s ease, color 0.3s ease;
+      -ms-transition: background-color 0.3s ease, color 0.3s ease;
+       -o-transition: background-color 0.3s ease, color 0.3s ease;
+          transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-tab a:hover,
+.nav-tab a:focus,
+.tutorial-nav a:hover,
+.tutorial-nav a:focus {
+	background-color: #F6F6F6;
+}
+
+.nav-tab.active {
+	border-bottom-color: #2E476B;
+}
+
+.nav-tab.active a,
+.nav-tab.active a:hover,
+.nav-tab.active a:focus,
+.tutorial-nav .active > a,
+.tutorial-nav .active > a:hover,
+.tutorial-nav .active > a:focus, {
+	color: #2E476B;
+	background-color: #FFF;
+}
+
+.nav-tabs-vertical .nav-tab,
+.nav-tabs-vertical a,
+.tutorial-nav li,
+.tutorial-nav a {
+	border-bottom: none;
+}
+
+.nav-tabs-vertical .nav-tab,
+.tutorial-nav li {
+	border-right: 7px solid #FFF;
+}
+
+.nav-tabs-vertical .nav-tab.active,
+.tutorial-nav li.active {
+	border-right-color: #2E476B;
+}
+
+.nav-tabs-vertical a,
+.tutorial-nav a {
+	border-right: 1px solid #2E476B;
+}
+
+.tutorial-nav ul {
+	list-style: none;
+	margin: 0;
+	padding: 0 0 0 1.42857em;
+}
+
+.tutorial-nav ul > li {
+	width: 100%; /* Bumps out the border */
+}
+
+.nav-tabs-smaller a,
+.tutorial-nav a {
+	font-size: 14px;
+	font-size: 1rem;
+}
+
+.tutorial-nav .level-2 a {
+	padding-top: .71428em;
+	padding-bottom: .71428em;
+}
+
+.raph-wrap {
+	margin-top: 10px;
+	border: 8px solid #CCC;
+}
+
+.raph-wrap svg {
+	display: block;
+	/*
+	max-width: 100% !important;
+	height: auto !important;
+	*/
+}
+
+.no-svg .raph-wrap, .no-js .raph-wrap {
+	border: 0;
+}
+
+.svg .onlynosvg {
+	display: none;
+}
+
+/* 
+	Trying an auto-solution for inline-block layout
+	http://css-tricks.com/fighting-the-space-between-inline-block-elements/#comment-168807 
+	http://yui.yahooapis.com/3.5.0/build/cssgrids/grids.css
+	http://jsfiddle.net/barney/VPJuq/
+*/
+
+/*
+.svg .tab-panel-wrap {
+	overflow: hidden;
+}
+*/
+
+/* change to .svg to reactivate */
+	#svg .tab-content {
+		white-space: nowrap; /* this is what lines the children tabs in a row without collapsing. Un-do w/ white-space:normal */
+		font-size: 0rem; /* with "rem", you maintain ability to resize fonts. Older browsers will ignore this */
+		letter-spacing: -1em; /* there's a webkit bug that ignores font-size on some inline-block elements. This covers that */
+		word-spacing: -1em; /* And this covers the remaining browsers that don't understand "rem" units */
+		position: relative;
+		-webkit-transition: left .4s ease-in-out;
+		-moz-transition: left .4s ease-in-out;
+		-o-transition: left .4s ease-in-out;
+		transition: left .4s ease-in-out;
+	}
+	
+	#svg .tab-panel {
+		width: 100%;
+		display: inline-block; /* No need for ltIE8 fix b/c this is only for SVG browsers */
+		white-space: normal; /* Re-instate text wrapping (which is inherited from parents) */
+		/* Un-do the font size and spacing shennanigans on the parent */
+		font-size: 1rem;
+		letter-spacing: normal;
+		word-spacing: normal;
+		vertical-align: top;
+	}
+	
+.js .tab-panel {
+	display: none;
+}
+
+/* All right: for pages with SVG animations, you need to hold off on hiding them until after they're built
+	So that the animations get the proper width (they can't calculate if the container is hidden */
+.svg .tab-panel.delayHide {
+	display: block;
+}
+
+.tab-content > .active {
+	display: block;
+}
+
+.csstransitions .tab-panel.drop {
+	opacity: 0;
+	-webkit-transform: translateY(50px);
+	-moz-transform: translateY(50px);
+	-o-transform: translateY(50px);
+	transform: translateY(50px);
+	-webkit-transition: all .2s ease-out;
+	-moz-transition: all .2s ease-out;
+	-o-transition: all .2s ease-out;
+	transition: all .2s ease-out;
+}
+
+.csstransitions .tab-panel.drop.in {
+	opacity: 1;
+	-webkit-transform: translateY(0px);
+	-moz-transform: translateY(0px);
+	-o-transform: translateY(0px);
+	transform: translateY(0px);	
+}
+
+/* Alternative */
+	.csstransitions .fade {
+	  opacity: 0;
+	  -webkit-transition: opacity 0.15s linear;
+	     -moz-transition: opacity 0.15s linear;
+	       -o-transition: opacity 0.15s linear;
+	          transition: opacity 0.15s linear;
+	}
+	
+	.csstransitions .fade.in {
+	  opacity: 1;
+	}
+
+
+/* @end */
+
+/* @group Tutorial pages */
+
+	/* @group Content */
+	/**********************************************************
+	 * Primer/Tutorial Shared CSS
+	 **********************************************************/
+	/* Main Content Sections */
+
+	.tutorial-body {
+		padding-left: 5%;
+	}
+	
+	.pagetitle,
+	.body-text h1,
+	.body-text h3,
+	.heading,
+	.h1, 
+	.h3 {
+	    color: #9c1d1d;
+	    font-weight: bold;
+	}
+	
+	.pagetitle,
+	.h1 {
+	    font-size: 3em;
+	}
+	
+	.pagetitle {
+		margin-top: 0;
+		padding-top: 0;
+		padding-bottom: 0;
+		margin-bottom: 14px;
+		margin-bottom: 1rem;		
+	}
+	
+	.body-text h1 {
+		font-size: 2.5em;
+		margin-top: 1.6em;
+		margin-bottom: .8em;
+	}
+	
+	.body-text > h1:first-child {
+		margin-top: 0;
+	}
+
+	
+	.pagetitle small,
+	.h1 small,
+	.body-text h1 small,
+	.body-text h2 small {
+		color: #ccc;
+		font-size: 14px;
+		font-size: 1rem;
+		vertical-align: bottom;
+		font-weight: normal;
+	}
+	
+	.pagetitle-deemph {
+		color: #BBB;
+	}
+	
+	.body-text.line-limited {
+		max-width: 60em;
+	}
+	
+	.body-text h2,
+	.h2 {
+		color: #9AA2AD;
+		font-weight: bold;
+		font-size: 2em;
+		padding: 0;
+		margin: 0.6em 0;
+	}
+	
+	.tutorial-body .bodytitle {
+		color: #192F4D;
+		font-size: 2.25em;
+	}
+	
+	.body-text h3,
+	.h3 {
+		font-size: 1.2857em;
+		margin-top: 2em;
+		margin-bottom: 1em;
+	}
+	
+	.body-text h4,
+	.h4 {
+		font-size: 1em;
+		margin: 1em 0;
+		font-weight: bold;
+		text-transform: uppercase;
+	}
+	
+	.body-text h5,
+	.h5 {
+		font-size: 1em;
+		margin: 1em 0;
+		font-weight: bold;
+		text-transform: uppercase;
+		color: #999;
+	}
+	
+	.body-text h6,
+	.h6 {
+		font-size: 12px;
+		font-size: .9rem;
+		margin: 14px 0;
+		margin: 1rem 0;
+		font-weight: bold;
+		color: #999;
+	}
+	
+	.body-text blockquote {
+	    margin-left: 2em;
+	    font-style: italic;
+	    color: #777;
+	}
+		
+	.body-text p,
+	.body-text details {
+		padding: 0;
+		margin: 0 0 1.5em;
+	}
+	
+	.body-text figure {
+		margin: 1.5em 0;
+	}
+	
+	.body-text ol,
+	.body-text ul {
+		margin: 1.5em 0;
+		padding: 0 0 0 3em;
+	}
+	
+	.body-text li {
+		margin: .5em 0;
+	}
+	
+	.body-text dl {
+		margin: 0 0 1.5em 0;
+	}
+	
+	.body-text dt {
+		font-weight: bold;
+		margin: 0;
+		padding: 1.5em 0 0 0;
+	}
+	
+	.body-text dd {
+		padding: 0;
+		margin: .5em 0 0 3em;
+	}
+	
+	.body-text dd > :last-child {
+		margin-bottom: 0;
+	}
+	
+	/* Code Sections */
+	code, verbatim {
+	    color: #9c1d1d;
+	}
+	
+	verbatim {
+		display: block;
+		margin: 1em 0;
+	}
+	
+	pre, code {
+		/* www.pathf.com/blogs/2008/05/formatting-quoted-code-in-blog-posts-css21-white-space-pre-wrap/ */
+		white-space: pre; 
+		white-space: pre-wrap; 
+		word-wrap: break-word;
+	}
+	
+	/* Consider adding overflow:auto	*/
+	pre {
+	    padding: 5px;
+	    padding-left: 15px;
+	    background-color: #fcfcfc;
+	    border: solid 1px #CCC;
+	    overflow: auto;
+	    margin-bottom: 1.5em;
+	    margin-top: 0;
+	}
+	
+	.red_code_comment {
+	    color: red;
+	    font-weight: 900;
+	}
+	
+	.green_code_comment {
+	    color: #38761d;
+	    font-weight: 900;
+	}
+	
+	.purple_code {
+	    color: #9900ff;
+	    font-weight: 900;
+	}
+	
+	.red_bold {
+	    color: red;
+	    font-weight: bolder;
+	}
+	
+	.purple_bold {
+	    color: #9900ff;
+	    font-weight: bolder;
+	}
+	
+	/* Callout boxes */
+	.callout-box,
+	.guidance,
+	.tip {
+		padding: 1em;
+		color: #333;
+		border: 1px solid #ccc;
+		background-color: #fcfcfc;
+		margin-bottom: 1.5em;
+	}
+	
+	.callout-box p:last-of-type,
+	.guidance p:last-of-type,
+	.tip p:last-of-type {
+		margin-bottom: 0;
+	}
+	
+	.callout-box > *:first-child,
+	.guidance > *:first-child,
+	.tip > *:first-child {
+		margin-top: 0;
+	}
+			
+		.guidance {
+			background-color: #E6F2D9;
+			border-color: #597D36;
+		}
+		
+		.guidance h3,
+		.guidance strong {
+			color: #333D29;
+		}
+		
+		.tip {
+			background-color: #EBF1FA;
+			border-color: #98AECD;
+		}
+		
+		.tip strong,
+		.tip h3 {
+			font-style: italic;
+			color: #1162D4;
+		}
+		
+		.callout-warning {
+			background-color: #fcfbe2;
+			border-color: #c6c04c;
+		}
+		
+		.error,
+		.callout-error {
+			background-color: #F6CBCB;
+			border-color: #602020;
+		}
+		
+		.error strong,
+		.callout-error strong,
+		.error b,
+		.callout-error b {
+			color: #570F0F;
+		}
+		
+		.success,
+		.callout-success {
+			background-color: #E6F9DC;
+			border-color: #316C13;
+		}
+		
+		.success strong,
+		.callout-success strong,
+		.success b,
+		.callout-success b {
+			color: #1D410B;
+		}
+
+	/* @end */
+
+
+	/* @group Tutorial-specific */
+	/****************************************************************
+	 *  Tutorial Pages
+	 ****************************************************************/
+	.s-loading {
+		position: absolute;
+		top: -20px;
+		bottom: -10px;
+		left: 2%;
+		right: 0;
+		background: rgba(255,255,255,0.85) url(data:image/gif;base64,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) center 45px no-repeat;
+		
+	}
+		
+	/* Small Text */
+	.body-text .small
+	{
+	    margin-top: 0;
+	    font-size: 90%;
+	}
+	
+	.small {
+		font-size: small;
+	}
+	
+	/* @end */
+
+/* @end */
+
+
+
+/* @group Software pages */
+/****************************************************************
+ *  Software/Tools Pages
+ ****************************************************************/
+
+/* Taming the table layout a bit */
+
+td.softwarename {
+	width: 32%;
+}
+
+	#fancy-software-table td,
+	#fancy-software-table th {
+		text-align: center;
+	}
+		
+	.spec-flow[headers="inputspecs"] {		
+		background: -webkit-gradient(linear, left center, right center, from(rgba(255, 255, 255, 0.00)), to(rgba(255, 255, 255, 1.00))),
+		 url('images/spec-flow.svg');
+		background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0.00) 55%, rgba(255, 255, 255, 1.00)),
+		 url('images/spec-flow.svg');
+		 background: -moz-linear-gradient(left, rgba(255, 255, 255, 0.00) 55%, rgba(255, 255, 255, 1.00)),
+		 url('images/spec-flow.svg');
+		 background: -o-linear-gradient(left, rgba(255, 255, 255, 0.00) 55%, rgba(255, 255, 255, 1.00)),
+		 url('images/spec-flow.svg');
+		 background: -ms-linear-gradient(left, rgba(255, 255, 255, 0) 55%, rgba(255, 255, 255, 1)),
+		 url('images/spec-flow.svg');
+		 background: linear-gradient(left, rgba(255, 255, 255, 0) 55%, rgba(255, 255, 255, 1)),
+		 url('images/spec-flow.svg');
+	}
+	
+	.spec-flow[headers="outputspecs"] {		
+		background: -webkit-gradient(linear, left center, right center, from(rgba(255, 255, 255, 1.00)), to(rgba(255, 255, 255, 0.00))),
+		 url('images/spec-flow.svg');
+		background: -webkit-linear-gradient(left, rgba(255, 255, 255, 1.00), rgba(255, 255, 255, 0.00) 45%),
+		 url('images/spec-flow.svg');
+		 background: -moz-linear-gradient(left, rgba(255, 255, 255, 1.00), rgba(255, 255, 255, 0.00) 45%),
+		 url('images/spec-flow.svg');
+		 background: -o-linear-gradient(left, rgba(255, 255, 255, 1.00), rgba(255, 255, 255, 0.00) 45%),
+		 url('images/spec-flow.svg');
+		 background: -ms-linear-gradient(left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0) 45%),
+		 url('images/spec-flow.svg');
+		 background: linear-gradient(left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0) 45%),
+		 url('images/spec-flow.svg');
+	}
+	
+	/* I figure any browser that doesn't do SVG or gradients probably also doesn't do multiple backgrounds */
+	.no-cssgradients .spec-flow[headers="inputspecs"],
+	.no-cssgradients .spec-flow[headers="outputspecs"],
+	.no-svg .spec-flow[headers="inputspecs"],
+	.no-svg .spec-flow[headers="outputspecs"],
+	.no-js .spec-flow[headers="inputspecs"],
+	.no-js .spec-flow[headers="outputspecs"] {
+		background: url('images/spec_flow_right.png');
+	}
+
+
+
+/* @group Participate page */
+/****************************************************************
+ *  Participate Page
+ ****************************************************************/
+
+	/* Drop down menus for workgroups/mailing lists */
+	/* @group drop-down TODO TO DO CAN REMOVE MOST OF THESE */
+	.js .onlynojs {
+		display: none;
+	}
+	
+	.no-js .onlywithjs {
+		display: none;
+	}
+
+	/* @end */
+
+	
+		
+	/* @end */
+
+/****************************************/
+
+.nobullets,
+.body-text .nobullets {
+	list-style-type: none;
+}
+
+.nobullets li,
+.body-text .nobullets li {
+	margin-bottom: 0.75em;
+}
+
+.nospacing,
+.body-text .nospacing {
+	margin: 0;
+	padding: 0;
+}
+
+.nospacing li,
+.body-text .nospacing li {
+	margin: 0;
+	padding: 0;
+}
+
+.inline-list li {
+	display: inline-block;
+	*display:  inline;
+	*zoom: 1;
+}
+
+
+/* @end */
+
+
+
+
+/* @group News page */
+	/* @group Lil' Workgroup Badge	*/	
+	.workgroup-badge {
+		text-transform: uppercase;
+		white-space: nowrap;
+		display: inline-block;
+		padding: 0 5px;
+		margin-bottom: 5px;
+		background: url('images/logo_knockout_gray.gif') no-repeat center center #dadada;
+		font-size: 1.2em;
+		line-height: 34px;		
+		font-weight: bold;
+		letter-spacing: 1px;
+		border-radius: 10px;
+		color: #999;
+	}
+	
+	.workgroup-badge[href]:hover {
+		text-decoration: none;
+		cursor: pointer;
+		box-shadow: 0 3px 1px rgba(0,0,0,0.3);
+	}
+	
+	.textshadow .workgroup-badge {
+		text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+		color: white;
+	}
+	
+	/* @end */
+
+/* @end */
+
+.memberlogo {
+	min-height: 100px;
+	position: relative;
+}
+
+.memberlogo img {
+	position: absolute;
+	bottom: 0;
+}
+
+/* Experimenting with multi-column layout */
+.columned-2 {
+	-webkit-column-count: 	2;
+	-moz-column-count: 		2;
+	columns: 				2;
+	-webkit-column-gap: 	3em;
+	-moz-column-gap: 		3em;
+	column-gap: 			3em;
+}
+
+.columned-3 {
+	-webkit-column-count: 	3;
+	-moz-column-count: 		3;
+	columns: 				3;
+	-webkit-column-gap: 	3em;
+	-moz-column-gap: 		3em;
+	column-gap: 			3em;
+}
+
+/* Fallback for multi-column layout */
+.no-csscolumns .columned-3 > * {
+	display: inline-block;
+	width: 30%;
+	margin-right: 2%;
+	*display: inline;
+	*zoom: 1;
+}
+
+
+/* @group Reusables */
+
+	/* @group Clearfix */
+	/**********************************************************
+	 * Auto floats and preserve layout
+	 * Place this class on a parent of floated contents
+	 * 
+	 * Alternative if you can declare a width: display: inline-block; width: <any explicit value>;
+	 * via: http://www.yuiblog.com/blog/2010/09/27/clearfix-reloaded-overflowhidden-demystified/
+	 **********************************************************/
+	.clearfix:before,
+	.clearfix:after {
+	  content: ".";
+	  display: block;
+	  height: 0;
+	  overflow: hidden;
+	}
+	.clearfix:after { clear: both; }
+	.clearfix { *zoom: 1; } /* IE < 8 */
+	
+	/* @end */
+	
+
+	/* @group Fluid multimedia */
+	/**********************************************************
+	 * Fluid images/movies
+	 **********************************************************/
+	img, object, embed, video, iframe { max-width: 100% !important; }
+	iframe { width: 100% !important; }
+	
+	.ie7 img { -ms-interpolation-mode: bicubic; }	
+
+		/* @group Intrinsic ration videos */
+		/************************************************************************************
+		 * Video Container Styling
+		 * http://www.alistapart.com/articles/creating-intrinsic-ratios-for-video/
+		 ************************************************************************************/
+		.vid-container {
+		    position: relative;
+		    padding-bottom: 56.25%; /* 16:9 The height is 56.25% of the width */
+		    padding-top: 35px; /* Video player chrome */
+		}
+		
+		.vid-container.fourByThree {
+		    padding-bottom: 75%;
+		}
+		
+		.vid-container iframe,
+		.vid-container embed,
+		.vid-container ojbect {
+		    position: absolute;
+		    top: 0;
+		    left: 0;
+		    width: 100%;
+		    height: 100%;
+		}
+		
+		/* @end */
+	
+	/* @end */
+	
+	/* @group Spacing helpers */
+	/* spacing helpers
+	*  https://github.com/stubbornella/oocss/blob/master/core/spacing/space.css
+	p, m = padding,margin
+	a,t,r,b,l,h,v = all, top, right, bottom, left, horizontal, vertical
+	s, m, l, n = small(.5em),medium(1em),large(2em),none(0px)
+	*/
+	
+	.ptn,.pvn,.pan{padding-top:0 !important;}
+	.pts,.pvs,.pas{padding-top:0.5em !important;}
+	.ptm,.pvm,.pam{padding-top:1em !important;}
+	.ptl,.pvl,.pal{padding-top:2em !important;}
+	.prn,.phn,.pan{padding-right:0 !important;}
+	.prs,.phs,.pas{padding-right:0.5em !important;}
+	.prm,.phm,.pam{padding-right:1em !important;}
+	.prl,.phl,.pal{padding-right:2em !important;}
+	.pbn,.pvn,.pan{padding-bottom:0 !important;}
+	.pbs,.pvs,.pas{padding-bottom:0.5em !important;}
+	.pbm,.pvm,.pam{padding-bottom:1em !important;}
+	.pbl,.pvl,.pal{padding-bottom:2em !important;}
+	.pln,.phn,.pan{padding-left:0 !important;}
+	.pls,.phs,.pas{padding-left:0.5em !important;}
+	.plm,.phm,.pam{padding-left:1em !important;}
+	.pll,.phl,.pal{padding-left:2em !important;}
+	.mtn,.mvn,.man{margin-top:0 !important;}
+	.mts,.mvs,.mas{margin-top:0.5em !important;}
+	.mtm,.mvm,.mam{margin-top:1em !important;}
+	.mtl,.mvl,.mal{margin-top:2em !important;}
+	.mrn,.mhn,.man{margin-right:0 !important;}
+	.mrs,.mhs,.mas{margin-right:0.5em !important;}
+	.mrm,.mhm,.mam{margin-right:1em !important;}
+	.mrl,.mhl,.mal{margin-right:2em !important;}
+	.mbn,.mvn,.man{margin-bottom:0 !important;}
+	.mbs,.mvs,.mas{margin-bottom:0.5em !important;}
+	.mbm,.mvm,.mam{margin-bottom:1em !important;}
+	.mbl,.mvl,.mal{margin-bottom:2em !important;}
+	.mln,.mhn,.man{margin-left:0 !important;}
+	.mls,.mhs,.mas{margin-left:0.5em !important;}
+	.mlm,.mhm,.mam{margin-left:1em !important;}
+	.mll,.mhl,.mal{margin-left:2em !important;}
+	
+	/* @end */
+	
+	/* @group Positioning */
+	.posr {
+		position: relative;
+	}
+	
+	.posa {
+		position: absolute;
+	}
+	
+	/* @end	*/
+	
+	/* @group Floats */
+	
+	.fl { float: left; }
+	.fr { float: right; }
+	.fn { float: none; }
+	.clear { clear: both; }
+	
+	/* @group Semantic but hidden */
+	
+		/* For things that should be semantically there (say, screen readers), but don't need to be visible, like some table headers */
+		.hidden {
+			visibility: hidden;
+			height: 0;
+			overflow: hidden;
+		}
+		
+		/* 
+			For elements that use a background image as "text", but the text is there for screen readers
+			Typically, you'll also have to define a width/height and background image
+		*/
+		.text-hidden {
+			text-indent: -9999px;	
+		}
+	
+	/* @end */
+	
+	.progress {
+		height:  1.42857em;
+		border:  1px solid #BBB;
+		padding: .214285714em;
+		-webkit-border-radius: 3px;
+		border-radius: 3px;
+	}
+	
+	.meter {
+		display: block;
+		height: 100%;
+		-webkit-border-radius: 2px;
+		border-radius: 2px;
+		/*
+		http://www.colorzilla.com/gradient-editor/
+		*/
+		background: #c2cede; /* Old browsers */
+		background: -moz-linear-gradient(top, #c2cede 0%, #aabbd4 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#c2cede), color-stop(100%,#aabbd4)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top, #c2cede 0%,#aabbd4 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top, #c2cede 0%,#aabbd4 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top, #c2cede 0%,#aabbd4 100%); /* IE10+ */
+		background: linear-gradient(to bottom, #c2cede 0%,#aabbd4 100%); /* W3C */
+	}
+	
+	.meter.striped {
+		background-color: #b5c9e4;
+		background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.25, rgba(255, 255, 255, 0.12)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.12)), color-stop(0.75, rgba(255, 255, 255, 0.12)), color-stop(0.75, transparent), to(transparent));
+		background-image: -webkit-linear-gradient(-45deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.12) 75%, transparent 75%, transparent);
+		background-image: -moz-linear-gradient(-45deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.12) 75%, transparent 75%, transparent);
+		background-image: -o-linear-gradient(-45deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.12) 75%, transparent 75%, transparent);
+		background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.12) 75%, transparent 75%, transparent);
+		-webkit-background-size: 40px 40px;
+		   -moz-background-size: 40px 40px;
+		     -o-background-size: 40px 40px;
+		        background-size: 40px 40px;
+	}
+	
+	.meter.success {
+		background-color: #8cd393;
+	}
+	
+	.meter.caution {
+		background-color: #f2c362;
+	}
+	
+	[data-popover] {
+		display: inline-block;
+		*display: inline;
+		*zoom: 1;
+		border-bottom: 1px dotted #999;
+		padding-bottom: 3px;
+		cursor: pointer;
+	}
+	
+	.popover {
+		display: none;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 250px;
+		background-color: #FFF;
+		border: 1px solid #CCC;
+		border-color: rgba(0, 0, 0, 0.2);
+		-webkit-border-radius: 3px;
+		   -moz-border-radius: 3px;
+		        border-radius: 3px;
+		-webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.2);
+		   -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.2);
+		        box-shadow: 0 3px 7px rgba(0, 0, 0, 0.2);
+	}
+	
+	.popover:before,
+	.popover:after {
+		content: "";
+		display: block;
+		position: absolute;
+		height: 0;
+		width: 0;
+		overflow: hidden;
+		border: 12px solid transparent;
+		left: 113px; /* 1/2 popover width - 1/2 arrow width */
+	}
+	
+	.popover:before {
+		border-top-color:rgba(0, 0, 0, 0.2);
+		bottom: -24px;
+	}
+	
+	.popover:after {
+		border-top-color: #FFF;
+		bottom: -23px;
+	}
+	
+	.popover-title,
+	.popover-body {
+		padding-left: 1em;
+		padding-right: 1em;
+	}
+	
+	.popover-title {
+		font-weight: bold;
+		background-color: #f3f4f5;
+		padding-top: .5em;
+		padding-bottom: .5em;
+		border-bottom: 1px solid #DDD;
+		-webkit-border-radius: 2px 2px 0 0;
+		   -moz-border-radius: 2px 2px 0 0;
+		        border-radius: 2px 2px 0 0;
+	}
+	
+	.popover-body {
+		padding-top: .5em;
+		padding-bottom: .6em;	
+	}
+	
+	/* @end	*/
+	
+	.banner-heading,
+	.body-text .banner-heading {
+		font-size: 2.5em;
+		color: #AAA;
+		text-align: center;
+		position: relative;
+		z-index: 1;
+		-webkit-font-smoothing: antialiased; /* Shakes fist at Google Chrome 16+ */
+	}
+	
+	.banner-heading:before,
+	.banner-heading:after {
+		position: absolute;		
+		content: "";
+	}
+	
+	.banner-heading:before {
+		height: 100%;
+		background-color: white;
+		width: 35%;
+		left: 65%;
+		margin-left: -32.5%;
+		z-index: -1;
+	}
+	
+	.banner-heading:after {
+		width: 100%;
+		height: 1px;
+		background-color: #ccc;
+		top: 50%;
+		left: 0;
+		z-index: -2;
+	}
+	
+	.ie8 .banner-heading:before,
+	.ie8 .banner-heading:after,
+	.ltie8 .banner-heading:before,
+	.ltie8 .banner-heading:after {
+		display: none;
+	}
+	
+	.shadow-divider {
+		margin: 4em 0 1em;
+		padding: 0;
+	}
+	
+	.svg .shadow-divider {
+		border: none;
+		width: auto;
+		background: white url('images/shadow-divider.svg') no-repeat top center;
+		/*	Adjust these values to taste. The SVG shadow is vector and should resize nicely */
+		-moz-background-size: 115% 100%;
+		background-size: 115% 100%;
+		height: 20px;
+	}
+		
+	/* @group Standard table styling */
+	
+	.table-basic,
+	.body-text table {
+		width: 100%;
+		padding: 0;
+		border-collapse: separate;
+		border-spacing: 0;
+		empty-cells: show;
+		border: none;
+		margin-bottom: 21px;
+		margin-bottom: 1.5rem;
+	}
+	
+	.ltie8 .table-basic,
+	.ltie8 .body-text table {
+		border-collapse: collapse;
+	}
+	
+	.table-basic th,
+	.body-text th,
+	.table-basic td,
+	.body-text td {
+		padding: 10px;
+		text-align: left;
+	}
+	
+	/* Alignment changes for markdown extra tables */
+	.table-basic [align="right"],
+	.body-text [align="right"] {
+		text-align: right;
+	}
+	
+	.table-basic [align="center"],
+	.body-text [align="center"] {
+		text-align: center;
+	}
+	
+	
+	/* Bare minimum borders */
+	.table-basic thead th,
+	.body-text thead th {
+		font-weight: bold;
+		vertical-align: middle;
+		border-bottom: 1px solid #999;
+	}
+	
+	.table-rowspans th {
+		border-bottom-width: 2px;
+	}
+	
+	
+	.table-basic tbody tr + tr td,
+	.table-basic tbody tr + tr th,
+	.body-text tbody tr + tr td,
+	.body-text tbody tr + tr th {
+		border-top: 1px solid #ddd;
+	}
+	
+
+	.table-rowspans tbody tr + tr td[rowspan],
+	.table-rowspans tbody tr + tr td[rowspan] ~ td {
+		border-top-color:  #aaa;
+	}
+	
+	/* Add'l class for making the spacing a little tighter */
+	.table-condensed th, .table-condensed td {
+		padding: 5px 5px 4px;
+	}
+		
+		/* Class for extra borders (+ rounded corners for them) */
+		.more-borders {
+			border: 1px solid #ddd;
+			border-radius: 4px;
+		}
+		
+		.more-borders th + th,
+		.more-borders td + td {
+			border-left: 1px solid #ddd;
+		}
+		
+		/* Fix background overflow of corners */
+		.more-borders tr:first-child td:first-child,
+		.more-borders tr:first-child th:first-child {
+			-webkit-border-radius: 4px 0 0 0;
+			-moz-border-radius: 4px 0 0 0;
+			border-radius: 4px 0 0 0;
+		}
+		.more-borders tr:first-child td:last-child,
+		.more-borders tr:first-child th:last-child {
+			-webkit-border-radius: 0 4px 0 0;
+			-moz-border-radius: 0 4px 0 0;
+			border-radius: 0 4px 0 0;
+		}
+		.more-borders tr:last-child td:first-child {
+			-webkit-border-radius: 0 0 0 4px;
+			-moz-border-radius: 0 0 0 4px;
+			border-radius: 0 0 0 4px;	
+		}
+		.more-borders tr:last-child td:last-child {
+			-webkit-border-radius: 0 0 4px 0;
+			-moz-border-radius: 0 0 4px 0;
+			border-radius: 0 0 4px 0;
+		}
+		
+	
+		/* Additional class for zebra striping*/
+		.zebra tbody tr:nth-child(odd) td {
+			background-color: #FAFAFA;
+		}
+		
+		.zebra tbody tr:hover td {
+			background-color: #f5f5f5;
+		}
+		
+		/* @group Tablesorter styles */
+		
+			.s-sortable .header {
+				background-image: url('images/tablesorter/blue/bg.gif');
+				background-repeat: no-repeat;
+				background-position: center left;
+				cursor: pointer;
+			}
+			
+			.s-sortable .headerSortUp {
+				background-image: url('images/tablesorter/blue/asc.gif');
+			}
+			.s-sortable .headerSortDown {
+				background-image: url('images/tablesorter/blue/desc.gif');
+			}
+			.s-sortable .headerSortDown, .s-sortable .headerSortUp {
+				background-color: #D9E3F2;
+			}
+			
+			
+				
+		/* @end */
+		
+	/* Problem! Specifications have stupid long tables that are breaking the layout. Trying to make some things smaller so they fit */
+	.table-shrink,
+	.table-code-shrink code {
+		font-size: 12px;
+	}
+	
+	/* For tables nudged into the sidebar with negative margins */
+	.table-nudged {
+		margin-left: -300px;
+		width: auto !important; /* needed to override .body-text table styles */
+	}
+		
+	/* @end */
+	
+	/* @group Block styles */
+	
+		.dispb {
+			display: block;
+		}
+		
+		.dispib {
+			display: inline-block;
+			vertical-align: top;
+			*display: inline;
+			*zoom: 1;
+		}
+		
+		.dispi {
+			display: inline;
+		}
+	
+	/* @end */
+	
+	/* @group Grid */
+	/******************************************************************************************
+	 * Grids.css
+	 * https://github.com/stubbornella/oocss/blob/master/core/grid/grids.css
+	 *******************************************************************************************/
+	.line:after,.lastUnit:after{clear:both;display:block;visibility:hidden;overflow:hidden;height:0 !important;line-height:0;font-size:xx-large;content:" x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x ";}
+	.line{*zoom:1;}
+	.unit{float:left;}
+	.unitRight{float:right;}
+	.size1of1{float:none;}
+	.size1of2{width:50%;}
+	.size1of3{width:33.33333%;}
+	.size2of3{width:66.66666%;}
+	.size1of4{width:25%;}
+	.size3of4{width:75%;}
+	.size1of5{width:20%;}
+	.size2of5{width:40%;}
+	.size3of5{width:60%;}
+	.size4of5{width:80%;}
+	.size1of6{width: 16.6666666666667%;	}
+	.size1of8{width:12.5%;}
+	.size1of15{width:6.66666%}
+	.lastUnit{
+		display:table-cell;
+		float:none;
+		width:auto;
+		*display:block;
+		*zoom:1;
+		_position:relative;
+		_left:-3px;
+		_margin-right:-3px;}
+	
+	/* For lists in a grid */
+	ul.line {
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+	}
+	
+	ul.line > li {
+		margin: 0;
+		padding: 0;
+	}
+	
+	.unit .gutter { padding-right: 3em; }
+	
+	/* 	In some browsers, images don't resize nicely in the last unit 
+		Use this (with caution!) to hammer an image into place
+	*/
+	.lastUnit .contain img {
+	    width: 100% !important;
+	}
+	
+	/* @group OOCSS Media and Module groups */
+	
+	/* https://github.com/stubbornella/oocss/blob/master/core/module/mod.css */
+	/* mod */
+	.bd,.ft, .hd{overflow:hidden; *overflow:visible; zoom:1;}	
+	
+	/*	https://github.com/stubbornella/oocss/tree/master/core/media */
+	/* ====== media (requires mod.css) ====== */
+	.media{overflow:hidden;*overflow:visible;zoom:1;}
+	.media .img{float:left;/*margin-right: 10px;*/}
+	.media .img img{display:block;}
+	.media .imgExt{float:right; /*margin-left: 10px;*/}
+	
+	
+	.flag { display: table; }
+	.flag-image, .flag-body { 
+	  display: table-cell;
+    vertical-align: middle; 
+  }
+  .flag-image { width: 0; }
+  .flag-body { width: 100%; }
+	
+	/* @end */
+	
+	.aside {
+	    background-color: #F4F7FB;
+	}
+	
+	.padded {
+	    padding: 0.5em;
+	}
+	
+	.section-header {
+		padding-bottom: 5px;
+		border-bottom: 2px solid #999;
+	}
+	
+	.section-row+.section-row {
+		border-top: 1px solid #999;
+	}
+	
+	.section-divider {
+		border-top: 2px solid #999;
+	}
+	
+	/* @end */
+
+	.fs-reset {
+		font-size: 14px;
+		font-size: 1rem;
+	}
+	
+	.fs-smaller {
+		font-size: 80%;
+	}
+	
+	.fs-vsmaller {
+		font-size: 65%;
+	}
+	
+	.fsti {
+		font-style: italic;
+	}
+	
+	.tac { text-align: center;}
+	
+	.ttu {
+		text-transform: uppercase;
+	}
+	
+	/* Slightly lighter text color */
+	.deemph {
+		color: #999;
+	}
+	
+	.fwn { font-weight: normal; }
+	
+	/* Monospaced */
+	.monospaced {
+		font-family: Consolas, Lucida Console, Bitstream Vera Sans Mono, Courier, monospace, serif;
+	}
+	
+	textarea.monospaced {
+		font-size: 14px;
+	}
+	
+	/* To make something completely invisible to regular browsers; useful for accessibility */
+	.totallyinvisible {
+		border: 0; 
+		clip: rect(0 0 0 0); 
+		height: 1px; 
+		margin: -1px; 
+		overflow: hidden; 
+		padding: 0; 
+		position: absolute; 
+		width: 1px; 
+	}
+	
+		/* Extends .totallyinvisible, allowing it to come back (all defaults) on focus via keyboard */
+		.focusable:active, .focusable:focus {
+			clip: auto; 
+			height: auto; 
+			margin: 0; 
+			overflow: visible; 
+			position: static; 
+			width: auto;
+		}
+
+	/* Labels (from Twitter Bootstrap)	*/
+	
+	.label {
+	  padding: 1px 3px 2px;
+	  font-size: 75%;
+	  font-weight: bold;
+	  color: #ffffff;
+	  text-transform: uppercase;
+	  white-space: nowrap;
+	  background-color: #bfbfbf;
+	  -webkit-border-radius: 3px;
+	  -moz-border-radius: 3px;
+	  border-radius: 3px;
+	  text-shadow: none;
+	  background-image: url('images/tiny-stripes-pattern.png'); /* <-- my addition */
+	}
+	.label.important {
+	  background-color: #c43c35;
+	}
+	.label.warning {
+	  background-color: #f89406;
+	}
+	.label.success {
+	  background-color: #46a546;
+	}
+	.label.notice {
+	  background-color: #62cffc;
+	}
+	
+	.box-inset {
+		padding: 15px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		border: 1px solid #ccc;
+			-webkit-box-shadow: inset 0 1px 4px rgba(0,0,0,0.15);
+	   -moz-box-shadow: inset 0 1px 4px rgba(0,0,0,0.15);
+			box-shadow: inset 0 1px 4px rgba(0,0,0,0.15);
+		background-color: #fdfdfd;
+
+	}
+	
+		.box-good {
+			background-color: #E6F9D2;
+		}
+		
+		.box-bad {
+			background-color: #ECC6C6;
+			border-color: #aaa;
+		}
+		
+		/* @group Close button */
+		
+		.close {
+			float: right;
+			font-size: 1.5em;
+			font-weight: bold;
+			color: black;
+			opacity: .3;
+			text-decoration: none;
+		}
+		
+		.close:hover {
+			color: black;
+			text-decoration: none;
+			cursor: pointer;
+			opacity: .6;
+		}
+		
+		.content-box .close,
+		.tip .close {
+			position: relative;
+			top: -.7em;
+		}
+		
+		/* @end */
+	/* @end */
+		
+	/* @group Table of Contents	additional styling */
+	
+	.backtotop {
+		font-size: 12px;
+	}
+	
+	.toc ol,
+	.tol ul {
+		margin: 0 0 0 1.5em;
+		padding: 0;
+		list-style-type: none;
+	}
+	
+	.toc > ol,
+	.toc > ul {
+		margin-left: 0;
+	}
+	
+	/* @end */
+	
+	/* @group Highlighting for targeted elements (with :target) */
+	
+	/* http://snook.ca/archives/html_and_css/yellow-fade-technique-css-animations */
+	#main_content :target {
+		-webkit-animation: target-fade 2s 1;
+		   -moz-animation: target-fade 2s 1;
+		   -o-animation: target-fade 2s 1;
+	}
+	
+	@-webkit-keyframes target-fade {
+	    0% { background-color: rgba(0,0,0,0);  }
+	    5% { background-color: hsla(61, 100%, 50%, 0.15); }
+	    100% { background-color: rgba(0,0,0,0); }
+	}
+	@-moz-keyframes target-fade {
+		0% { background-color: rgba(0,0,0,0);  }
+		5% { background-color: hsla(61, 100%, 50%, 0.1); }
+		100% { background-color: rgba(0,0,0,0); }
+	}
+	@-o-keyframes target-fade {
+	    0% { background-color: rgba(0,0,0,0);  }
+    	5% { background-color: hsla(61, 100%, 50%, 0.1); }
+	    100% { background-color: rgba(0,0,0,0); }
+	}
+	@keyframes target-fade {
+		0% { background-color: rgba(0,0,0,0);  }
+		5% { background-color: hsla(61, 100%, 50%, 0.1); }
+		100% { background-color: rgba(0,0,0,0); }
+	}
+	/* @end */
+	
+	/* @group Markdown/Pagedown styles */
+	/* WMD Button Bar (Markdown WYSIWYG) */
+	.wmd-button-row 
+	{
+	        position: relative; 
+	        margin-left: 5px;
+	        margin-right: 5px;
+	        margin-bottom: 5px;
+	        margin-top: 10px;
+	        padding: 0px;  
+	        height: 20px;
+	}
+	
+	.wmd-spacer
+	{
+	        width: 1px; 
+	        height: 20px; 
+	        margin-left: 14px;
+	        
+	        position: absolute;
+	        background-color: Silver;
+	        display: inline-block; 
+	        list-style: none;
+	}
+	
+	.wmd-button {
+	    width: 20px;
+	    height: 20px;
+	    padding-left: 2px;
+	    padding-right: 3px;
+	    position: absolute;
+	    display: inline-block;
+	    list-style: none;
+	    cursor: pointer;
+	}
+	
+	.wmd-button > span {
+	    background-image: url(/css/images/wmd-buttons.png);
+	    background-repeat: no-repeat;
+	    background-position: 0px 0px;
+	    width: 20px;
+	    height: 20px;
+	    display: inline-block;
+	}
+	
+	.wmd-spacer1
+	{
+	    left: 50px;
+	}
+	.wmd-spacer2
+	{
+	    left: 175px;
+	}
+	.wmd-spacer3
+	{
+	    left: 300px;
+	}
+	
+	.wmd-prompt-background
+	{
+	        background-color: Black;
+	}
+	
+	.wmd-prompt-dialog
+	{
+	        border: 1px solid #999999;
+	        background-color: #F5F5F5;
+	}
+	
+	.wmd-prompt-dialog > div {
+	        font-size: 0.8em;
+	        font-family: arial, helvetica, sans-serif;
+	}
+	
+	
+	.wmd-prompt-dialog > form > input[type="text"] {
+	        border: 1px solid #999999;
+	        color: black;
+	}
+	
+	.wmd-prompt-dialog > form > input[type="button"]{
+	        border: 1px solid #888888;
+	        font-family: trebuchet MS, helvetica, sans-serif;
+	        font-size: 0.8em;
+	        font-weight: bold;
+	}
+	
+	.md-preview {
+		background: #FBF9FB;
+		padding: 20px 10px 10px;
+		margin: 0 0 20px;
+		border-color: #CCC;
+		border-style: solid;
+		border-width: 1px;
+	}
+	/* @end */
+	
+	
+	/* @group Wiki styles */
+	
+		#oslc_wiki_toc {
+			padding-left: 1.25em;
+		}
+		
+		#oslc_wiki_toc ul {
+			padding-left: 1.25em;
+			margin: .25em 0 .25em;
+		}
+		
+		/* @group Nav sidebar. Apply to a UL */
+		
+		.nav-list {
+			margin-left: 0;
+			margin-bottom: 0;
+			padding: 5px 0;
+			list-style: none;
+		}	
+		
+		.nav-list > li > a,
+		.nav-list-item {
+			display: block;
+			padding: 3px 15px;
+		}
+		
+		.nav-list > li > a:hover {
+			text-decoration: none;
+			background-color: #ddd;
+		}
+		
+		.nav-list > .active > a,
+		.nav-list > .active > a:hover {
+			background-color: #4F84C4;
+			color: white;
+		}
+		
+		.nav-list-form input {
+			margin-left: 0;
+			font-size: 13px;
+			font-size: .9rem;
+			line-height: 15px;
+			line-height: 1.1rem;
+			height: 15px;
+			height: 1.1rem;
+		}
+		
+		.nav-list-form .button {
+			font-size: 11px;
+			font-size: .78rem; /* 11/14 */
+		}
+		
+		.nav-list-form input,
+		.nav-list-form .button {
+			vertical-align: middle;
+		}
+		
+		.nav-header {
+			text-transform: uppercase;
+			padding: 3px 15px;
+			font-weight: bold;
+			text-shadow: 0 1px 0 rgba(255,255,255,.35);
+		}
+		
+		.nav-divider {
+			height: 1px;
+			margin: .5em 16px;
+			background-color: #e5e5e5;
+			border-bottom: 1px solid white;
+			overflow: hidden;
+		}
+		
+			/* @group Bootstrap modal */
+				
+				/*	@group Close button */
+					.close {
+					  float: right;
+					  font-size: 20px;
+					  font-weight: bold;
+					  line-height: 18px;
+					  color: #000000;
+					  text-shadow: 0 1px 0 #ffffff;
+					  opacity: 0.2;
+					  filter: alpha(opacity=20);
+					}
+					
+					.close:hover {
+					  color: #000000;
+					  text-decoration: none;
+					  cursor: pointer;
+					  opacity: 0.4;
+					  filter: alpha(opacity=40);
+					}
+					
+					button.close {
+					  padding: 0;
+					  cursor: pointer;
+					  background: transparent;
+					  border: 0;
+					  -webkit-appearance: none;
+					}
+				/* @end */
+				
+				.modal-open .dropdown-menu {
+				  z-index: 2050;
+				}
+				
+				.modal-open .dropdown.open {
+				  *z-index: 2050;
+				}
+				
+				.modal-open .popover {
+				  z-index: 2060;
+				}
+				
+				.modal-open .tooltip {
+				  z-index: 2070;
+				}
+				
+				.modal-backdrop {
+				  position: fixed;
+				  top: 0;
+				  right: 0;
+				  bottom: 0;
+				  left: 0;
+				  z-index: -1;
+				  background-color: #000000;
+				}
+
+				.modal-backdrop.fade.in {
+				  opacity: 0.8;
+				  filter: alpha(opacity=80);
+				  z-index: 1040;	
+				}
+				
+				.modal {
+				  position: fixed;
+				  top: 50%;
+				  left: 50%;
+				  z-index: 1050;
+				  width: 560px;
+				  margin: -250px 0 0 -280px;
+				  overflow: auto;
+				  background-color: #ffffff;
+				  border: 1px solid #999;
+				  border: 1px solid rgba(0, 0, 0, 0.3);
+				  *border: 1px solid #999;
+				  -webkit-border-radius: 6px;
+				     -moz-border-radius: 6px;
+				          border-radius: 6px;
+				  -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+				     -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+				          box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+				  -webkit-background-clip: padding-box;
+				     -moz-background-clip: padding-box;
+				          background-clip: padding-box;
+				}
+				
+				.modal.fade {
+				  top: -25%;
+				  -webkit-transition: opacity 0.3s linear, top 0.3s ease-out;
+				     -moz-transition: opacity 0.3s linear, top 0.3s ease-out;
+				      -ms-transition: opacity 0.3s linear, top 0.3s ease-out;
+				       -o-transition: opacity 0.3s linear, top 0.3s ease-out;
+				          transition: opacity 0.3s linear, top 0.3s ease-out;
+				}
+				
+				.modal.fade.in {
+				  top: 50%;
+				}
+				
+				.modal-header {
+				  padding: 9px 15px;
+				  border-bottom: 1px solid #eee;
+				}
+				
+				.modal-header .close {
+				  margin-top: 2px;
+				}
+				
+				.modal-body {
+				  max-height: 400px;
+				  padding: 15px;
+				  overflow-y: auto;
+				}
+				
+				.modal-form {
+				  margin-bottom: 0;
+				}
+				
+				.modal-footer {
+				  padding: 14px 15px 15px;
+				  margin-bottom: 0;
+				  text-align: right;
+				  background-color: #f5f5f5;
+				  border-top: 1px solid #ddd;
+				  -webkit-border-radius: 0 0 6px 6px;
+				     -moz-border-radius: 0 0 6px 6px;
+				          border-radius: 0 0 6px 6px;
+				  *zoom: 1;
+				  -webkit-box-shadow: inset 0 1px 0 #ffffff;
+				     -moz-box-shadow: inset 0 1px 0 #ffffff;
+				          box-shadow: inset 0 1px 0 #ffffff;
+				}
+				
+				.modal-footer:before,
+				.modal-footer:after {
+				  display: table;
+				  content: "";
+				}
+				
+				.modal-footer:after {
+				  clear: both;
+				}
+				
+				.modal-footer .btn + .btn {
+				  margin-bottom: 0;
+				  margin-left: 5px;
+				}
+				
+				.modal-footer .btn-group .btn + .btn {
+				  margin-left: -1px;
+				}
+				
+				.hide {
+				  display: none;
+				}
+				
+				.show {
+				  display: block;
+				}
+				
+			
+			/* @end */
+		
+		/* @end */
+	
+	/* @end */
+	
+/* @group Icomoon Font face declaration */
+@font-face {
+	font-family: 'icomoon';
+	src:url('/assets/fonts/icomoon.eot');
+	src:url('/assets/fonts/icomoon.eot?#iefix') format('embedded-opentype'),
+		url('/assets/fonts/icomoon.woff') format('woff'),
+		url('/assets/fonts/icomoon.ttf') format('truetype'),
+		url('/assets/fonts/icomoon.svg#icomoon') format('svg');
+	font-weight: 400;
+	font-style: normal;
+}
+
+[data-icon] {
+	font-weight: 400 !important;
+}
+
+[data-icon]:before {
+	font-family: 'icomoon';
+	content: attr(data-icon);
+	speak: none;
+	font-weight: 400 !important;
+	font-style: normal !important;
+	-webkit-font-smoothing: antialiased;
+	line-height: inherit;
+	vertical-align: inherit;
+}
+
+.icon-font {
+	display: inline;
+}
+
+.icon-font-tinted {
+	color:  #94b8e8;
+}
+
+.icon-font-good {
+	color: #5ede6d;	
+}
+
+.icon-font-module-img,
+.icon-font-module-img-med {
+	color: #9bbce9;
+	vertical-align: middle;
+}
+
+.icon-font-module-img {
+	font-size: 140px;
+}
+
+.icon-font-module-img-med {
+	font-size: 112px;
+}
+
+.icon-font-strip-module-img {
+	font-size: 36px;
+}
+	
+	/* 
+	 * Throws in a darker BG and "blocky", floated area for the icon
+	 * Due to various workarounds, this DOES NOT WORK on Submit buttons
+	 */
+	 /* OUT OF USE b/c of data icons. DELETE */
+	.button:before {
+		float: left;
+		width: 1em;
+		font-size: 1.4em;
+		line-height: 1.4;
+		text-align: center;
+		font-weight: normal;
+		background-color: hsla(0,0%,10%,0.2);
+		margin: 0 .5em 0 -.5em;
+		padding: 0 .3em;
+		-moz-border-radius: 3px 0 0 3px; /* FF1-3.6 */
+		-webkit-border-radius: 3px 0 0 3px; /* Saf3-4, iOS 1-3.2, Android <1.6 */
+		border-radius: 3px 0 0 3px; /* Opera 10.5, IE9, Saf5, Chrome, FF4, iOS 4, Android 2.1+ */
+		-webkit-box-shadow: 1px 0 0 rgba(0,0,0,0.5), 2px 0 0 rgba(255,255,255,0.2);
+		-moz-box-shadow: 1px 0 0 rgba(0,0,0,0.5), 2px 0 0 rgba(255,255,255,0.2);
+		box-shadow: 1px 0 0 rgba(0,0,0,0.5), 2px 0 0 rgba(255,255,255,0.2);	
+	}
+	
+
+.togglearea {
+	float: left;
+	margin-left: -1.5em;
+	line-height: 1;
+	height: 1em;
+	width: 1em;
+	cursor: pointer;
+	color: #888;
+	background-color: transparent !important;
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	border:  none !important;
+}
+
+.s-toggleable {
+	position: relative;
+}
+
+/* And a fallback image for browsers that don't */
+.s-closed > .togglearea {
+	background-image: url('images/navTri-closed.gif');
+}
+
+.s-open > .togglearea {
+	background-image: url('images/navTri-open.gif');
+}
+
+.s-closed > ul {
+	display: none;
+}
+
+.s-open > ul {
+	display: block;
+}
+
+/* Clear out the background icon if font-face support */
+.fontface .s-closed > .togglearea,
+.fontface .s-open > .togglearea {
+	background-image: none;
+}
+
+.csstransitions .togglearea {
+	-webkit-transition: -webkit-transform 0.15s ease-in-out;
+	-moz-transition: -moz-transform 0.15s ease-in-out;
+	-o-transition: -o-transform 0.15s ease-in-out;
+	transition: transform 0.15s ease-in-out;
+}
+
+.csstransitions.fontface .s-open > .togglearea {
+	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	-o-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+
+/* Override the content for browsers without transitions. This swaps in a "-" sign */
+.fontface.no-csstransitions .s-open > .togglearea > [data-icon]:before {
+	content: "\e097";	
+}
+
+.wg {
+	-webkit-column-break-inside: avoid;
+	-moz-column-break-inside: avoid;
+	column-break-inside: avoid;
+	-webkit-transition: opacity .2s ease-in-out;
+	-moz-transition: opacity .2s ease-in-out;
+	-o-transition: opacity .2s ease-in-out;
+	transition: opacity .2s ease-out;
+}
+
+.wg-name {
+	font-size: 1.428571429em;
+	font-weight: bold;
+}
+
+.wg-tags {
+	margin: 0;
+}
+
+.wg-tag {
+	display: inline-block;
+	*display: inline;
+	*zoom: 1;
+	white-space: nowrap; /* prevent collapse to multiple lines */
+	overflow: hidden;
+	padding: 2px 8px;
+	border: 3px solid #9cbdde;
+	border-radius: 15px;
+	font-size: 12px;
+	line-height: 1;
+	outline-color: transparent;
+	-webkit-transition: all .2s ease-in-out .1s;
+	-moz-transition: all .2s ease-in-out .1s;
+	-o-transition: all .2s ease-in-out .1s;
+	transition: all .2s ease-out .1s;
+}
+
+.wg-tag[href] {	cursor: pointer; }
+
+.wg-tag,
+.wg-tag:hover,
+.wg-tag:visited {
+	color: #354c63;
+	text-decoration: none;
+}
+
+.wg-tag,
+.wg-tag:hover {
+	opacity: 1;
+	max-width: 115px;
+}
+
+.wg-tag.is-collapsed {
+	color: #bbb;
+}
+
+.opacity .wg-tag.is-collapsed {
+	opacity: .6;
+	color: transparent;
+	max-width: 0;
+}
+
+.wg-tag.is-selected {
+	outline: 2px dashed #adbac8;
+	outline-offset: 1px;
+}
+
+.is-filtered { background-color: #ccd1d6; }
+
+.opacity .is-filtered { 
+	opacity: .25; 
+	background: none;
+}
+
+.wg-tag-governance { border-color: #197fe6; }
+.wg-tag-in-transition { border-color: #e37769; }
+.wg-tag-specification { border-color: #37a3a4; }
+.wg-tag-user-group { border-color: #9588dd; }
+/* Whoops! "@" is invalid in class names */
+[data-tagname="@oasis"] { /* border-color: #562684; */ border-color: #ffcc35; }
+	
+.link-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}	
+
+.link-list li {
+  margin-bottom: 8px;
+}
+	
+/* @end */

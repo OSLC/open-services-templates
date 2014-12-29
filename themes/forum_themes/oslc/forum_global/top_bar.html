@@ -1,0 +1,78 @@
+<div id="meta">
+		<div class="container clearfix posr">
+			
+			<div id="sitelogo" class="fl" >
+				<a id="logolink" href="{site_url}" title="Go to the home page">
+					
+					<div id="logo" class="posa">
+						<div id="logoinner">
+							<div id="logofront" class="posa">
+								<img src="{site_url}css/images/logo-forflip.png?v=1" alt="OSLC Logo" />
+							</div>
+							
+							<div id="logoback" class="posa">
+								<span class="gohome posa dispb">(Home)</span>
+							</div>
+						</div>
+						
+					</div>
+					
+					<span class="sitetitle-text dispib">
+						<span class="sitetitle-top dispb">Open Services for Lifecycle Collaboration</span>
+						<span class="sitetitle-bottom dispb posr">Lifecycle integration inspired by the web</span>
+					</span>
+				</a>
+			</div>
+			
+			<div class="fr">
+				<ul id="metanav" class="nav pan mhn mtm mbn clearfix">
+					<li><a href="/wiki/">Wiki</a></li>
+					<li><a href="/forums/">Forum</a></li>
+					<li><a href="/mailman/listinfo">Mailing lists</a></li>
+					{if logged_out}
+						<li id="forum_login" class="meta_forum"><a href="{path:login}" title="Log in to the forums">{lang:login}</a></li>
+						<li><a class="mlm" href="{path:register}" title="Register for the forums">Sign up</a></li>
+					{/if}
+					{if logged_in}
+						<li class="meta_forum"><a href="{path:your_profile}" title="{lang:your_profile}">{screen_name}</a></li>
+						<li><a id="forum_logout" href="{path:logout}">({lang:logout})</a></li>
+					{/if}
+				</ul>
+			</div>
+			
+			
+		
+		</div><!-- /.container -->
+	
+	</div><!-- /#meta -->
+	
+	<div id="nav" class="nav">
+		<div class="container clearfix">
+			
+			<div id="mainnav" class="fl">
+				
+				<ul>
+					<li><a href="{path:forum_home}" title="{forum_name}">Forum home</a></li>
+					
+					{if logged_out}
+					<li><a href="{path:register}">Sign up</a></li>
+					{/if}
+					
+					{if logged_in}
+					<li><a href="{path:private_messages}">{lang:private_message}</a></li>
+					<li><a href="{path:your_control_panel}">{lang:your_control_panel}</a></li>
+					<li><a href="{path:your_profile}">{lang:your_profile}</a></li>
+					<li><a href="{path:memberlist}">{lang:memberlist}</a></li>
+					{/if}
+				</ul>
+			
+			</div>
+			
+			
+			<div class="forum_search fr mts">
+			{include:quick_search_form}
+			</div>
+			
+			
+		</div>
+	</div>

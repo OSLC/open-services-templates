@@ -1,0 +1,55 @@
+{if file_exists}
+
+<div class="body-text">
+	{if is_image}
+	<p><img src="{file_url}" height="{image_height}" width="{image_width}" /></p>
+	{if:else}
+	<p><a class="button alt" href="{file_url}">Download File</a></p>
+	{/if}
+</div>
+
+<table class="table-basic" cellspacing="0">
+<thead>
+<tr>
+	<th>File name</th>
+	<th>MIME type</th>
+	<th>Summary</th>
+	<th>Link to this file in a wiki page</th>
+</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>{file_name}</td>
+		<td>{file_type}</td>
+		<td>
+			{if summary}
+			{summary}
+			{if:else}
+			<p class="deemph">(No Summary)</p>
+			{/if}
+		</td>
+		<td>
+			<div class="form">
+				<input type="text" class="input-small" onclick="this.select()" readonly="readonly" value="[[{file_namespace}:{file_name}]]" />
+				{if is_image}
+				<input type="text" class="input-small" onclick="this.select()" readonly="readonly" value="[[{image_namespace}:{file_name}]]" />
+				{/if}
+			</div>
+		</td>
+	</tr>
+</tbody>
+
+</table>
+
+	{if can_admin && (oslc:user:is_workgroup_member)}  {!-- Consider adding: || logged_in_group_id == "1" for superadmins --}
+	<div class="mvl form">
+		<a class="button neg" href="{delete_url}">Delete</a>
+		<span class="help-inline">(Careful! This will happen immediately)</span>
+	</div>
+	{/if}
+
+{if:else}
+<div class="callout-box callout-error">No file by this name exists.</div>
+{/if}
+
+	

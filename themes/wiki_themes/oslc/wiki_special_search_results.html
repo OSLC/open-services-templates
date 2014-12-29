@@ -1,0 +1,36 @@
+
+{if no_results}
+<div class="callout-box callout-warning"><p>No Results for Your Search: &ldquo;{keywords}&rdquo;</p>
+<p>Sorry :(</p></div>
+{/if}
+
+{if results}
+<h3 class="h3">Results for <strong>{keywords}</strong></h3>
+
+<table cellspacing="0" class="table-basic">
+	<thead>
+	<tr>
+		<th>Topic name</th>
+		<th>Last edited</th>
+		{!--<th>Excerpt</th>--} {!-- Hmm, excerpt isn't "smart", it just shows the beginning of the topic's content --}
+	</tr>
+	</thead>
+	<tbody>
+{/if}
+
+{wiki:search_results limit="10" paginate="bottom"}
+<tr>
+	<td><a href="{path:view_article}">{title}</a></td>
+	<td>{revision_date format="%j %M %Y"} by <a href="{path:author_profile}">{author}</a></td>
+	{!--<td>{excerpt}</td>--}
+</tr>
+
+{paginate}
+</tbody>
+</table>
+
+<div><p>Page {current_page} of {total_pages} pages</p> {pagination_links}</div>
+
+{/paginate}
+
+{/wiki:search_results}

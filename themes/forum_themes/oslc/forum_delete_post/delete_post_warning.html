@@ -1,0 +1,58 @@
+{form_declaration:forum:delete_post}
+
+<table class="tableBorderLeft" cellpadding="0" cellspacing="0" border="0" style="width:100%;" align="center">
+<tr>
+<td class="errorHeading">{lang:delete_confirm}</td>
+
+</tr><tr>
+
+<td class="tableRowHeadingBold">
+{if is_topic}{lang:thread_delete_warning}{/if}
+{if is_reply}{lang:post_delete_warning}{/if}
+</td>
+
+</tr><tr>
+
+<td class="tableCellTwo">
+<div class="itempadbig">
+<div class="alert">
+{if is_topic}{lang:thread_delete_info} &nbsp; {/if}
+{lang:action_can_not_be_undone}
+</div>
+</div>
+</td>
+
+</tr><tr>
+
+<td class="tableCellTwo">
+<div class="itempadbig"><input type="submit" name="submit" class="button neg delete" value="{lang:delete}" /></div>
+</td>
+
+</tr><tr>
+
+<td class="tableCellOne">
+<div class="pendingTopic">
+{if is_topic}<h2>{title}</h2>{/if}
+<div class="fixmarkdownblockquotes">
+
+  {!--  
+    For future people, here's all the processing that goes into this little body tag:
+    1. On submission, some tags are stripped for security.
+    2. Content is converted according to the following settings:
+      - Security conversion: Add-ons > Modules > Forums > Forum Management > [forum name] > Edit > Text and HTML formatting HTML Formatting in Posts (set to "Allow All" [probably])
+      - Markdown conversion: Add-ons > Modules > Forums > Forum Management > [forum name] > Edit > Text and HTML formatting Text Formatting in Posts (set to "Smartdown")
+    3. Check my extension exp.oslc_wiki_markdown_fixes for additional "fixes"
+      - Un-encodes some brackets for Markdown Extra header IDs
+      - Un-encodes some double-encoded characters in code blocks
+  --}
+
+  {body}
+
+</div>
+</div>
+</td>
+
+</tr>
+</table>
+
+</form>

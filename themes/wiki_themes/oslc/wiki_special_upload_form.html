@@ -1,0 +1,92 @@
+{if uploads}
+
+<script type="text/javascript">
+
+// ---------------------------
+//  Choose File, Update Filename
+// ---------------------------
+
+function update_destination(obj)
+{
+	if (document.getElementById('new_filename'))
+	{
+		var name   = obj.value;
+		var path_x = name.lastIndexOf('\/');
+		var path_y = name.lastIndexOf('\\');
+
+		if (path_x != -1)
+		{
+			name = name.substring(path_x+1);
+		}
+		else if (path_y != -1)
+		{
+			name = name.substring(path_y+1);
+		}
+
+		document.getElementById('new_filename').value = name.replace(/ /g, '_');
+	}
+}
+</script>
+
+
+{if can_edit}
+	
+	{if oslc:user:is_workgroup_member}
+		{form_declaration:wiki:uploads}
+		<div class="form">
+			<div class="control-group">
+				<div class="controls">
+					<span class="input-wrap"><input type="file" title="Choose a file" id="userfile" name="userfile" size="20" onchange='update_destination(this)' /></span>
+					
+					{if file_types == 'images'}
+					<div class="callout-box">Only Image Uploads Are Allowed</div>
+					{if:else}
+					<details class="mvm">
+						<summary>Allowed File Types</summary>
+						{file_types}
+					</details>
+					{/if}		
+						
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label for="new_filename">New Filename <span class="deemph">(optional)</span></label>
+				<div class="controls">
+					<input class="input" name="new_filename" id="new_filename" type="text" />
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label for="summary">Summary/Description</label>
+				<div class="controls">
+					<textarea name='summary' id='summary' cols='90' rows='10'></textarea>		
+				</div>
+			</div>
+		
+			<div class="form-actions">
+				<button class="button mls" type="submit" value="submit">Submit</button>
+			</div>
+			
+		</div>{!-- /.form --}
+		</form>
+		
+		
+	{/if}
+	
+	{if oslc:user:is_not_workgroup_member}
+		<div class="callout-box callout-warning">You are not a member of this workgroup; you cannot upload files.</div>
+	{/if}
+	
+{/if}
+
+{if cannot_edit}
+<div class="callout-box callout-warning">You are not allowed to upload files.</div>
+{/if}
+
+{if:else}
+<div class="callout-box callout-warning">You can't upload files right now. (Or possibly you're not logged in!)</div>
+{/if}
+
+
+	

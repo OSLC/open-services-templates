@@ -1,0 +1,31 @@
+<div class="mbl" id="forum{category_id}off" style="display:none;">
+
+<table class="tableBorder" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="tableHeadingBG"><div class="tableHeading">{category_name}</div>
+	{if category_description}<div class="tableHeadingSmall">{category_description}</div>{/if}
+</td>
+<td class="tableHeadingBG BGright" align="right">
+<a class="button forum_expand tableHeadingButton" title="Show these forums" href="javascript:void(0);" onclick="show_element('forum{category_id}')">&nbsp;+&nbsp;</a>&nbsp;
+</td>
+</tr>
+</table>
+
+</div>
+
+
+<div class="mbl" id="forum{category_id}on" style="display:block;">
+<table class="tableBorderLeft" cellpadding="0" cellspacing="0" border="0" style="width:100%;" >
+<tr>
+<td class="tableHeadingBG" colspan="4"><div class="tableHeading">{category_name}</div>
+	{if category_description}<div class="tableHeadingSmall">{category_description}</div>{/if}
+</td>
+<td class="tableHeadingBG BGright" colspan="1" align="right">
+<a class="button forum_collapse tableHeadingButton" title="Hide these forums" href="javascript:void(0);" onclick="hide_element('forum{category_id}')">&nbsp;&ndash;&nbsp;</a>&nbsp;</td>
+</tr>
+<tr>
+<td class="tableRowHeadingBold tablePad2" colspan="2">{lang:forum_name_heading}</td>
+<td class="tableRowHeadingBold" align="center">{lang:total_topics_heading}</td>
+<td class="tableRowHeadingBold" align="center">{lang:total_replies_heading}</td>
+<td class="tableRowHeadingBold tablePad3">{lang:post_info_heading}</td>
+</tr>

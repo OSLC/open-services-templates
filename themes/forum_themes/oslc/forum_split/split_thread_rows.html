@@ -1,0 +1,43 @@
+
+<tr>
+ <td>
+
+ <table class="threadBorder" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
+  <tr>
+   <td class="tableRowHeadingBold" style="width:130px;">
+   
+   {if is_topic}
+   &nbsp;
+   {/if}
+   
+   {if is_post}
+   <input type="checkbox" name="post_id[]" value="{post_id}" {checked} /> {lang:split}
+   {/if}
+   
+   </td>
+   <td class="tableRowHeading" colspan="2">{lang:posted_on} {post_date format="%d %F %Y %h:%i %A"}</td>
+  </tr>
+<tr>
+ <td class="tableCellOne" style="width:130px;" valign="top"><div class="largeLinks"><a href="{path:member_profile}">{author}</a></div></td>
+<td class="tableCellOne" valign="top" colspan="2">
+	<div class="fixmarkdownblockquotes">
+	  {!--  
+	    For future people, here's all the processing that goes into this little body tag:
+	    1. On submission, some tags are stripped for security.
+	    2. Content is converted according to the following settings:
+	      - Security conversion: Add-ons > Modules > Forums > Forum Management > [forum name] > Edit > Text and HTML formatting HTML Formatting in Posts (set to "Allow All" [probably])
+	      - Markdown conversion: Add-ons > Modules > Forums > Forum Management > [forum name] > Edit > Text and HTML formatting Text Formatting in Posts (set to "Smartdown")
+	    3. Check my extension exp.oslc_wiki_markdown_fixes for additional "fixes"
+	      - Un-encodes some brackets for Markdown Extra header IDs
+	      - Un-encodes some double-encoded characters in code blocks
+	  --}
+
+		{body}
+	</div>
+</td>
+</tr>
+</table>
+	
+
+</td>
+</tr>
