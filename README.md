@@ -1,3 +1,7 @@
+**The repository is archived. The [website](https://github.com/oslc-op/website) is now built using Hugo.**
+
+---
+
 Templates for open-services.net
 ===============================
 
